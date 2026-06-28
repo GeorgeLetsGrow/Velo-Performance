@@ -84,6 +84,9 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
 @keyframes veloMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes veloPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
 
+/* The transparent (orange/yellow) logo needs a dark plate to read on the light theme */
+:root[data-theme="light"] img[src*="velo-logo-transparent"] { background: #0c0c0d; padding: 9px 15px; border-radius: 12px; }
+
 /* ============ THEME TOGGLE ============ */
 .velo-theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; background: transparent; border: 1px solid var(--border-strong); color: var(--text); cursor: pointer; transition: color .18s ease, border-color .18s ease, background-color .18s ease, transform .12s ease; }
 .velo-theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
@@ -122,4 +125,9 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
 }
 @media (max-width: 560px) {
   .velo-cal-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+/* The Anton display font uses very tight line-heights that collide once a
+   heading wraps to multiple lines on a phone — give it room on small screens. */
+@media (max-width: 768px) {
+  [style*="font-family:'Anton'"] { line-height: 1.1 !important; letter-spacing: .02em !important; }
 }
