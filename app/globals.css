@@ -1,0 +1,129 @@
+/* ============ THEME PALETTE ============ */
+:root {
+  --accent: #ff5e1a;
+  --gold: #f4b223;
+
+  /* dark (default) */
+  --bg: #0c0c0d;
+  --bg-1: #0f1012;
+  --bg-2: #101113;
+  --bg-3: #141518;
+  --bg-footer: #08080a;
+  --stripe-a: #16171a;
+  --stripe-b: #131417;
+  --stripe-c: #17181b;
+  --text: #f6f5f3;
+  --text-2: #c7c8cc;
+  --text-3: #9a9b9f;
+  --text-4: #8b8c92;
+  --text-5: #54555a;
+  --border: #1e1f22;
+  --border-2: #232427;
+  --border-strong: #36373c;
+  --hairline: #1c1d20;
+  --dash: #3a3b40;
+  --ink: #0c0c0d; /* dark "ink" that sits on the orange/gold — stays dark in both themes */
+  --bg-86: rgba(12, 12, 13, .86);
+  --bg-55: rgba(12, 12, 13, .55);
+  --header-bg: rgba(12, 12, 13, .82);
+  --stat-bg: rgba(18, 19, 22, .6);
+}
+
+:root[data-theme="light"] {
+  --bg: #f6f6f4;
+  --bg-1: #ffffff;
+  --bg-2: #efeeeb;
+  --bg-3: #e8e7e2;
+  --bg-footer: #eceae6;
+  --stripe-a: #f0efeb;
+  --stripe-b: #eae8e3;
+  --stripe-c: #edebe6;
+  --text: #17181b;
+  --text-2: #41424a;
+  --text-3: #5e5f66;
+  --text-4: #7a7b82;
+  --text-5: #a8a9af;
+  --border: #e2e0db;
+  --border-2: #d8d6d0;
+  --border-strong: #c3c1ba;
+  --hairline: #eae9e4;
+  --dash: #c3c1ba;
+  --ink: #0c0c0d;
+  --bg-86: rgba(246, 246, 244, .86);
+  --bg-55: rgba(246, 246, 244, .55);
+  --header-bg: rgba(246, 246, 244, .82);
+  --stat-bg: rgba(255, 255, 255, .65);
+}
+
+/* Booking module stays an intentional dark "spotlight" panel in both themes */
+[data-fixed-dark] {
+  --bg: #0c0c0d;
+  --bg-1: #0f1012;
+  --bg-2: #101113;
+  --bg-3: #141518;
+  --stripe-a: #16171a;
+  --stripe-b: #131417;
+  --stripe-c: #17181b;
+  --text: #f6f5f3;
+  --text-2: #c7c8cc;
+  --text-3: #9a9b9f;
+  --text-4: #8b8c92;
+  --text-5: #54555a;
+  --border: #1e1f22;
+  --border-2: #232427;
+  --border-strong: #36373c;
+  --hairline: #1c1d20;
+  --dash: #3a3b40;
+}
+
+/* ============ BASE ============ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background-color .25s ease, color .25s ease; }
+::selection { background: var(--accent); color: var(--ink); }
+@keyframes veloMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes veloPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+/* In light mode the logo's screen blend would erase it on a light surface, so
+   render it normally — the art has a dark backing, so round it into a badge. */
+:root[data-theme="light"] img[style*="mix-blend-mode:screen"] { mix-blend-mode: normal !important; border-radius: 12px; }
+
+/* ============ THEME TOGGLE ============ */
+.velo-theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; background: transparent; border: 1px solid var(--border-strong); color: var(--text); cursor: pointer; transition: color .18s ease, border-color .18s ease, background-color .18s ease, transform .12s ease; }
+.velo-theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.velo-theme-toggle:active { transform: translateY(1px); }
+.theme-icon-moon, .theme-icon-sun { display: inline-flex; }
+.theme-icon-sun { display: none; }
+:root[data-theme="light"] .theme-icon-sun { display: inline-flex; }
+:root[data-theme="light"] .theme-icon-moon { display: none; }
+.velo-mobile-toggle { display: none; }
+
+/* ============ HOVER / INTERACTION ============ */
+/* Hero CTA buttons — lift + glow on hover (transform keeps the -9deg skew) */
+.velo-btn { transition: transform .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease; }
+.velo-btn-primary:hover { transform: skewX(-9deg) translateY(-3px) !important; background: #ff7a3d !important; box-shadow: 0 12px 26px rgba(255,94,26,.34) !important; }
+.velo-btn-primary:active { transform: skewX(-9deg) translateY(-1px) !important; }
+.velo-btn-ghost:hover { transform: skewX(-9deg) translateY(-3px) !important; background: var(--text) !important; color: var(--bg) !important; border-color: var(--text) !important; }
+.velo-btn-ghost:active { transform: skewX(-9deg) translateY(-1px) !important; }
+.nav-link:hover { color: var(--text) !important; }
+.footer-link:hover { color: var(--accent) !important; }
+.pillar-card:hover { background: var(--bg-3) !important; }
+.include-row:hover { background: var(--bg-3) !important; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 860px) {
+  .velo-hero-grid { flex-direction: column-reverse !important; align-items: flex-start !important; }
+  .velo-hero-logo { width: 260px !important; margin-bottom: 8px; }
+  .velo-mobile-toggle { display: inline-flex !important; }
+  .velo-desktop-nav { display: none !important; }
+  .velo-mobile-btn { display: flex !important; }
+  .velo-nine-grid { grid-template-columns: 1fr !important; }
+  .velo-split { grid-template-columns: 1fr !important; gap: 36px !important; }
+  .velo-footer-grid { grid-template-columns: 1fr !important; }
+  .velo-form-row { grid-template-columns: 1fr !important; }
+  .velo-gallery { grid-template-columns: 1fr !important; }
+  .velo-coach-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 560px) {
+  .velo-cal-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
