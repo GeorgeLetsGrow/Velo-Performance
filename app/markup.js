@@ -161,8 +161,9 @@ export const MARKUP = `<!-- ============ NAV ============ -->
           </div>
         </div>
       </div>
-      <div style="position:relative;background:repeating-linear-gradient(126deg,var(--stripe-c),var(--stripe-c) 15px,var(--bg-3) 15px,var(--bg-3) 30px);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border)">
-        <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--text-5);letter-spacing:.1em;border:1px dashed var(--dash);padding:8px 14px">[ PHOTO — coach + small group rep ]</span>
+      <div style="position:relative;min-height:360px;background:repeating-linear-gradient(126deg,var(--stripe-c),var(--stripe-c) 15px,var(--bg-3) 15px,var(--bg-3) 30px);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border);overflow:hidden">
+        <img src="/assets/nine-athletes.png" alt="Coach pitching to a young athlete during a small-group session" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(12,12,13,.55),rgba(12,12,13,0) 38%)"></div>
         <div style="position:absolute;bottom:26px;left:26px;right:26px;display:flex;gap:8px">
           <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
           <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
