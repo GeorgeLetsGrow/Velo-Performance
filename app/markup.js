@@ -37,7 +37,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
     <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--text-5);letter-spacing:.1em;border:1px dashed var(--dash);padding:8px 14px">[ HERO PHOTO — athlete mid-swing, low angle ]</span>
   </div>
   <div style="position:absolute;inset:0;background:linear-gradient(100deg,var(--bg) 28%,var(--bg-86) 50%,var(--bg-55) 100%)"></div>
-  <div style="position:relative;max-width:1240px;margin:0 auto;padding:90px 28px;width:100%">
+  <div class="velo-hero-inner" style="position:relative;max-width:1240px;margin:0 auto;padding:90px 28px;width:100%">
     <div class="velo-hero-grid" style="display:flex;align-items:center;justify-content:space-between;gap:44px;flex-wrap:wrap">
       <div class="velo-hero-copy" style="flex:1 1 520px;max-width:760px">
       <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:26px">

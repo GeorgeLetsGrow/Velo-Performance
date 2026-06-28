@@ -117,6 +117,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
 @media (max-width: 860px) {
   .velo-hero-grid { flex-direction: column-reverse !important; align-items: flex-start !important; }
   .velo-hero-logo { display: none !important; }
+  #top { min-height: auto !important; }
+  .velo-hero-inner { padding-top: 34px !important; padding-bottom: 56px !important; }
   .velo-mobile-toggle { display: inline-flex !important; }
   .velo-desktop-nav { display: none !important; }
   .velo-mobile-btn { display: flex !important; }
