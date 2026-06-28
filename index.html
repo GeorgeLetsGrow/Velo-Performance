@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Velo Performance Labs — After-School Player Development | Apollo Beach, FL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root { --accent: #ff5e1a; --gold: #f4b223; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: #0c0c0d; color: #f6f5f3; font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+::selection { background: var(--accent); color: #0c0c0d; }
+@keyframes veloMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes veloPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+.nav-link:hover { color: #f6f5f3 !important; }
+.footer-link:hover { color: var(--accent) !important; }
+.pillar-card:hover { background: #141518 !important; }
+.include-row:hover { background: #141518 !important; }
+@media (max-width: 860px) {
+  .velo-desktop-nav { display: none !important; }
+  .velo-mobile-btn { display: flex !important; }
+  .velo-nine-grid { grid-template-columns: 1fr !important; }
+  .velo-split { grid-template-columns: 1fr !important; gap: 36px !important; }
+  .velo-footer-grid { grid-template-columns: 1fr !important; }
+  .velo-form-row { grid-template-columns: 1fr !important; }
+  .velo-gallery { grid-template-columns: 1fr !important; }
+  .velo-coach-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 560px) {
+  .velo-cal-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header style="position:sticky;top:0;z-index:50;background:rgba(12,12,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid #232427">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between">
+    <a href="#top" style="display:flex;align-items:center;text-decoration:none">
+      <img src="project/assets/velo-logo.png" alt="Velo Performance Labs" style="height:58px;width:auto;display:block;mix-blend-mode:screen">
+    </a>
+    <nav class="velo-desktop-nav" style="display:flex;align-items:center;gap:30px">
+      <a href="#programs" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:#c7c8cc;text-decoration:none">Programs</a>
+      <a href="#schedule" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:#c7c8cc;text-decoration:none">Schedule</a>
+      <a href="#coaches" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:#c7c8cc;text-decoration:none">Coaches</a>
+      <a href="#pricing" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:#c7c8cc;text-decoration:none">Pricing</a>
+      <a href="#results" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:#c7c8cc;text-decoration:none">Results</a>
+      <a href="#reserve" style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:#0c0c0d;background:var(--accent);padding:11px 20px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot</span></a>
+    </nav>
+    <button class="velo-mobile-btn" onclick="toggleMobileMenu()" style="display:none;background:none;border:1px solid #2c2d31;color:#f6f5f3;width:44px;height:44px;cursor:pointer;font-size:18px;align-items:center;justify-content:center">☰</button>
+  </div>
+  <div id="mobileMenu" style="display:none;border-top:1px solid #232427;padding:14px 28px 20px;flex-direction:column;gap:4px;background:#0c0c0d">
+    <a href="#programs" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#c7c8cc;text-decoration:none;padding:10px 0;border-bottom:1px solid #1c1d20;display:block">Programs</a>
+    <a href="#schedule" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#c7c8cc;text-decoration:none;padding:10px 0;border-bottom:1px solid #1c1d20;display:block">Schedule</a>
+    <a href="#coaches" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#c7c8cc;text-decoration:none;padding:10px 0;border-bottom:1px solid #1c1d20;display:block">Coaches</a>
+    <a href="#pricing" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#c7c8cc;text-decoration:none;padding:10px 0;border-bottom:1px solid #1c1d20;display:block">Pricing</a>
+    <a href="#results" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#c7c8cc;text-decoration:none;padding:10px 0;border-bottom:1px solid #1c1d20;display:block">Results</a>
+    <a href="#reserve" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:#0c0c0d;background:var(--accent);text-align:center;padding:13px 0;text-decoration:none;margin-top:8px;display:block">Reserve a Spot</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="top" style="position:relative;min-height:760px;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid #1c1d20">
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(118deg,#16171a,#16171a 16px,#131417 16px,#131417 32px)"></div>
+  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:5%;opacity:.5">
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#54555a;letter-spacing:.1em;border:1px dashed #3a3b40;padding:8px 14px">[ HERO PHOTO — athlete mid-swing, low angle ]</span>
+  </div>
+  <div style="position:absolute;inset:0;background:linear-gradient(100deg,#0c0c0d 28%,rgba(12,12,13,.86) 50%,rgba(12,12,13,.55) 100%)"></div>
+  <div style="position:relative;max-width:1240px;margin:0 auto;padding:90px 28px;width:100%">
+    <div style="max-width:760px">
+      <img src="project/assets/velo-logo.png" alt="Velo Performance Labs" style="height:96px;width:auto;display:block;mix-blend-mode:screen;margin-bottom:32px">
+      <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:26px">
+        <span style="width:30px;height:2px;background:var(--accent)"></span>
+        <span style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.32em;color:var(--accent);text-transform:uppercase">After School Development</span>
+      </div>
+      <h1 style="font-family:'Anton';font-weight:400;font-size:clamp(54px,8vw,118px);line-height:.9;letter-spacing:.005em;text-transform:uppercase;color:#f6f5f3;text-wrap:balance">
+        Train Different.<br>Train Smarter.<br><span style="color:var(--accent)">Be Elite.</span>
+      </h1>
+      <p style="margin-top:26px;font-size:20px;line-height:1.5;color:#b9babf;max-width:520px;font-weight:500">
+        Real coaching. Small groups. Big results. A baseball-first player development program in Apollo Beach, FL — not daycare.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:38px">
+        <a href="#reserve" style="font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#0c0c0d;background:var(--accent);padding:17px 32px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot →</span></a>
+        <a href="#programs" style="font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#f6f5f3;background:transparent;border:1.5px solid #36373c;padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">See the Program</span></a>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0;margin-top:54px;border:1px solid #232427;background:rgba(18,19,22,.6);width:fit-content">
+        <div style="padding:18px 26px;border-right:1px solid #232427">
+          <div style="font-family:'Anton';font-size:34px;color:var(--gold);line-height:1">9</div>
+          <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.18em;color:#8b8c92;text-transform:uppercase;margin-top:4px">Athletes / Day</div>
+        </div>
+        <div style="padding:18px 26px;border-right:1px solid #232427">
+          <div style="font-family:'Anton';font-size:34px;color:#f6f5f3;line-height:1">M–F</div>
+          <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.18em;color:#8b8c92;text-transform:uppercase;margin-top:4px">Every Week</div>
+        </div>
+        <div style="padding:18px 26px">
+          <div style="font-family:'Anton';font-size:34px;color:#f6f5f3;line-height:1">5:00<span style="font-size:18px">PM</span></div>
+          <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.18em;color:#8b8c92;text-transform:uppercase;margin-top:4px">After School Until</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE BAND ============ -->
+<div style="background:var(--accent);overflow:hidden;padding:16px 0;border-bottom:1px solid #0c0c0d">
+  <div style="display:flex;width:max-content;animation:veloMarquee 26s linear infinite">
+    <div style="display:flex;align-items:center;gap:28px;padding-right:28px">
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Not Daycare. Player Development.</span><span style="color:#0c0c0d;font-size:14px">●</span>
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Small Groups</span><span style="color:#0c0c0d;font-size:14px">●</span>
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Individual Coaching</span><span style="color:#0c0c0d;font-size:14px">●</span>
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Real Results</span><span style="color:#0c0c0d;font-size:14px">●</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:28px;padding-right:28px" aria-hidden="true">
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Not Daycare. Player Development.</span><span style="color:#0c0c0d;font-size:14px">●</span>
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Small Groups</span><span style="color:#0c0c0d;font-size:14px">●</span>
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Individual Coaching</span><span style="color:#0c0c0d;font-size:14px">●</span>
+      <span style="font-family:'Anton';font-size:24px;text-transform:uppercase;color:#0c0c0d;letter-spacing:.02em">Real Results</span><span style="color:#0c0c0d;font-size:14px">●</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PROGRAM OVERVIEW ============ -->
+<section id="programs" style="background:#0c0c0d;padding:104px 0">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-bottom:54px">
+      <div style="max-width:640px">
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">01 / The Program</div>
+        <h2 style="font-family:'Anton';font-size:clamp(38px,5vw,64px);line-height:.95;text-transform:uppercase;color:#f6f5f3">Every Afternoon Builds a Better Athlete</h2>
+      </div>
+      <p style="max-width:340px;color:#9a9b9f;font-size:16px;line-height:1.6">Six development pillars, coached every single day. Baseball and softball players train with intent — not just reps.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1px;background:#1e1f22;border:1px solid #1e1f22">
+      <div class="pillar-card" style="background:#0f1012;padding:36px 32px;position:relative">
+        <div style="font-family:'JetBrains Mono';font-size:12px;color:#54555a">P-01</div>
+        <div style="width:48px;height:48px;margin:18px 0 22px;background:var(--accent);display:flex;align-items:center;justify-content:center;transform:skewX(-9deg)"><span style="transform:skewX(9deg);font-size:24px">🏏</span></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3;line-height:1.05">Hitting Instruction</h3>
+        <p style="margin-top:12px;color:#9a9b9f;font-size:15px;line-height:1.6">Mechanics, bat path, and approach — built rep by rep with real feedback.</p>
+      </div>
+      <div class="pillar-card" style="background:#0f1012;padding:36px 32px;position:relative">
+        <div style="font-family:'JetBrains Mono';font-size:12px;color:#54555a">P-02</div>
+        <div style="width:48px;height:48px;margin:18px 0 22px;background:var(--accent);display:flex;align-items:center;justify-content:center;transform:skewX(-9deg)"><span style="transform:skewX(9deg);font-size:24px">⚾</span></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3;line-height:1.05">Pitching Instruction</h3>
+        <p style="margin-top:12px;color:#9a9b9f;font-size:15px;line-height:1.6">Arm care, command, and velocity development with mound-specific coaching.</p>
+      </div>
+      <div class="pillar-card" style="background:#0f1012;padding:36px 32px;position:relative">
+        <div style="font-family:'JetBrains Mono';font-size:12px;color:#54555a">P-03</div>
+        <div style="width:48px;height:48px;margin:18px 0 22px;background:var(--accent);display:flex;align-items:center;justify-content:center;transform:skewX(-9deg)"><span style="transform:skewX(9deg);font-size:24px">🧤</span></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3;line-height:1.05">Defensive Training</h3>
+        <p style="margin-top:12px;color:#9a9b9f;font-size:15px;line-height:1.6">Footwork, glove work, and game-speed reads for every position.</p>
+      </div>
+      <div class="pillar-card" style="background:#0f1012;padding:36px 32px;position:relative">
+        <div style="font-family:'JetBrains Mono';font-size:12px;color:#54555a">P-04</div>
+        <div style="width:48px;height:48px;margin:18px 0 22px;background:var(--accent);display:flex;align-items:center;justify-content:center;transform:skewX(-9deg)"><span style="transform:skewX(9deg);font-size:24px">⚡</span></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3;line-height:1.05">Speed · Agility · Strength</h3>
+        <p style="margin-top:12px;color:#9a9b9f;font-size:15px;line-height:1.6">Athletic foundation work — explosiveness, mobility, and durability.</p>
+      </div>
+      <div class="pillar-card" style="background:#0f1012;padding:36px 32px;position:relative">
+        <div style="font-family:'JetBrains Mono';font-size:12px;color:#54555a">P-05</div>
+        <div style="width:48px;height:48px;margin:18px 0 22px;background:var(--accent);display:flex;align-items:center;justify-content:center;transform:skewX(-9deg)"><span style="transform:skewX(9deg);font-size:24px">🧠</span></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3;line-height:1.05">Baseball &amp; Softball IQ</h3>
+        <p style="margin-top:12px;color:#9a9b9f;font-size:15px;line-height:1.6">Situational awareness and decision-making that wins games.</p>
+      </div>
+      <div class="pillar-card" style="background:#0f1012;padding:36px 32px;position:relative">
+        <div style="font-family:'JetBrains Mono';font-size:12px;color:#54555a">P-06</div>
+        <div style="width:48px;height:48px;margin:18px 0 22px;background:var(--accent);display:flex;align-items:center;justify-content:center;transform:skewX(-9deg)"><span style="transform:skewX(9deg);font-size:24px">📈</span></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3;line-height:1.05">Weekly Progress Tracking</h3>
+        <p style="margin-top:12px;color:#9a9b9f;font-size:15px;line-height:1.6">Measured development so athletes and parents see real movement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ONLY 9 ATHLETES ============ -->
+<section style="position:relative;background:#101113;padding:0;border-top:1px solid #1c1d20;border-bottom:1px solid #1c1d20;overflow:hidden">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div class="velo-nine-grid" style="display:grid;grid-template-columns:1.05fr 1fr;min-height:520px;border-left:1px solid #1e1f22;border-right:1px solid #1e1f22">
+      <div style="display:flex;flex-direction:column;justify-content:center;padding:72px 44px">
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px">02 / Why It Works</div>
+        <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
+          <div style="font-family:'Anton';font-size:clamp(120px,16vw,210px);line-height:.78;color:var(--accent);letter-spacing:-.01em">9</div>
+          <div style="padding-top:14px;max-width:380px">
+            <h2 style="font-family:'Anton';font-size:clamp(30px,3.4vw,44px);line-height:.98;text-transform:uppercase;color:#f6f5f3">Athletes Per Day. That's It.</h2>
+            <p style="margin-top:18px;color:#b9babf;font-size:17px;line-height:1.6">No crowds. No waiting in line for a turn. Every athlete gets seen, corrected, and pushed — every rep, every afternoon. When the day fills, it's full.</p>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:24px">
+              <span style="width:9px;height:9px;border-radius:50%;background:var(--accent);animation:veloPulse 1.6s ease-in-out infinite"></span>
+              <span style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.14em;color:#c7c8cc;text-transform:uppercase">Spots fill fast — reserve early</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="position:relative;background:repeating-linear-gradient(126deg,#17181b,#17181b 15px,#141518 15px,#141518 30px);display:flex;align-items:center;justify-content:center;border-left:1px solid #1e1f22">
+        <span style="font-family:'JetBrains Mono';font-size:12px;color:#54555a;letter-spacing:.1em;border:1px dashed #3a3b40;padding:8px 14px">[ PHOTO — coach + small group rep ]</span>
+        <div style="position:absolute;bottom:26px;left:26px;right:26px;display:flex;gap:8px">
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+          <div style="flex:1;height:5px;background:var(--accent);opacity:.9"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCHEDULE ============ -->
+<section id="schedule" style="background:#0c0c0d;padding:104px 0">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div style="margin-bottom:54px;max-width:680px">
+      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">03 / The Afternoon</div>
+      <h2 style="font-family:'Anton';font-size:clamp(38px,5vw,64px);line-height:.95;text-transform:uppercase;color:#f6f5f3">Structured From Pickup to 5:00</h2>
+      <p style="margin-top:18px;color:#9a9b9f;font-size:17px;line-height:1.6">A real training block — Monday through Friday. Flexible options mean your athlete comes when it works for your family.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px">
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:30px 26px">
+        <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--gold);letter-spacing:.1em">3:00 — 3:20</div>
+        <div style="width:40px;height:3px;background:var(--accent);margin:18px 0 16px"></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:#f6f5f3;line-height:1.1">Arrival &amp; Warm-Up</h3>
+        <p style="margin-top:10px;color:#9a9b9f;font-size:14.5px;line-height:1.55">Pickup, dynamic warm-up, and movement prep to get the body ready.</p>
+      </div>
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:30px 26px">
+        <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--gold);letter-spacing:.1em">3:20 — 4:10</div>
+        <div style="width:40px;height:3px;background:var(--accent);margin:18px 0 16px"></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:#f6f5f3;line-height:1.1">Skill Block</h3>
+        <p style="margin-top:10px;color:#9a9b9f;font-size:14.5px;line-height:1.55">Position-specific coaching — hitting, pitching, or defensive focus.</p>
+      </div>
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:30px 26px">
+        <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--gold);letter-spacing:.1em">4:10 — 4:45</div>
+        <div style="width:40px;height:3px;background:var(--accent);margin:18px 0 16px"></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:#f6f5f3;line-height:1.1">Athleticism</h3>
+        <p style="margin-top:10px;color:#9a9b9f;font-size:14.5px;line-height:1.55">Speed, agility, and strength work built into every afternoon.</p>
+      </div>
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:30px 26px">
+        <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--gold);letter-spacing:.1em">4:45 — 5:00</div>
+        <div style="width:40px;height:3px;background:var(--accent);margin:18px 0 16px"></div>
+        <h3 style="font-family:'Barlow Condensed';font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:#f6f5f3;line-height:1.1">IQ &amp; Wrap-Up</h3>
+        <p style="margin-top:10px;color:#9a9b9f;font-size:14.5px;line-height:1.55">Game IQ, recap, and progress notes before 5:00 pickup.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:30px">
+      <div style="display:flex;align-items:center;gap:10px;background:#0f1012;border:1px solid #1e1f22;padding:14px 20px">
+        <span style="font-family:'Anton';font-size:18px;color:var(--accent)">↻</span>
+        <span style="font-family:'Barlow Condensed';font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#c7c8cc">Weekly progress tracking for every athlete</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:#0f1012;border:1px solid #1e1f22;padding:14px 20px">
+        <span style="font-family:'Anton';font-size:18px;color:var(--accent)">⚲</span>
+        <span style="font-family:'Barlow Condensed';font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#c7c8cc">Apollo Beach, FL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COACHES ============ -->
+<section id="coaches" style="background:#101113;padding:104px 0;border-top:1px solid #1c1d20">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-bottom:48px">
+      <div style="max-width:640px">
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">04 / The Staff</div>
+        <h2 style="font-family:'Anton';font-size:clamp(38px,5vw,64px);line-height:.95;text-transform:uppercase;color:#f6f5f3">Coached By Players Who've Been There</h2>
+      </div>
+      <p style="max-width:340px;color:#9a9b9f;font-size:16px;line-height:1.6">Former college and pro talent with decades of youth development. Real experience, hands-on every afternoon.</p>
+    </div>
+    <div class="velo-coach-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="background:#0c0c0d;border:1px solid #1e1f22;overflow:hidden">
+        <img src="project/assets/coach-neril.png" alt="Coach Neril Griffith" style="width:100%;height:auto;display:block">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-top:1px solid #1e1f22;flex-wrap:wrap">
+          <div>
+            <div style="font-family:'Barlow Condensed';font-weight:800;font-size:20px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">Coach Neril Griffith</div>
+            <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:#8b8c92;margin-top:3px">HITTING · DEFENSE · DEVELOPMENT</div>
+          </div>
+          <div style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)">30+ Yrs</div>
+        </div>
+      </div>
+      <div style="background:#0c0c0d;border:1px solid #1e1f22;overflow:hidden">
+        <img src="project/assets/coach-nevin.png" alt="Coach Nevin Griffith" style="width:100%;height:auto;display:block">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-top:1px solid #1e1f22;flex-wrap:wrap">
+          <div>
+            <div style="font-family:'Barlow Condensed';font-weight:800;font-size:20px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">Coach Nevin Griffith</div>
+            <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:#8b8c92;margin-top:3px">PITCHING · VELOCITY · MENTAL GAME</div>
+          </div>
+          <div style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)">100+ MPH</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing" style="background:#101113;padding:104px 0;border-top:1px solid #1c1d20">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div style="text-align:center;margin-bottom:54px">
+      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">05 / Flexible Options</div>
+      <h2 style="font-family:'Anton';font-size:clamp(38px,5vw,64px);line-height:.95;text-transform:uppercase;color:#f6f5f3">Pick Your Pass</h2>
+      <p style="margin-top:16px;color:#9a9b9f;font-size:17px;max-width:520px;margin-left:auto;margin-right:auto">Come when it works. Drop in for a day or train all week — same coaching, same standard.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;align-items:stretch">
+      <!-- Drop-In -->
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:38px 32px;position:relative;display:flex;flex-direction:column">
+        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#9a9b9f">Drop-In</div>
+        <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
+          <span style="font-family:'Anton';font-size:30px;color:#f6f5f3;padding-top:8px">$</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:#f6f5f3">60</span>
+        </div>
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:#8b8c92;text-transform:uppercase">Per Day</div>
+        <p style="margin-top:18px;color:#9a9b9f;font-size:15px;line-height:1.55;min-height:44px">Perfect for trying it out or training when your schedule allows.</p>
+        <div style="height:1px;border-top:1px solid #232427;margin:22px 0"></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>One full afternoon block</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>All six development pillars</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Coached small-group setting</span></li>
+        </ul>
+        <a href="#reserve" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:#f6f5f3;background:transparent;border:1.5px solid #36373c;display:block">Book a Drop-In</a>
+      </div>
+      <!-- Flex Pass (featured) -->
+      <div style="background:#141518;border:1px solid var(--accent);padding:38px 32px;position:relative;display:flex;flex-direction:column">
+        <div style="position:absolute;top:0;right:0;background:var(--accent);color:#0c0c0d;font-family:'Barlow Condensed';font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:7px 14px">Most Popular</div>
+        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">3-Day Flex Pass</div>
+        <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
+          <span style="font-family:'Anton';font-size:30px;color:#f6f5f3;padding-top:8px">$</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:#f6f5f3">150</span>
+        </div>
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:#8b8c92;text-transform:uppercase">Per Week</div>
+        <p style="margin-top:18px;color:#9a9b9f;font-size:15px;line-height:1.55;min-height:44px">Three afternoons a week — flexible days that fit your family.</p>
+        <div style="height:1px;border-top:1px solid #232427;margin:22px 0"></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Any three days, Mon–Fri</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Weekly progress tracking</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Best balance of value &amp; rest</span></li>
+        </ul>
+        <a href="#reserve" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:#0c0c0d;background:var(--accent);border:1.5px solid var(--accent);display:block">Get the Flex Pass</a>
+      </div>
+      <!-- Unlimited -->
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:38px 32px;position:relative;display:flex;flex-direction:column">
+        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Unlimited Week</div>
+        <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
+          <span style="font-family:'Anton';font-size:30px;color:#f6f5f3;padding-top:8px">$</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:#f6f5f3">175</span>
+        </div>
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:#8b8c92;text-transform:uppercase">Per Week</div>
+        <p style="margin-top:18px;color:#9a9b9f;font-size:15px;line-height:1.55;min-height:44px">Five days of development for the athlete who wants to be elite.</p>
+        <div style="height:1px;border-top:1px solid #232427;margin:22px 0"></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Every day, Mon–Fri</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Maximum reps &amp; coaching</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:#c7c8cc;font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Fastest path to real results</span></li>
+        </ul>
+        <a href="#reserve" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:#f6f5f3;background:transparent;border:1.5px solid #36373c;display:block">Go Unlimited</a>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:28px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:#6f7076">ONLY 9 SPOTS AVAILABLE EACH DAY · MONDAY–FRIDAY</p>
+  </div>
+</section>
+
+<!-- ============ WHAT EACH AFTERNOON INCLUDES ============ -->
+<section style="background:#0c0c0d;padding:104px 0">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div class="velo-split" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
+      <div>
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">06 / Inside the Lab</div>
+        <h2 style="font-family:'Anton';font-size:clamp(34px,4.4vw,56px);line-height:.95;text-transform:uppercase;color:#f6f5f3">What Every Afternoon Includes</h2>
+        <p style="margin-top:18px;color:#9a9b9f;font-size:17px;line-height:1.6;max-width:440px">Coached movement, real reps, and accountability. No filler, no standing around.</p>
+        <div style="display:flex;flex-direction:column;gap:1px;margin-top:34px;background:#1e1f22;border:1px solid #1e1f22">
+          <div class="include-row" style="background:#0f1012;padding:20px 24px;display:flex;align-items:center;gap:18px">
+            <span style="font-family:'Anton';font-size:18px;color:var(--gold);min-width:34px">01</span>
+            <div><div style="font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3">Coached Skill Work</div><div style="color:#9a9b9f;font-size:14px;margin-top:2px">Hands-on instruction every rep — never solo reps.</div></div>
+          </div>
+          <div class="include-row" style="background:#0f1012;padding:20px 24px;display:flex;align-items:center;gap:18px">
+            <span style="font-family:'Anton';font-size:18px;color:var(--gold);min-width:34px">02</span>
+            <div><div style="font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3">Live Feedback</div><div style="color:#9a9b9f;font-size:14px;margin-top:2px">Real-time correction so habits stick the right way.</div></div>
+          </div>
+          <div class="include-row" style="background:#0f1012;padding:20px 24px;display:flex;align-items:center;gap:18px">
+            <span style="font-family:'Anton';font-size:18px;color:var(--gold);min-width:34px">03</span>
+            <div><div style="font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3">Athletic Development</div><div style="color:#9a9b9f;font-size:14px;margin-top:2px">Speed, agility, and strength built into the block.</div></div>
+          </div>
+          <div class="include-row" style="background:#0f1012;padding:20px 24px;display:flex;align-items:center;gap:18px">
+            <span style="font-family:'Anton';font-size:18px;color:var(--gold);min-width:34px">04</span>
+            <div><div style="font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3">Game IQ Reps</div><div style="color:#9a9b9f;font-size:14px;margin-top:2px">Situations and reads that translate to the diamond.</div></div>
+          </div>
+          <div class="include-row" style="background:#0f1012;padding:20px 24px;display:flex;align-items:center;gap:18px">
+            <span style="font-family:'Anton';font-size:18px;color:var(--gold);min-width:34px">05</span>
+            <div><div style="font-family:'Barlow Condensed';font-weight:700;font-size:18px;letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3">Progress Notes</div><div style="color:#9a9b9f;font-size:14px;margin-top:2px">Tracked weekly so growth is visible, not guessed.</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="position:relative;background:#0c0c0d;border:1px solid #1e1f22;overflow:hidden;display:flex">
+        <img src="project/assets/team-card.png" alt="Velo Performance Labs team card" style="width:100%;height:auto;display:block">
+        <div style="position:absolute;top:20px;left:20px;background:var(--accent);color:#0c0c0d;font-family:'Barlow Condensed';font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;transform:skewX(-9deg);box-shadow:0 4px 16px rgba(0,0,0,.45)"><span style="display:inline-block;transform:skewX(9deg)">Baseball + Softball</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAMPIONS BOARD ============ -->
+<section style="background:#0c0c0d;padding:96px 0 40px">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:34px;flex-wrap:wrap">
+      <span style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase">Champions Board</span>
+      <span style="flex:1;min-width:40px;height:1px;background:#1e1f22"></span>
+      <span style="font-family:'Barlow Condensed';font-weight:800;font-size:clamp(22px,3vw,34px);letter-spacing:.02em;text-transform:uppercase;color:#f6f5f3">Real Athletes. Real Wins.</span>
+    </div>
+    <div class="velo-gallery" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="background:#101113;border:1px solid #1e1f22;overflow:hidden">
+        <img src="project/assets/champ-leo.png" alt="Leo — Long Toss Champion" style="width:100%;height:auto;display:block">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-top:1px solid #1e1f22;flex-wrap:wrap">
+          <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">Leo · Long Toss Champ</div>
+          <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:var(--accent)">FARTHEST THROW ON TARGET</div>
+        </div>
+      </div>
+      <div style="background:#101113;border:1px solid #1e1f22;overflow:hidden">
+        <img src="project/assets/champ-nixon.png" alt="Nixon — Exit Velo Champion" style="width:100%;height:auto;display:block">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-top:1px solid #1e1f22;flex-wrap:wrap">
+          <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">Nixon · Exit Velo Champ</div>
+          <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:var(--accent)">50.1 MPH · WEEK 2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARENT PROOF ============ -->
+<section id="results" style="background:#101113;padding:104px 0;border-top:1px solid #1c1d20;border-bottom:1px solid #1c1d20">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div style="text-align:center;margin-bottom:54px">
+      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:16px">07 / The Proof</div>
+      <h2 style="font-family:'Anton';font-size:clamp(38px,5vw,64px);line-height:.95;text-transform:uppercase;color:#f6f5f3">Parents See the Difference</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:#1e1f22;border:1px solid #1e1f22;margin-bottom:44px">
+      <div style="background:#0f1012;padding:34px 28px;text-align:center">
+        <div style="font-family:'Anton';font-size:clamp(40px,5vw,58px);color:var(--accent);line-height:.9">9:1</div>
+        <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:#8b8c92;text-transform:uppercase;margin-top:12px">Max Athletes Per Day</div>
+      </div>
+      <div style="background:#0f1012;padding:34px 28px;text-align:center">
+        <div style="font-family:'Anton';font-size:clamp(40px,5vw,58px);color:var(--accent);line-height:.9">5×</div>
+        <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:#8b8c92;text-transform:uppercase;margin-top:12px">Days Available Weekly</div>
+      </div>
+      <div style="background:#0f1012;padding:34px 28px;text-align:center">
+        <div style="font-family:'Anton';font-size:clamp(40px,5vw,58px);color:var(--accent);line-height:.9">100%</div>
+        <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:#8b8c92;text-transform:uppercase;margin-top:12px">Coached Reps</div>
+      </div>
+      <div style="background:#0f1012;padding:34px 28px;text-align:center">
+        <div style="font-family:'Anton';font-size:clamp(40px,5vw,58px);color:var(--accent);line-height:.9">Wkly</div>
+        <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:#8b8c92;text-transform:uppercase;margin-top:12px">Progress Tracking</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:32px 30px;display:flex;flex-direction:column">
+        <div style="font-family:'Anton';font-size:42px;color:var(--accent);line-height:.6;height:24px">"</div>
+        <p style="color:#dcdde0;font-size:16.5px;line-height:1.6;font-weight:500;flex:1">The small group is everything. My son actually gets coached every rep — his swing changed in weeks, not months.</p>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid #1e1f22">
+          <div style="width:40px;height:40px;border-radius:50%;background:#1e1f22;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:800;color:var(--gold);font-size:16px">MR</div>
+          <div>
+            <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">Marcus R.</div>
+            <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.1em;color:#8b8c92">PARENT · 12U BASEBALL</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:32px 30px;display:flex;flex-direction:column">
+        <div style="font-family:'Anton';font-size:42px;color:var(--accent);line-height:.6;height:24px">"</div>
+        <p style="color:#dcdde0;font-size:16.5px;line-height:1.6;font-weight:500;flex:1">Finally an after-school option that's real training, not babysitting. She comes home tired and proud.</p>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid #1e1f22">
+          <div style="width:40px;height:40px;border-radius:50%;background:#1e1f22;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:800;color:var(--gold);font-size:16px">JT</div>
+          <div>
+            <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">Jenna T.</div>
+            <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.1em;color:#8b8c92">PARENT · 10U SOFTBALL</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#0f1012;border:1px solid #1e1f22;padding:32px 30px;display:flex;flex-direction:column">
+        <div style="font-family:'Anton';font-size:42px;color:var(--accent);line-height:.6;height:24px">"</div>
+        <p style="color:#dcdde0;font-size:16.5px;line-height:1.6;font-weight:500;flex:1">The weekly tracking keeps him accountable. He sees the progress, so he wants to keep showing up.</p>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid #1e1f22">
+          <div style="width:40px;height:40px;border-radius:50%;background:#1e1f22;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:800;color:var(--gold);font-size:16px">DL</div>
+          <div>
+            <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">David L.</div>
+            <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.1em;color:#8b8c92">PARENT · 14U BASEBALL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REGISTRATION CTA ============ -->
+<section id="register" style="position:relative;background:#0c0c0d;padding:0;overflow:hidden">
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(118deg,#16171a,#16171a 16px,#131417 16px,#131417 32px);opacity:.6"></div>
+  <div style="position:relative;max-width:1240px;margin:0 auto;padding:104px 28px">
+    <div style="background:var(--accent);padding:clamp(44px,6vw,80px);position:relative;overflow:hidden">
+      <div style="position:absolute;top:-40px;right:-20px;font-family:'Anton';font-size:clamp(140px,22vw,320px);color:rgba(12,12,13,.12);line-height:.7;pointer-events:none">9</div>
+      <div style="position:relative;max-width:720px">
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:rgba(12,12,13,.7);text-transform:uppercase;margin-bottom:20px">Register Now · Apollo Beach, FL</div>
+        <h2 style="font-family:'Anton';font-size:clamp(40px,6vw,82px);line-height:.9;text-transform:uppercase;color:#0c0c0d">Reserve Your Athlete's Spot Before the Day Fills Up</h2>
+        <p style="margin-top:22px;font-size:19px;line-height:1.5;color:rgba(12,12,13,.78);font-weight:600;max-width:540px">Only 9 athletes train each day, Monday through Friday. Lock in your spot and start building a smarter, sharper, more confident player.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:36px">
+          <a href="#reserve" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:#0c0c0d;padding:18px 36px;text-decoration:none">Register Now →</a>
+          <a href="#pricing" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:#0c0c0d;background:transparent;border:2px solid #0c0c0d;padding:16px 32px;text-decoration:none">View Pricing</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESERVATION EXPERIENCE ============ -->
+<section id="reserve" style="background:#0c0c0d;padding:104px 0;border-top:1px solid #1c1d20">
+  <div style="max-width:1080px;margin:0 auto;padding:0 28px">
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">08 / Reserve Your Spot</div>
+      <h2 style="font-family:'Anton';font-size:clamp(38px,5vw,64px);line-height:.95;text-transform:uppercase;color:#f6f5f3">Book the Afternoon</h2>
+      <p style="margin-top:16px;color:#9a9b9f;font-size:17px;max-width:520px;margin-left:auto;margin-right:auto">Pick a day, choose a pass, and lock it in. Only 9 athletes train each afternoon — when a day shows full, it's full.</p>
+    </div>
+    <!-- Step indicator -->
+    <div id="stepIndicator" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:30px 0 24px;flex-wrap:wrap"></div>
+    <!-- Reservation card -->
+    <div style="background:#0f1012;border:1px solid #1e1f22;padding:clamp(24px,4vw,44px)">
+      <div id="reservationContent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer style="background:#08080a;padding:72px 0 36px;border-top:1px solid #1c1d20">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div class="velo-footer-grid" style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:48px;border-bottom:1px solid #1c1d20">
+      <div>
+        <img src="project/assets/velo-logo.png" alt="Velo Performance Labs" style="height:104px;width:auto;display:block;margin:-12px 0 14px -8px;mix-blend-mode:screen">
+        <p style="color:#82838a;font-size:15px;line-height:1.6;max-width:300px">Baseball-first after-school player development. Train different. Train smarter. Be elite.</p>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#f6f5f3;margin-bottom:18px">Visit</div>
+        <div style="color:#9a9b9f;font-size:15px;line-height:1.9">Apollo Beach, FL<br>Monday – Friday<br>After school until 5:00 PM</div>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#f6f5f3;margin-bottom:18px">Get Started</div>
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <a href="#reserve" class="footer-link" style="color:#9a9b9f;font-size:15px;text-decoration:none">Reserve a Spot</a>
+          <a href="#pricing" class="footer-link" style="color:#9a9b9f;font-size:15px;text-decoration:none">View Pricing</a>
+          <a href="#programs" class="footer-link" style="color:#9a9b9f;font-size:15px;text-decoration:none">Programs</a>
+          <span style="font-family:'JetBrains Mono';font-size:12px;color:#54555a;margin-top:6px">[ phone / email / form link ]</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding-top:28px">
+      <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:#54555a">© 2026 VELO PERFORMANCE LABS · APOLLO BEACH, FL</div>
+      <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase">Not Daycare. Player Development.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ MOBILE MENU ============
+function toggleMobileMenu() {
+  const m = document.getElementById('mobileMenu');
+  const open = m.style.display === 'flex';
+  m.style.display = open ? 'none' : 'flex';
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').style.display = 'none';
+}
+
+// ============ RESERVATION STATE ============
+const S = {
+  weekOffset: 0,
+  selectedDate: null,
+  selectedPass: 'flex',
+  step: 'select',
+  athlete: '',
+  age: '',
+  sport: 'Baseball',
+  parent: '',
+  contact: ''
+};
+
+const CAP = 9;
+const ACCENT = '#ff5e1a';
+const GOLD = '#f4b223';
+
+const PASSES = [
+  { id: 'dropin',    name: 'Drop-In',         price: '$60',  sub: 'per day'  },
+  { id: 'flex',      name: '3-Day Flex Pass', price: '$150', sub: 'per week' },
+  { id: 'unlimited', name: 'Unlimited Week',  price: '$175', sub: 'per week' },
+];
+
+function seatsTaken(iso) {
+  let h = 7;
+  for (let i = 0; i < iso.length; i++) h = (h * 31 + iso.charCodeAt(i)) % 1009;
+  return h % 10;
+}
+
+function buildWeek(offset) {
+  const base = new Date(); base.setHours(0,0,0,0);
+  const dow = base.getDay();
+  const toMon = dow === 0 ? 1 : 1 - dow;
+  const monday = new Date(base);
+  monday.setDate(base.getDate() + toMon + offset * 7);
+  const dowNames = ['MON','TUE','WED','THU','FRI'];
+  const monNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const out = [];
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const iso = d.toISOString().slice(0,10);
+    const left = Math.max(0, CAP - seatsTaken(iso));
+    out.push({ iso, dow: dowNames[i], day: d.getDate(), mon: monNames[d.getMonth()], left, full: left === 0 });
+  }
+  return out;
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  const dn = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+  const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+  return dn + ' · ' + mn + ' ' + d.getDate();
+}
+
+function setState(patch) {
+  Object.assign(S, patch);
+  renderReservation();
+}
+
+// ============ RENDER ============
+function renderReservation() {
+  renderStepIndicator();
+  const el = document.getElementById('reservationContent');
+  if (S.step === 'select')    el.innerHTML = buildSelectHTML();
+  if (S.step === 'details')   el.innerHTML = buildDetailsHTML();
+  if (S.step === 'confirmed') el.innerHTML = buildConfirmedHTML();
+  attachInputListeners();
+}
+
+function stepCircle(n, label, active, done) {
+  const bg   = active || done ? ACCENT : '#1e1f22';
+  const col  = active || done ? '#0c0c0d' : '#9a9b9f';
+  const tcol = active ? '#c7c8cc' : done ? '#c7c8cc' : '#82838a';
+  return `<div style="display:flex;align-items:center;gap:8px">
+    <span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:800;font-size:13px;color:${col};background:${bg}">${done ? '✓' : n}</span>
+    <span style="font-family:'Barlow Condensed';font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:${tcol}">${label}</span>
+  </div>`;
+}
+
+function renderStepIndicator() {
+  const sel = S.step === 'select';
+  const det = S.step === 'details';
+  const con = S.step === 'confirmed';
+  document.getElementById('stepIndicator').innerHTML =
+    stepCircle(1, 'Choose',    sel, det || con) +
+    `<span style="width:24px;height:1px;background:#2c2d31"></span>` +
+    stepCircle(2, 'Details',   det, con) +
+    `<span style="width:24px;height:1px;background:#2c2d31"></span>` +
+    stepCircle(3, 'Confirmed', con, false);
+}
+
+function buildSelectHTML() {
+  const week = buildWeek(S.weekOffset);
+  const range = week.length ? week[0].mon + ' ' + week[0].day + ' – ' + week[4].day : '';
+  const tabBase = "flex:1;padding:11px;font-family:'Barlow Condensed';font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #26272b;";
+  const tabThis = tabBase + (S.weekOffset === 0 ? `color:#0c0c0d;background:${ACCENT};border-color:${ACCENT};` : 'color:#c7c8cc;background:#0c0c0d;');
+  const tabNext = tabBase + (S.weekOffset === 1 ? `color:#0c0c0d;background:${ACCENT};border-color:${ACCENT};` : 'color:#c7c8cc;background:#0c0c0d;');
+
+  const calCells = week.map(d => {
+    const sel = d.iso === S.selectedDate;
+    let style = "display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 6px;cursor:pointer;border:1.5px solid;background:#0c0c0d;font-family:inherit;";
+    if (d.full)       style += "border-color:#1a1b1e;background:#0a0a0b;cursor:not-allowed;opacity:.45;";
+    else if (sel)     style += `border-color:${ACCENT};background:#16110c;`;
+    else              style += "border-color:#26272b;";
+    const numCol  = d.full ? '#54555a' : sel ? ACCENT : '#f6f5f3';
+    const leftCol = d.full ? '#6f7076' : d.left <= 3 ? ACCENT : '#8b8c92';
+    const leftTxt = d.full ? 'FULL' : d.left + ' of 9 left';
+    const click   = d.full ? '' : `onclick="setState({selectedDate:'${d.iso}'})"`;
+    return `<button ${click} style="${style}">
+      <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;color:#8b8c92">${d.dow}</span>
+      <span style="font-family:'Anton';font-size:30px;line-height:1;color:${numCol}">${d.day}</span>
+      <span style="font-family:'Barlow';font-size:11px;color:#82838a">${d.mon}</span>
+      <span style="font-family:'Barlow Condensed';font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:${leftCol};margin-top:4px">${leftTxt}</span>
+    </button>`;
+  }).join('');
+
+  const passRows = PASSES.map(p => {
+    const sel = p.id === S.selectedPass;
+    const rowStyle = `display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;cursor:pointer;border:1.5px solid;width:100%;text-align:left;font-family:inherit;background:${sel ? '#16110c' : '#0c0c0d'};border-color:${sel ? ACCENT : '#26272b'};`;
+    const dotBorder = sel ? ACCENT : '#3a3b40';
+    const dot = sel ? `<span style="width:8px;height:8px;border-radius:50%;background:${ACCENT}"></span>` : '';
+    const priceCol = sel ? ACCENT : '#f6f5f3';
+    return `<button onclick="setState({selectedPass:'${p.id}'})" style="${rowStyle}">
+      <span style="display:flex;align-items:center;gap:14px">
+        <span style="width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid ${dotBorder};display:flex;align-items:center;justify-content:center;">${dot}</span>
+        <span style="font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">${p.name}</span>
+      </span>
+      <span style="display:flex;align-items:baseline;gap:5px">
+        <span style="font-family:'Anton';font-size:22px;color:${priceCol}">${p.price}</span>
+        <span style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.08em;color:#8b8c92;text-transform:uppercase">${p.sub}</span>
+      </span>
+    </button>`;
+  }).join('');
+
+  const canContinue = !!S.selectedDate;
+  const btnStyle = `width:100%;margin-top:8px;padding:16px;font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;border:none;cursor:${canContinue ? 'pointer' : 'not-allowed'};color:#0c0c0d;background:${canContinue ? ACCENT : '#3a3b40'};`;
+
+  return `<div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:#f6f5f3">Select a Day</div>
+      <div style="font-family:'JetBrains Mono';font-size:12px;color:#8b8c92;letter-spacing:.08em">${range}</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;max-width:340px">
+      <button onclick="setState({weekOffset:0})" style="${tabThis}">This Week</button>
+      <button onclick="setState({weekOffset:1})" style="${tabNext}">Next Week</button>
+    </div>
+    <div class="velo-cal-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">${calCells}</div>
+    <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:#f6f5f3;margin:30px 0 14px">Choose a Pass</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:26px">${passRows}</div>
+    <button onclick="goDetails()" style="${btnStyle}">Continue →</button>
+  </div>`;
+}
+
+function buildDetailsHTML() {
+  const selPass = PASSES.find(p => p.id === S.selectedPass) || PASSES[1];
+  const selLabel = S.selectedDate ? fmtDate(S.selectedDate) : '';
+  const sportBaseStyle = sportBtnStyle(S.sport === 'Baseball');
+  const sportSoftStyle = sportBtnStyle(S.sport === 'Softball');
+  const canSubmit = S.athlete.trim() && String(S.age).trim() && S.contact.trim();
+  const submitStyle = `flex:2;padding:16px;font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;border:none;cursor:${canSubmit ? 'pointer' : 'not-allowed'};color:#0c0c0d;background:${canSubmit ? ACCENT : '#3a3b40'};`;
+
+  return `<div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#0c0c0d;border:1px solid #1e1f22;padding:14px 18px;margin-bottom:26px">
+      <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;color:#8b8c92;text-transform:uppercase">Booking</span>
+      <span style="font-family:'Barlow Condensed';font-weight:700;font-size:16px;letter-spacing:.03em;text-transform:uppercase;color:${ACCENT}">${selLabel}</span>
+      <span style="color:#36373c">·</span>
+      <span style="font-family:'Barlow Condensed';font-weight:700;font-size:16px;letter-spacing:.03em;text-transform:uppercase;color:#f6f5f3">${selPass.name} — ${selPass.price}</span>
+    </div>
+    <div class="velo-form-row" style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
+      <label style="display:block">
+        <span style="display:block;font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9a9b9f;margin-bottom:7px">Athlete Name</span>
+        <input id="fldAthlete" value="${esc(S.athlete)}" placeholder="Jordan Smith" style="width:100%;box-sizing:border-box;background:#0c0c0d;border:1.5px solid #26272b;color:#f6f5f3;font-family:'Barlow';font-size:16px;padding:13px 15px;outline:none">
+      </label>
+      <label style="display:block">
+        <span style="display:block;font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9a9b9f;margin-bottom:7px">Age</span>
+        <input id="fldAge" value="${esc(S.age)}" placeholder="12" style="width:100%;box-sizing:border-box;background:#0c0c0d;border:1.5px solid #26272b;color:#f6f5f3;font-family:'Barlow';font-size:16px;padding:13px 15px;outline:none">
+      </label>
+    </div>
+    <div style="margin-bottom:14px">
+      <span style="display:block;font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9a9b9f;margin-bottom:7px">Sport</span>
+      <div style="display:flex;gap:8px">
+        <button onclick="setState({sport:'Baseball'})" style="${sportBaseStyle}">⚾ Baseball</button>
+        <button onclick="setState({sport:'Softball'})" style="${sportSoftStyle}">🥎 Softball</button>
+      </div>
+    </div>
+    <div class="velo-form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px">
+      <label style="display:block">
+        <span style="display:block;font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9a9b9f;margin-bottom:7px">Parent / Guardian</span>
+        <input id="fldParent" value="${esc(S.parent)}" placeholder="Optional" style="width:100%;box-sizing:border-box;background:#0c0c0d;border:1.5px solid #26272b;color:#f6f5f3;font-family:'Barlow';font-size:16px;padding:13px 15px;outline:none">
+      </label>
+      <label style="display:block">
+        <span style="display:block;font-family:'Barlow Condensed';font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9a9b9f;margin-bottom:7px">Email or Phone</span>
+        <input id="fldContact" value="${esc(S.contact)}" placeholder="you@email.com" style="width:100%;box-sizing:border-box;background:#0c0c0d;border:1.5px solid #26272b;color:#f6f5f3;font-family:'Barlow';font-size:16px;padding:13px 15px;outline:none">
+      </label>
+    </div>
+    <div style="display:flex;gap:12px">
+      <button onclick="setState({step:'select'})" style="flex:1;padding:16px;font-family:'Barlow Condensed';font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;color:#c7c8cc;background:transparent;border:1.5px solid #36373c">← Back</button>
+      <button onclick="submitReservation()" style="${submitStyle}">Confirm Reservation</button>
+    </div>
+    <p style="margin-top:14px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.06em;color:#6f7076;text-align:center">No payment now — we'll confirm your spot and details by email or phone.</p>
+  </div>`;
+}
+
+function buildConfirmedHTML() {
+  const selPass = PASSES.find(p => p.id === S.selectedPass) || PASSES[1];
+  const selLabel = S.selectedDate ? fmtDate(S.selectedDate) : '';
+  return `<div style="text-align:center;padding:14px 0">
+    <div style="width:72px;height:72px;border-radius:50%;background:${ACCENT};display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:38px;color:#0c0c0d">✓</div>
+    <h3 style="font-family:'Anton';font-size:clamp(30px,4vw,46px);line-height:.95;text-transform:uppercase;color:#f6f5f3">Spot Reserved</h3>
+    <p style="margin-top:14px;color:#b9babf;font-size:17px;max-width:440px;margin-left:auto;margin-right:auto">Nice — ${esc(S.athlete) || 'Your athlete'} is on the list. We'll reach out to confirm the details before the first session.</p>
+    <div style="display:inline-flex;flex-wrap:wrap;gap:0;margin-top:30px;border:1px solid #26272b;background:#0c0c0d;text-align:left">
+      <div style="padding:18px 24px;border-right:1px solid #26272b">
+        <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.16em;color:#8b8c92;text-transform:uppercase;margin-bottom:6px">Day</div>
+        <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;text-transform:uppercase;color:${ACCENT}">${selLabel}</div>
+      </div>
+      <div style="padding:18px 24px;border-right:1px solid #26272b">
+        <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.16em;color:#8b8c92;text-transform:uppercase;margin-bottom:6px">Pass</div>
+        <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;text-transform:uppercase;color:#f6f5f3">${selPass.name} · ${selPass.price}</div>
+      </div>
+      <div style="padding:18px 24px">
+        <div style="font-family:'JetBrains Mono';font-size:10px;letter-spacing:.16em;color:#8b8c92;text-transform:uppercase;margin-bottom:6px">Sport</div>
+        <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;text-transform:uppercase;color:#f6f5f3">${S.sport}</div>
+      </div>
+    </div>
+    <div>
+      <button onclick="resetReservation()" style="margin-top:30px;padding:14px 30px;font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;color:#c7c8cc;background:transparent;border:1.5px solid #36373c">Reserve Another Day</button>
+    </div>
+  </div>`;
+}
+
+function sportBtnStyle(on) {
+  return `flex:1;padding:13px;cursor:pointer;font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;border:1.5px solid ${on ? ACCENT : '#26272b'};background:${on ? '#16110c' : '#0c0c0d'};color:${on ? ACCENT : '#c7c8cc'};`;
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function attachInputListeners() {
+  const fields = {fldAthlete:'athlete',fldAge:'age',fldParent:'parent',fldContact:'contact'};
+  for (const [id, key] of Object.entries(fields)) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', e => { S[key] = e.target.value; refreshSubmitBtn(); });
+  }
+}
+
+function refreshSubmitBtn() {
+  const btn = document.querySelector('#reservationContent button[onclick="submitReservation()"]');
+  if (!btn) return;
+  const ok = S.athlete.trim() && String(S.age).trim() && S.contact.trim();
+  btn.style.background = ok ? ACCENT : '#3a3b40';
+  btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+}
+
+function goDetails() {
+  if (!S.selectedDate) return;
+  setState({ step: 'details' });
+}
+
+function submitReservation() {
+  if (!S.athlete.trim() || !String(S.age).trim() || !S.contact.trim()) return;
+  setState({ step: 'confirmed' });
+}
+
+function resetReservation() {
+  setState({ step:'select', selectedDate:null, athlete:'', age:'', parent:'', contact:'', sport:'Baseball' });
+}
+
+// ============ BOOT ============
+renderReservation();
+</script>
+</body>
+</html>
