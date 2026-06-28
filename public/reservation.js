@@ -108,7 +108,7 @@ function buildSelectHTML() {
 
   const calCells = week.map(d => {
     const sel = d.iso === S.selectedDate;
-    let style = "display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 6px;cursor:pointer;border:1.5px solid;background:#0c0c0d;font-family:inherit;";
+    let style = "display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 8px;cursor:pointer;border:1.5px solid;background:#0c0c0d;font-family:inherit;";
     if (d.full)       style += "border-color:#1a1b1e;background:#0a0a0b;cursor:not-allowed;opacity:.45;";
     else if (sel)     style += `border-color:${ACCENT};background:#16110c;`;
     else              style += "border-color:#26272b;";
