@@ -4,7 +4,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
 <header style="position:sticky;top:0;z-index:50;background:var(--header-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border-2)">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between">
     <a href="#top" style="display:flex;align-items:center;text-decoration:none">
-      <img src="/assets/velo-logo.png" alt="Velo Performance Labs" style="height:58px;width:auto;display:block;mix-blend-mode:screen">
+      <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" style="height:66px;width:auto;display:block">
     </a>
     <nav class="velo-desktop-nav" style="display:flex;align-items:center;gap:30px">
       <a href="#programs" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Programs</a>
@@ -69,7 +69,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         </div>
       </div>
       </div>
-      <img src="/assets/velo-logo.png" alt="Velo Performance Labs" class="velo-hero-logo" style="width:min(440px,40vw);height:auto;display:block;mix-blend-mode:screen;flex-shrink:0">
+      <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" class="velo-hero-logo" style="width:min(560px,48vw);height:auto;display:block;flex-shrink:0">
     </div>
   </div>
 </section>
@@ -497,7 +497,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
     <div class="velo-footer-grid" style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:48px;border-bottom:1px solid var(--hairline)">
       <div>
-        <img src="/assets/velo-logo.png" alt="Velo Performance Labs" style="height:104px;width:auto;display:block;margin:-12px 0 14px -8px;mix-blend-mode:screen">
+        <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" style="height:124px;width:auto;display:block;margin:-12px 0 14px -8px">
         <p style="color:var(--text-4);font-size:15px;line-height:1.6;max-width:300px">Baseball-first after-school player development. Train different. Train smarter. Be elite.</p>
       </div>
       <div>

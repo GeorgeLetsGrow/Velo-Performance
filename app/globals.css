@@ -84,10 +84,6 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
 @keyframes veloMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes veloPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
 
-/* In light mode the logo's screen blend would erase it on a light surface, so
-   render it normally — the art has a dark backing, so round it into a badge. */
-:root[data-theme="light"] img[style*="mix-blend-mode:screen"] { mix-blend-mode: normal !important; border-radius: 12px; }
-
 /* ============ THEME TOGGLE ============ */
 .velo-theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; background: transparent; border: 1px solid var(--border-strong); color: var(--text); cursor: pointer; transition: color .18s ease, border-color .18s ease, background-color .18s ease, transform .12s ease; }
 .velo-theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
@@ -113,7 +109,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
   .velo-hero-grid { flex-direction: column-reverse !important; align-items: flex-start !important; }
-  .velo-hero-logo { width: 260px !important; margin-bottom: 8px; }
+  .velo-hero-logo { display: none !important; }
   .velo-mobile-toggle { display: inline-flex !important; }
   .velo-desktop-nav { display: none !important; }
   .velo-mobile-btn { display: flex !important; }
