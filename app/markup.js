@@ -13,7 +13,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
       <a href="#pricing" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Pricing</a>
       <a href="#results" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Results</a>
       <button onclick="toggleTheme()" class="velo-theme-toggle" aria-label="Toggle light and dark theme" title="Toggle light / dark"><span class="theme-icon-moon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="theme-icon-sun" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
-      <a href="#reserve" style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:11px 20px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot</span></a>
+      <a href="/book" style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:11px 20px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot</span></a>
     </nav>
     <div style="display:flex;align-items:center;gap:10px">
       <button onclick="toggleTheme()" class="velo-theme-toggle velo-mobile-toggle" aria-label="Toggle light and dark theme" title="Toggle light / dark"><span class="theme-icon-moon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="theme-icon-sun" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
@@ -26,7 +26,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
     <a href="#coaches" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Coaches</a>
     <a href="#pricing" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Pricing</a>
     <a href="#results" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Results</a>
-    <a href="#reserve" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);text-align:center;padding:13px 0;text-decoration:none;margin-top:8px;display:block">Reserve a Spot</a>
+    <a href="/book" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);text-align:center;padding:13px 0;text-decoration:none;margin-top:8px;display:block">Reserve a Spot</a>
   </div>
 </header>
 
@@ -51,7 +51,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         Real coaching. Small groups. Big results. A baseball-first player development program in Apollo Beach, FL — not daycare.
       </p>
       <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:38px">
-        <a href="#reserve" class="velo-btn velo-btn-primary" style="font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 32px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot →</span></a>
+        <a href="/book" class="velo-btn velo-btn-primary" style="font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 32px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot →</span></a>
         <a href="#programs" class="velo-btn velo-btn-ghost" style="font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">See the Program</span></a>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:0;margin-top:54px;border:1px solid var(--border-2);background:var(--stat-bg);width:fit-content">
@@ -287,7 +287,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>All six development pillars</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Coached small-group setting</span></li>
         </ul>
-        <a href="#reserve" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Book a Drop-In</a>
+        <a href="/book" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Book a Drop-In</a>
       </div>
       <!-- Flex Pass (featured) -->
       <div style="background:var(--bg-3);border:1px solid var(--accent);padding:38px 32px;position:relative;display:flex;flex-direction:column">
@@ -305,7 +305,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Weekly progress tracking</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Best balance of value &amp; rest</span></li>
         </ul>
-        <a href="#reserve" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--ink);background:var(--accent);border:1.5px solid var(--accent);display:block">Get the Flex Pass</a>
+        <a href="/book" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--ink);background:var(--accent);border:1.5px solid var(--accent);display:block">Get the Flex Pass</a>
       </div>
       <!-- Unlimited -->
       <div style="background:var(--bg-1);border:1px solid var(--border);padding:38px 32px;position:relative;display:flex;flex-direction:column">
@@ -322,7 +322,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Maximum reps &amp; coaching</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Fastest path to real results</span></li>
         </ul>
-        <a href="#reserve" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Go Unlimited</a>
+        <a href="/book" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Go Unlimited</a>
       </div>
     </div>
     <p style="text-align:center;margin-top:28px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-5)">ONLY 9 SPOTS AVAILABLE EACH DAY · MONDAY–FRIDAY</p>
@@ -469,27 +469,10 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <h2 style="font-family:'Anton';font-size:clamp(40px,6vw,82px);line-height:.9;text-transform:uppercase;color:var(--ink)">Reserve Your Athlete's Spot Before the Day Fills Up</h2>
         <p style="margin-top:22px;font-size:19px;line-height:1.5;color:rgba(12,12,13,.78);font-weight:600;max-width:540px">Only 9 athletes train each day, Monday through Friday. Lock in your spot and start building a smarter, sharper, more confident player.</p>
         <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:36px">
-          <a href="#reserve" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--bg);padding:18px 36px;text-decoration:none">Register Now →</a>
+          <a href="/book" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--bg);padding:18px 36px;text-decoration:none">Register Now →</a>
           <a href="#pricing" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:transparent;border:2px solid var(--ink);padding:16px 32px;text-decoration:none">View Pricing</a>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ RESERVATION EXPERIENCE ============ -->
-<section id="reserve" data-fixed-dark style="background:var(--bg);padding:104px 0;border-top:1px solid var(--hairline)">
-  <div style="max-width:1080px;margin:0 auto;padding:0 28px">
-    <div style="text-align:center;margin-bottom:18px">
-      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">08 / Reserve Your Spot</div>
-      <h2 style="font-family:'Anton';font-size:clamp(38px,5vw,64px);line-height:.95;text-transform:uppercase;color:var(--text)">Book the Afternoon</h2>
-      <p style="margin-top:16px;color:var(--text-3);font-size:17px;max-width:520px;margin-left:auto;margin-right:auto">Pick a day, choose a pass, and lock it in. Only 9 athletes train each afternoon — when a day shows full, it's full.</p>
-    </div>
-    <!-- Step indicator -->
-    <div id="stepIndicator" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:30px 0 24px;flex-wrap:wrap"></div>
-    <!-- Reservation card -->
-    <div style="background:var(--bg-1);border:1px solid var(--border);padding:clamp(24px,4vw,44px)">
-      <div id="reservationContent"></div>
     </div>
   </div>
 </section>
@@ -509,7 +492,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
       <div>
         <div style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:18px">Get Started</div>
         <div style="display:flex;flex-direction:column;gap:11px">
-          <a href="#reserve" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Reserve a Spot</a>
+          <a href="/book" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Reserve a Spot</a>
           <a href="#pricing" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">View Pricing</a>
           <a href="#programs" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Programs</a>
           <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--text-5);margin-top:6px">[ phone / email / form link ]</span>

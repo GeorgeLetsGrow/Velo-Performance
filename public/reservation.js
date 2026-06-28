@@ -277,4 +277,5 @@ function resetReservation() {
 }
 
 // ============ BOOT ============
-renderReservation();
+// The inline widget was replaced by the /book page; only boot if it's present.
+if (document.getElementById('reservationContent')) renderReservation();
