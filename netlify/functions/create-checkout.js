@@ -1,15 +1,25 @@
 // POST /.netlify/functions/create-checkout
-// Body: { serviceId, date, startMin, athlete, age, sport, parent, contact }
+// Body: { serviceId, dates: ['YYYY-MM-DD', ...], athlete, age, sport, parent, contact }
 //
-// 1. Validates the requested slot against the server-side service table.
-// 2. Inserts a 35-minute hold — the DB's no-overlap constraint makes this the
-//    atomic reservation; a 409 here means someone else got the slot first.
+// 1. Validates the requested training days against the server-side pass table
+//    (Drop-In = 1 day, Flex = any 3 days, Unlimited = every remaining weekday,
+//    all within one Mon–Fri week).
+// 2. Inserts a 35-minute hold — the DB's capacity trigger makes this the
+//    atomic reservation; a 'day_full' error means a day just sold out.
 // 3. Creates a Stripe Checkout Session (expires in 30 min, priced server-side).
 // 4. Returns { url } for the browser to redirect to.
 //
 // Env vars: STRIPE_SECRET_KEY plus the Supabase pair used by lib/db.js.
 
-const { SERVICES, DAY_START, DAY_END, SLOT_STEP, fmtTime } = require('../../lib/services');
+const {
+  SERVICES,
+  isIsoDate,
+  isWeekday,
+  addDays,
+  mondayOf,
+  todayLocal,
+  fmtDates,
+} = require('../../lib/services');
 const { sb } = require('../../lib/db');
 
 const HOLD_MINUTES = 35; // outlives the 30-min Stripe session slightly
@@ -26,30 +36,39 @@ exports.handler = async (event) => {
   }
 
   const service = SERVICES.find((s) => s.id === input.serviceId);
-  const date = String(input.date || '');
-  const startMin = Number(input.startMin);
   const athlete = String(input.athlete || '').trim();
   const contact = String(input.contact || '').trim();
 
   if (!service) return json(400, { error: 'bad_service' });
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json(400, { error: 'bad_date' });
-  const dow = new Date(`${date}T00:00:00Z`).getUTCDay();
-  if (dow === 0 || dow === 6) return json(400, { error: 'weekend' });
-  // Facility-local "today" (en-CA gives YYYY-MM-DD, comparable as a string)
-  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
-  if (date < today) return json(400, { error: 'past_date' });
-  if (
-    !Number.isInteger(startMin) ||
-    startMin < DAY_START ||
-    (startMin - DAY_START) % SLOT_STEP !== 0 ||
-    startMin + service.duration > DAY_END
-  ) {
-    return json(400, { error: 'bad_time' });
-  }
   if (!athlete || !contact) return json(400, { error: 'missing_fields' });
 
+  // Dedupe + sort, then validate every requested day.
+  const dates = Array.isArray(input.dates) ? [...new Set(input.dates.map(String))].sort() : [];
+  if (dates.length === 0 || !dates.every((d) => isIsoDate(d) && isWeekday(d))) {
+    return json(400, { error: 'bad_dates' });
+  }
+  const today = todayLocal();
+  if (dates[0] < today) return json(400, { error: 'past_date' });
+
+  // All days must fall inside one Mon–Fri week.
+  const monday = mondayOf(dates[0]);
+  const friday = addDays(monday, 4);
+  if (dates[dates.length - 1] > friday) return json(400, { error: 'bad_dates' });
+
+  if (service.id === 'unlimited') {
+    // Unlimited covers every weekday of the chosen week that hasn't passed.
+    const expected = [];
+    for (let i = 0; i < 5; i++) {
+      const d = addDays(monday, i);
+      if (d >= today) expected.push(d);
+    }
+    if (dates.join(',') !== expected.join(',')) return json(400, { error: 'bad_dates' });
+  } else if (dates.length !== service.days) {
+    return json(400, { error: 'bad_dates' });
+  }
+
   try {
-    // Free up slots from abandoned checkouts before trying to reserve.
+    // Free up spots from abandoned checkouts before trying to reserve.
     await sb(`/bookings?status=eq.hold&hold_expires_at=lt.${new Date().toISOString()}`, {
       method: 'DELETE',
     });
@@ -58,9 +77,7 @@ exports.handler = async (event) => {
       method: 'POST',
       prefer: 'return=representation',
       body: {
-        session_date: date,
-        start_min: startMin,
-        duration_min: service.duration,
+        session_dates: dates,
         service_id: service.id,
         service_name: service.name,
         price_cents: service.cents,
@@ -73,7 +90,9 @@ exports.handler = async (event) => {
         hold_expires_at: new Date(Date.now() + HOLD_MINUTES * 60000).toISOString(),
       },
     });
-    if (hold.status === 409) return json(409, { error: 'slot_taken' });
+    if (!hold.ok && (hold.text || '').includes('day_full')) {
+      return json(409, { error: 'day_full' });
+    }
     if (!hold.ok || !hold.data || !hold.data[0]) {
       console.error('hold insert failed:', hold.status, hold.text);
       return json(502, { error: 'db' });
@@ -81,7 +100,7 @@ exports.handler = async (event) => {
     const booking = hold.data[0];
 
     const origin = process.env.URL || `https://${event.headers.host}`;
-    const when = `${date} at ${fmtTime(startMin)}`;
+    const when = fmtDates(dates);
     const params = new URLSearchParams({
       mode: 'payment',
       expires_at: String(Math.floor(Date.now() / 1000) + 30 * 60),
@@ -108,7 +127,7 @@ exports.handler = async (event) => {
     const session = await sres.json();
     if (!sres.ok) {
       console.error('Stripe session failed:', JSON.stringify(session.error || session));
-      // Give the slot back — nobody is going to pay for this hold.
+      // Give the spots back — nobody is going to pay for this hold.
       await sb(`/bookings?id=eq.${booking.id}&status=eq.hold`, { method: 'DELETE' });
       return json(502, { error: 'stripe' });
     }

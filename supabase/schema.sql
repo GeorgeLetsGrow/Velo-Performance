@@ -1,17 +1,17 @@
 -- Velo Performance Labs — booking system schema
 -- Run this once in the Supabase dashboard: SQL Editor → New query → paste → Run.
-
--- Needed for the "no two bookings can overlap" constraint below.
-create extension if not exists btree_gist;
+--
+-- Upgrading from the earlier private-lesson schema (start_min/duration_min)?
+-- Drop it first — the /book page was never linked, so only test rows exist:
+--   drop table if exists public.bookings;
 
 create table public.bookings (
   id                    uuid primary key default gen_random_uuid(),
   created_at            timestamptz not null default now(),
 
-  -- The slot
-  session_date          date not null,
-  start_min             int  not null,  -- minutes from midnight (900 = 3:00 PM)
-  duration_min          int  not null,
+  -- The training days this purchase covers (always within one Mon–Fri week)
+  session_dates         date[] not null
+                        check (array_length(session_dates, 1) between 1 and 5),
 
   -- What was bought (denormalized from lib/services.js at booking time,
   -- so price changes never rewrite history)
@@ -36,17 +36,41 @@ create table public.bookings (
   stripe_payment_intent text
 );
 
--- One coach lane: no two active bookings (holds or paid) may overlap in time
--- on the same day. Postgres enforces this atomically, so two parents racing
--- for the same slot can never both win — the second insert simply fails.
-alter table public.bookings
-  add constraint bookings_no_overlap
-  exclude using gist (
-    session_date with =,
-    int4range(start_min, start_min + duration_min) with &&
-  ) where (status in ('hold', 'paid'));
+create index bookings_dates_idx on public.bookings using gin (session_dates);
 
-create index bookings_date_idx on public.bookings (session_date);
+-- Small-group cap: at most 12 athletes per afternoon (keep in sync with
+-- CAPACITY in lib/services.js). The per-date advisory locks serialize
+-- concurrent inserts touching the same day, so two parents racing for the
+-- last spot can never both win — the second insert fails with 'day_full'.
+create or replace function public.enforce_daily_capacity()
+returns trigger
+language plpgsql
+as $$
+declare
+  d date;
+  taken int;
+begin
+  if new.status not in ('hold', 'paid') then
+    return new;
+  end if;
+  for d in select distinct x from unnest(new.session_dates) as x order by 1 loop
+    perform pg_advisory_xact_lock(hashtext('velo-day-' || d::text));
+    select count(*) into taken
+      from public.bookings b
+      where d = any(b.session_dates)
+        and b.status in ('hold', 'paid')
+        and b.id <> new.id;
+    if taken >= 12 then
+      raise exception 'day_full: % has no open spots', d;
+    end if;
+  end loop;
+  return new;
+end;
+$$;
+
+create trigger bookings_capacity
+  before insert on public.bookings
+  for each row execute function public.enforce_daily_capacity();
 
 -- Lock the table down. With RLS on and no policies, the anon/public API keys
 -- can't read or write anything — only the service-role key used by the

@@ -2,18 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  SERVICES as SERVICE_DEFS,
-  DAY_START,
-  DAY_END,
-  SLOT_STEP,
-  overlaps,
-} from '../../lib/services';
+import { SERVICES as SERVICE_DEFS, CAPACITY } from '../../lib/services';
 
 /* ---------------- Data ---------------- */
-// Prices/durations live in lib/services.js (shared with the payment backend);
+// Passes/prices live in lib/services.js (shared with the payment backend);
 // this just adds a display-ready price string.
 const SERVICES = SERVICE_DEFS.map((s) => ({ ...s, price: `$${s.cents / 100}` }));
+
+// How each pass reads on its card, under the description.
+const PASS_META = {
+  dropin: '1 AFTERNOON · MON–FRI',
+  flex3: 'ANY 3 AFTERNOONS PER WEEK',
+  unlimited: 'EVERY AFTERNOON · MON–FRI',
+};
 
 const DOW = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -37,30 +38,10 @@ function buildWeek(offset) {
   return out;
 }
 
-function fmtTime(mins) {
-  let h = Math.floor(mins / 60);
-  const m = mins % 60;
-  const ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12;
-  if (h === 0) h = 12;
-  return `${h}:${String(m).padStart(2, '0')} ${ap}`;
-}
-
 function fmtDate(iso) {
   const d = new Date(iso + 'T00:00:00');
   const dn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
-  return `${dn} · ${MON[d.getMonth()]} ${d.getDate()}`;
-}
-
-// Open slots for a service/day given the busy ranges from get-availability.
-function slotsFor(service, iso, busy) {
-  if (!service || !iso || !Array.isArray(busy)) return [];
-  const out = [];
-  for (let t = DAY_START; t + service.duration <= DAY_END; t += SLOT_STEP) {
-    const taken = busy.some(([s, e]) => overlaps(t, t + service.duration, s, e));
-    out.push({ mins: t, taken });
-  }
-  return out;
+  return `${dn}, ${MON[d.getMonth()]} ${d.getDate()}`;
 }
 
 /* ---------------- Page ---------------- */
@@ -69,11 +50,10 @@ export default function BookPage() {
   const [step, setStep] = useState(1);
   const [serviceId, setServiceId] = useState(null);
   const [weekOffset, setWeekOffset] = useState(0);
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
+  const [dates, setDates] = useState([]); // selected training days (ISO)
   const [form, setForm] = useState({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
-  // Availability for the selected date: null = loading, 'error', or busy ranges
-  const [busy, setBusy] = useState(null);
+  // Availability for the visible week: null = loading, 'error', or { capacity, counts }
+  const [avail, setAvail] = useState(null);
   const [availReload, setAvailReload] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState(null); // { kind: 'error'|'info', text }
@@ -87,39 +67,53 @@ export default function BookPage() {
     } else if (q.get('cancelled') === '1') {
       const bid = q.get('bid');
       if (bid) {
-        // Free the held slot right away instead of waiting out the 30-min hold.
+        // Free the held spots right away instead of waiting out the 30-min hold.
         fetch('/.netlify/functions/release-hold', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ bid }),
         }).catch(() => {});
       }
-      setNotice({ kind: 'info', text: 'Checkout cancelled — your slot was released. Pick a time whenever you’re ready.' });
+      setNotice({ kind: 'info', text: 'Checkout cancelled — your spot was released. Pick your days whenever you’re ready.' });
     }
     if (q.get('paid') || q.get('cancelled')) {
       window.history.replaceState(null, '', window.location.pathname);
     }
   }, []);
 
-  // Load real availability whenever a day is selected.
+  // Load real spot counts for whichever week is on screen.
   useEffect(() => {
-    if (!date) return;
+    const wk = buildWeek(weekOffset);
     let stale = false;
-    setBusy(null);
-    fetch(`/.netlify/functions/get-availability?date=${date}`)
+    setAvail(null);
+    fetch(`/.netlify/functions/get-availability?from=${wk[0].iso}&to=${wk[4].iso}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((d) => { if (!stale) setBusy(d.busy); })
-      .catch(() => { if (!stale) setBusy('error'); });
+      .then((d) => { if (!stale) setAvail(d); })
+      .catch(() => { if (!stale) setAvail('error'); });
     return () => { stale = true; };
-  }, [date, availReload]);
+  }, [weekOffset, availReload]);
 
   const service = SERVICES.find((s) => s.id === serviceId) || null;
   const week = buildWeek(weekOffset);
-  const slots = slotsFor(service, date, busy);
+  const loaded = avail !== null && avail !== 'error';
+
+  function spotsLeft(iso) {
+    if (!loaded) return null;
+    const cap = avail.capacity ?? CAPACITY;
+    return Math.max(0, cap - ((avail.counts || {})[iso] || 0));
+  }
+
+  // Unlimited covers every remaining day of the week, so it's only bookable
+  // when each of those days still has an open spot.
+  const daysRemaining = week.filter((d) => !d.past);
+  const weekBookable = daysRemaining.length > 0 && daysRemaining.every((d) => spotsLeft(d.iso) !== 0);
+
+  const daysReady =
+    service?.id === 'unlimited' ? dates.length > 0 : dates.length === (service?.days || 0);
   const canSubmit = form.athlete.trim() && String(form.age).trim() && form.contact.trim() && !submitting;
 
   async function goToPayment() {
-    if (!canSubmit || !service || !date || time == null) return;
+    if (!canSubmit || !service || !daysReady) return;
     setSubmitting(true);
     setNotice(null);
     try {
@@ -128,8 +122,7 @@ export default function BookPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           serviceId: service.id,
-          date,
-          startMin: time,
+          dates,
           athlete: form.athlete,
           age: form.age,
           sport: form.sport,
@@ -143,8 +136,8 @@ export default function BookPage() {
         return;
       }
       if (res.status === 409) {
-        setNotice({ kind: 'error', text: 'That time was just taken by someone else — please pick another slot.' });
-        setTime(null);
+        setNotice({ kind: 'error', text: 'One of those days just filled up — please pick different days.' });
+        setDates([]);
         setStep(2);
         setAvailReload((n) => n + 1);
       } else {
@@ -166,25 +159,39 @@ export default function BookPage() {
 
   function pickService(id) {
     setServiceId(id);
-    setTime(null);
+    setDates([]);
     setStep(2);
   }
-  function pickDate(iso) {
-    setDate(iso);
-    setTime(null);
+  function pickDay(d) {
+    if (!service || d.past || !loaded) return;
+    if (service.id === 'unlimited') {
+      if (!weekBookable) return;
+      setDates(daysRemaining.map((x) => x.iso));
+      return;
+    }
+    if (spotsLeft(d.iso) === 0) return;
+    if (service.id === 'dropin') {
+      setDates([d.iso]);
+      return;
+    }
+    // flex3: toggle, up to 3 days
+    setDates((cur) =>
+      cur.includes(d.iso)
+        ? cur.filter((x) => x !== d.iso)
+        : cur.length >= service.days ? cur : [...cur, d.iso].sort()
+    );
   }
   function reset() {
     setStep(1);
     setServiceId(null);
-    setDate(null);
-    setTime(null);
+    setDates([]);
     setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
     setNotice(null);
     setSubmitting(false);
   }
 
   /* ----- step indicator ----- */
-  const steps = ['Service', 'Date & Time', 'Details', 'Done'];
+  const steps = ['Pass', 'Days', 'Details', 'Done'];
   const indicator = (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, flexWrap: 'wrap', margin: '0 0 28px' }}>
       {steps.map((s, i) => {
@@ -210,10 +217,10 @@ export default function BookPage() {
     </div>
   );
 
-  /* ----- step 1: service ----- */
+  /* ----- step 1: pass ----- */
   const serviceStep = (
     <div>
-      <div style={{ ...label, marginBottom: 14 }}>Choose a Service</div>
+      <div style={{ ...label, marginBottom: 14 }}>Choose Your Pass</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 12 }}>
         {SERVICES.map((s) => {
           const sel = s.id === serviceId;
@@ -225,10 +232,13 @@ export default function BookPage() {
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10 }}>
                 <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 20, letterSpacing: '.02em', textTransform: 'uppercase', color: 'var(--text)' }}>{s.name}</span>
-                <span style={{ fontFamily: "'Anton'", fontSize: 22, color: sel ? A : 'var(--text)' }}>{s.price}</span>
+                <span style={{ textAlign: 'right' }}>
+                  <span style={{ fontFamily: "'Anton'", fontSize: 22, color: sel ? A : 'var(--text)' }}>{s.price}</span>
+                  <span style={{ ...mono, fontSize: 10, display: 'block', marginTop: 2 }}>{s.unit.toUpperCase()}</span>
+                </span>
               </div>
               <div style={{ color: 'var(--text-3)', fontSize: 14.5, lineHeight: 1.5 }}>{s.desc}</div>
-              <div style={{ ...mono, color: sel ? A : 'var(--text-4)' }}>{s.duration} MIN SESSION</div>
+              <div style={{ ...mono, color: sel ? A : 'var(--text-4)' }}>{PASS_META[s.id]}</div>
             </button>
           );
         })}
@@ -236,7 +246,7 @@ export default function BookPage() {
     </div>
   );
 
-  /* ----- step 2: date & time ----- */
+  /* ----- step 2: training days ----- */
   const tab = (on) => ({
     flex: 1, padding: 12, cursor: 'pointer', font: 'inherit',
     fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 14, letterSpacing: '.08em', textTransform: 'uppercase',
@@ -244,67 +254,64 @@ export default function BookPage() {
     color: on ? 'var(--ink)' : 'var(--text-2)', background: on ? A : 'var(--bg-1)',
   });
 
-  const dateTimeStep = (
+  const dayHint =
+    service?.id === 'dropin' ? 'Pick one afternoon.'
+      : service?.id === 'flex3' ? `Pick any 3 afternoons — ${dates.length}/3 selected.`
+      : 'Covers every remaining afternoon of the week — tap any day to select the whole week.';
+
+  const daysStep = (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
-        <div style={label}>Pick a Day</div>
-        {service && <div style={mono}>{service.name} · {service.duration} min</div>}
+        <div style={label}>{service?.id === 'dropin' ? 'Pick Your Day' : 'Pick Your Days'}</div>
+        {service && <div style={mono}>{service.name} · {service.price} {service.unit}</div>}
       </div>
+      <p style={{ color: 'var(--text-3)', fontSize: 14.5, margin: '0 0 12px' }}>{dayHint}</p>
       <div style={{ display: 'flex', gap: 8, margin: '10px 0 16px', maxWidth: 340 }}>
-        <button onClick={() => { setWeekOffset(0); setDate(null); setTime(null); }} style={tab(weekOffset === 0)}>This Week</button>
-        <button onClick={() => { setWeekOffset(1); setDate(null); setTime(null); }} style={tab(weekOffset === 1)}>Next Week</button>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
-        {week.map((d) => {
-          const sel = d.iso === date;
-          const disabled = d.past;
-          return (
-            <button key={d.iso} disabled={disabled} onClick={() => pickDate(d.iso)} style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '16px 4px', font: 'inherit',
-              cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
-              border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? '#16110c' : 'var(--bg-1)',
-            }}>
-              <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, letterSpacing: '.1em', color: 'var(--text-4)' }}>{d.dow}</span>
-              <span style={{ fontFamily: "'Anton'", fontSize: 26, lineHeight: 1, color: sel ? A : 'var(--text)' }}>{d.day}</span>
-              <span style={{ fontFamily: "'Barlow'", fontSize: 11, color: 'var(--text-4)' }}>{d.mon}</span>
-            </button>
-          );
-        })}
+        <button onClick={() => { setWeekOffset(0); setDates([]); }} style={tab(weekOffset === 0)}>This Week</button>
+        <button onClick={() => { setWeekOffset(1); setDates([]); }} style={tab(weekOffset === 1)}>Next Week</button>
       </div>
 
-      <div style={{ ...label, margin: '28px 0 14px' }}>
-        {date ? `Available Times — ${fmtDate(date)}` : 'Select a day to see times'}
-      </div>
-      {date && busy === null && (
-        <div style={{ ...mono, padding: '18px 0' }}>Checking open times…</div>
-      )}
-      {date && busy === 'error' && (
+      {avail === 'error' ? (
         <div style={{ padding: '14px 16px', border: '1px solid var(--border-2)', background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-          <span style={{ color: 'var(--text-2)', fontSize: 15 }}>Couldn&apos;t load availability.</span>
+          <span style={{ color: 'var(--text-2)', fontSize: 15 }}>Couldn&apos;t load open spots.</span>
           <button onClick={() => setAvailReload((n) => n + 1)} style={{ ...ghostBtn, flex: 'none', padding: '9px 18px', fontSize: 13 }}>Retry</button>
         </div>
-      )}
-      {date && Array.isArray(busy) && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 8 }}>
-          {slots.map((slot) => {
-            const sel = slot.mins === time;
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
+          {week.map((d) => {
+            const sel = dates.includes(d.iso);
+            const left = spotsLeft(d.iso);
+            const full = left === 0;
+            const disabled = d.past || !loaded || full || (service?.id === 'unlimited' && !weekBookable);
             return (
-              <button key={slot.mins} disabled={slot.taken} onClick={() => setTime(slot.mins)} style={{
-                padding: '13px 8px', font: 'inherit', cursor: slot.taken ? 'not-allowed' : 'pointer',
-                fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 15, letterSpacing: '.03em',
-                border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
-                background: sel ? A : slot.taken ? 'var(--bg-2)' : 'var(--bg-1)',
-                color: sel ? 'var(--ink)' : slot.taken ? 'var(--text-5)' : 'var(--text)',
-                textDecoration: slot.taken ? 'line-through' : 'none',
-              }}>{fmtTime(slot.mins)}</button>
+              <button key={d.iso} disabled={disabled} onClick={() => pickDay(d)} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '16px 4px', font: 'inherit',
+                cursor: disabled ? 'not-allowed' : 'pointer', opacity: d.past || full ? 0.4 : 1,
+                border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? '#16110c' : 'var(--bg-1)',
+              }}>
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, letterSpacing: '.1em', color: 'var(--text-4)' }}>{d.dow}</span>
+                <span style={{ fontFamily: "'Anton'", fontSize: 26, lineHeight: 1, color: sel ? A : 'var(--text)' }}>{d.day}</span>
+                <span style={{ fontFamily: "'Barlow'", fontSize: 11, color: 'var(--text-4)' }}>{d.mon}</span>
+                <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, letterSpacing: '.08em', color: full ? 'var(--text-5)' : sel ? A : 'var(--text-4)' }}>
+                  {d.past ? '—' : !loaded ? '…' : full ? 'FULL' : `${left} LEFT`}
+                </span>
+              </button>
             );
           })}
         </div>
       )}
 
+      {service?.id === 'unlimited' && loaded && !weekBookable && (
+        <p style={{ ...mono, marginTop: 14 }}>
+          {daysRemaining.length === 0
+            ? 'THIS WEEK IS OVER — TRY NEXT WEEK'
+            : 'A DAY THIS WEEK IS FULL — UNLIMITED NEEDS AN OPEN SPOT EVERY DAY. TRY NEXT WEEK.'}
+        </p>
+      )}
+
       <div style={{ display: 'flex', gap: 12, marginTop: 28 }}>
         <button onClick={() => setStep(1)} style={ghostBtn}>← Back</button>
-        <button disabled={!time} onClick={() => setStep(3)} style={primaryBtn(!!time)}>Continue →</button>
+        <button disabled={!daysReady} onClick={() => setStep(3)} style={primaryBtn(!!daysReady)}>Continue →</button>
       </div>
     </div>
   );
@@ -323,7 +330,7 @@ export default function BookPage() {
         <span style={mono}>BOOKING</span>
         <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: A }}>{service?.name}</span>
         <span style={{ color: 'var(--border-strong)' }}>·</span>
-        <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: 'var(--text)' }}>{fmtDate(date)} · {fmtTime(time)}</span>
+        <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: 'var(--text)' }}>{dates.map(fmtDate).join(' · ')}</span>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 14, marginBottom: 14 }}>
@@ -356,7 +363,7 @@ export default function BookPage() {
         </button>
       </div>
       <p style={{ marginTop: 14, ...mono, fontSize: 11, letterSpacing: '.06em', color: 'var(--text-5)', textAlign: 'center' }}>
-        Secure payment by Stripe. Your slot is held for 30 minutes while you check out.
+        Secure payment by Stripe. Your spot is held for 30 minutes while you check out.
       </p>
     </div>
   );
@@ -366,12 +373,12 @@ export default function BookPage() {
   const confirmedStep = (
     <div style={{ textAlign: 'center', padding: '12px 0' }}>
       <div style={{ width: 72, height: 72, borderRadius: '50%', background: A, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 22px', fontSize: 38, color: 'var(--ink)' }}>✓</div>
-      <h2 style={{ fontFamily: "'Anton'", fontSize: 'clamp(30px,5vw,46px)', lineHeight: 1.05, textTransform: 'uppercase', color: 'var(--text)' }}>Session Booked</h2>
+      <h2 style={{ fontFamily: "'Anton'", fontSize: 'clamp(30px,5vw,46px)', lineHeight: 1.05, textTransform: 'uppercase', color: 'var(--text)' }}>Spot Reserved</h2>
       <p style={{ marginTop: 14, color: 'var(--text-2)', fontSize: 17, maxWidth: 460, margin: '14px auto 0' }}>
         Payment received — your athlete is locked in. A Stripe receipt is on its
         way to your email, and Coach has been notified. See you at the field!
       </p>
-      <div><button onClick={reset} style={{ ...ghostBtn, marginTop: 28, flex: 'none', padding: '14px 30px' }}>Book Another Session</button></div>
+      <div><button onClick={reset} style={{ ...ghostBtn, marginTop: 28, flex: 'none', padding: '14px 30px' }}>Book Another Pass</button></div>
     </div>
   );
 
@@ -395,10 +402,10 @@ export default function BookPage() {
 
       <div style={{ maxWidth: 920, margin: '0 auto', padding: 'clamp(28px,5vw,56px) 22px 80px' }}>
         <div style={{ textAlign: 'center', marginBottom: 26 }}>
-          <div style={{ ...mono, color: A, letterSpacing: '.3em', marginBottom: 14 }}>BOOK A SESSION</div>
-          <h1 style={{ fontFamily: "'Anton'", fontSize: 'clamp(36px,7vw,68px)', lineHeight: 1.02, textTransform: 'uppercase', color: 'var(--text)' }}>Reserve Your Time</h1>
+          <div style={{ ...mono, color: A, letterSpacing: '.3em', marginBottom: 14 }}>BOOK ONLINE</div>
+          <h1 style={{ fontFamily: "'Anton'", fontSize: 'clamp(36px,7vw,68px)', lineHeight: 1.02, textTransform: 'uppercase', color: 'var(--text)' }}>Reserve Your Spot</h1>
           <p style={{ marginTop: 14, color: 'var(--text-3)', fontSize: 16, maxWidth: 520, margin: '14px auto 0' }}>
-            Pick a service, choose a day, and grab an open time slot. Sessions run Monday–Friday, 3:00–7:00 PM in Apollo Beach, FL.
+            Pick a pass, choose your training days, and lock your athlete in. Sessions run Monday–Friday, after school until 5:00 PM in Apollo Beach, FL.
           </p>
         </div>
 
@@ -421,7 +428,7 @@ export default function BookPage() {
           {!mounted ? (
             <div style={{ ...mono, textAlign: 'center', padding: '40px 0' }}>Loading booking…</div>
           ) : step === 1 ? serviceStep
-            : step === 2 ? dateTimeStep
+            : step === 2 ? daysStep
             : step === 3 ? detailsStep
             : confirmedStep}
         </div>

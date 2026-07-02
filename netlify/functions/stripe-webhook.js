@@ -11,7 +11,7 @@
 const crypto = require('crypto');
 const { sb } = require('../../lib/db');
 const { notifyOwner } = require('../../lib/sms');
-const { fmtTime } = require('../../lib/services');
+const { fmtDates } = require('../../lib/services');
 
 const TOLERANCE_SEC = 300;
 
@@ -68,7 +68,7 @@ exports.handler = async (event) => {
         await notifyOwner(
           `Velo session BOOKED & PAID:\n` +
             `${b.athlete_name}${b.athlete_age ? ` (age ${b.athlete_age})` : ''}${b.sport ? ` — ${b.sport}` : ''}\n` +
-            `${b.service_name} — ${b.session_date} ${fmtTime(b.start_min)}\n` +
+            `${b.service_name} — ${fmtDates(b.session_dates || [])}\n` +
             `Contact: ${b.contact}`
         );
       } else {

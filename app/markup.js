@@ -537,7 +537,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
           <a href="#register" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Reserve a Spot</a>
           <a href="#pricing" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">View Pricing</a>
           <a href="#programs" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Programs</a>
-          <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--text-5);margin-top:6px">[ phone / email / form link ]</span>
+          <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--text-5);margin-top:6px">[ email / form link ]</span>
         </div>
       </div>
     </div>
