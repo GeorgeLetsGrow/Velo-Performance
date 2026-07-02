@@ -2,20 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import {
+  SERVICES as SERVICE_DEFS,
+  DAY_START,
+  DAY_END,
+  SLOT_STEP,
+  overlaps,
+} from '../../lib/services';
 
 /* ---------------- Data ---------------- */
-// Services have different durations, which drives how many time slots fit in a day.
-const SERVICES = [
-  { id: 'hitting',    name: 'Hitting Lesson',    duration: 60, price: '$70',  desc: 'Mechanics, bat path & approach — 1-on-1 with a coach.' },
-  { id: 'pitching',   name: 'Pitching Lesson',   duration: 60, price: '$70',  desc: 'Arm care, command & velocity development on the mound.' },
-  { id: 'defense',    name: 'Defensive Session', duration: 45, price: '$55',  desc: 'Footwork, glove work & game-speed reads.' },
-  { id: 'speed',      name: 'Speed & Agility',   duration: 45, price: '$55',  desc: 'Explosiveness, mobility & athletic foundation work.' },
-  { id: 'evaluation', name: 'Full Evaluation',   duration: 90, price: '$110', desc: 'Complete assessment across hitting, pitching & defense.' },
-];
-
-const DAY_START = 15 * 60; // 3:00 PM
-const DAY_END = 19 * 60;   // 7:00 PM
-const SLOT_STEP = 30;      // start times every 30 min
+// Prices/durations live in lib/services.js (shared with the payment backend);
+// this just adds a display-ready price string.
+const SERVICES = SERVICE_DEFS.map((s) => ({ ...s, price: `$${s.cents / 100}` }));
 
 const DOW = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -54,17 +52,12 @@ function fmtDate(iso) {
   return `${dn} · ${MON[d.getMonth()]} ${d.getDate()}`;
 }
 
-// Deterministic "is this slot already booked" so availability feels real and stable.
-function hash(str) {
-  let h = 7;
-  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 100003;
-  return h;
-}
-function slotsFor(service, iso) {
-  if (!service || !iso) return [];
+// Open slots for a service/day given the busy ranges from get-availability.
+function slotsFor(service, iso, busy) {
+  if (!service || !iso || !Array.isArray(busy)) return [];
   const out = [];
   for (let t = DAY_START; t + service.duration <= DAY_END; t += SLOT_STEP) {
-    const taken = hash(`${iso}|${service.id}|${t}`) % 3 === 0;
+    const taken = busy.some(([s, e]) => overlaps(t, t + service.duration, s, e));
     out.push({ mins: t, taken });
   }
   return out;
@@ -79,13 +72,89 @@ export default function BookPage() {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [form, setForm] = useState({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
+  // Availability for the selected date: null = loading, 'error', or busy ranges
+  const [busy, setBusy] = useState(null);
+  const [availReload, setAvailReload] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState(null); // { kind: 'error'|'info', text }
 
-  useEffect(() => setMounted(true), []);
+  // Handle returning from Stripe Checkout (success or cancel).
+  useEffect(() => {
+    setMounted(true);
+    const q = new URLSearchParams(window.location.search);
+    if (q.get('paid') === '1') {
+      setStep(4);
+    } else if (q.get('cancelled') === '1') {
+      const bid = q.get('bid');
+      if (bid) {
+        // Free the held slot right away instead of waiting out the 30-min hold.
+        fetch('/.netlify/functions/release-hold', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bid }),
+        }).catch(() => {});
+      }
+      setNotice({ kind: 'info', text: 'Checkout cancelled — your slot was released. Pick a time whenever you’re ready.' });
+    }
+    if (q.get('paid') || q.get('cancelled')) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, []);
+
+  // Load real availability whenever a day is selected.
+  useEffect(() => {
+    if (!date) return;
+    let stale = false;
+    setBusy(null);
+    fetch(`/.netlify/functions/get-availability?date=${date}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((d) => { if (!stale) setBusy(d.busy); })
+      .catch(() => { if (!stale) setBusy('error'); });
+    return () => { stale = true; };
+  }, [date, availReload]);
 
   const service = SERVICES.find((s) => s.id === serviceId) || null;
   const week = buildWeek(weekOffset);
-  const slots = slotsFor(service, date);
-  const canSubmit = form.athlete.trim() && String(form.age).trim() && form.contact.trim();
+  const slots = slotsFor(service, date, busy);
+  const canSubmit = form.athlete.trim() && String(form.age).trim() && form.contact.trim() && !submitting;
+
+  async function goToPayment() {
+    if (!canSubmit || !service || !date || time == null) return;
+    setSubmitting(true);
+    setNotice(null);
+    try {
+      const res = await fetch('/.netlify/functions/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId: service.id,
+          date,
+          startMin: time,
+          athlete: form.athlete,
+          age: form.age,
+          sport: form.sport,
+          parent: form.parent,
+          contact: form.contact,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.assign(data.url); // off to Stripe Checkout
+        return;
+      }
+      if (res.status === 409) {
+        setNotice({ kind: 'error', text: 'That time was just taken by someone else — please pick another slot.' });
+        setTime(null);
+        setStep(2);
+        setAvailReload((n) => n + 1);
+      } else {
+        setNotice({ kind: 'error', text: 'Something went wrong starting checkout. Please try again in a moment.' });
+      }
+    } catch {
+      setNotice({ kind: 'error', text: 'Something went wrong starting checkout. Please try again in a moment.' });
+    }
+    setSubmitting(false);
+  }
 
   const A = 'var(--accent)';
   const card = { background: 'var(--bg-1)', border: '1px solid var(--border)' };
@@ -110,6 +179,8 @@ export default function BookPage() {
     setDate(null);
     setTime(null);
     setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
+    setNotice(null);
+    setSubmitting(false);
   }
 
   /* ----- step indicator ----- */
@@ -204,7 +275,16 @@ export default function BookPage() {
       <div style={{ ...label, margin: '28px 0 14px' }}>
         {date ? `Available Times — ${fmtDate(date)}` : 'Select a day to see times'}
       </div>
-      {date && (
+      {date && busy === null && (
+        <div style={{ ...mono, padding: '18px 0' }}>Checking open times…</div>
+      )}
+      {date && busy === 'error' && (
+        <div style={{ padding: '14px 16px', border: '1px solid var(--border-2)', background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <span style={{ color: 'var(--text-2)', fontSize: 15 }}>Couldn&apos;t load availability.</span>
+          <button onClick={() => setAvailReload((n) => n + 1)} style={{ ...ghostBtn, flex: 'none', padding: '9px 18px', fontSize: 13 }}>Retry</button>
+        </div>
+      )}
+      {date && Array.isArray(busy) && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 8 }}>
           {slots.map((slot) => {
             const sel = slot.mins === time;
@@ -271,30 +351,26 @@ export default function BookPage() {
       </div>
       <div style={{ display: 'flex', gap: 12 }}>
         <button onClick={() => setStep(2)} style={ghostBtn}>← Back</button>
-        <button disabled={!canSubmit} onClick={() => setStep(4)} style={primaryBtn(!!canSubmit)}>Confirm Booking</button>
+        <button disabled={!canSubmit} onClick={goToPayment} style={primaryBtn(!!canSubmit)}>
+          {submitting ? 'Opening Secure Checkout…' : `Continue to Payment — ${service?.price}`}
+        </button>
       </div>
       <p style={{ marginTop: 14, ...mono, fontSize: 11, letterSpacing: '.06em', color: 'var(--text-5)', textAlign: 'center' }}>
-        No payment now — we'll confirm your session by email or phone.
+        Secure payment by Stripe. Your slot is held for 30 minutes while you check out.
       </p>
     </div>
   );
 
-  /* ----- step 4: confirmed ----- */
+  /* ----- step 4: paid & confirmed (arrived via Stripe's success redirect,
+         so local selection state is gone — keep it generic) ----- */
   const confirmedStep = (
     <div style={{ textAlign: 'center', padding: '12px 0' }}>
       <div style={{ width: 72, height: 72, borderRadius: '50%', background: A, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 22px', fontSize: 38, color: 'var(--ink)' }}>✓</div>
       <h2 style={{ fontFamily: "'Anton'", fontSize: 'clamp(30px,5vw,46px)', lineHeight: 1.05, textTransform: 'uppercase', color: 'var(--text)' }}>Session Booked</h2>
-      <p style={{ marginTop: 14, color: 'var(--text-2)', fontSize: 17, maxWidth: 440, margin: '14px auto 0' }}>
-        Nice — {form.athlete || 'your athlete'} is on the schedule. We'll reach out to confirm before the session.
+      <p style={{ marginTop: 14, color: 'var(--text-2)', fontSize: 17, maxWidth: 460, margin: '14px auto 0' }}>
+        Payment received — your athlete is locked in. A Stripe receipt is on its
+        way to your email, and Coach has been notified. See you at the field!
       </p>
-      <div style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 0, marginTop: 28, border: '1px solid var(--border-2)', background: 'var(--bg)', textAlign: 'left' }}>
-        {[['Service', service?.name], ['When', `${fmtDate(date)} · ${fmtTime(time)}`], ['Sport', form.sport]].map(([k, v], i) => (
-          <div key={k} style={{ padding: '18px 24px', borderRight: i < 2 ? '1px solid var(--border-2)' : 'none' }}>
-            <div style={{ ...mono, fontSize: 10, letterSpacing: '.16em', color: 'var(--text-4)', marginBottom: 6 }}>{k}</div>
-            <div style={{ fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 18, textTransform: 'uppercase', color: i === 0 ? A : 'var(--text)' }}>{v}</div>
-          </div>
-        ))}
-      </div>
       <div><button onClick={reset} style={{ ...ghostBtn, marginTop: 28, flex: 'none', padding: '14px 30px' }}>Book Another Session</button></div>
     </div>
   );
@@ -327,6 +403,19 @@ export default function BookPage() {
         </div>
 
         {indicator}
+
+        {notice && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', marginBottom: 16,
+            border: `1.5px solid ${notice.kind === 'error' ? A : 'var(--border-strong)'}`,
+            background: 'var(--bg-1)', color: 'var(--text-2)', fontSize: 15, lineHeight: 1.5,
+          }}>
+            <span style={{ color: notice.kind === 'error' ? A : 'var(--text-3)', fontSize: 18, flexShrink: 0 }}>
+              {notice.kind === 'error' ? '⚠' : 'ℹ'}
+            </span>
+            <span>{notice.text}</span>
+          </div>
+        )}
 
         <div style={{ ...card, padding: 'clamp(22px,4vw,40px)' }}>
           {!mounted ? (

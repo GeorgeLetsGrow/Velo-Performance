@@ -113,6 +113,14 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
 .pillar-card:hover { background: var(--bg-3) !important; }
 .include-row:hover { background: var(--bg-3) !important; }
 
+/* ============ RESERVE FORM (orange CTA panel — ink-on-white fields in both themes) ============ */
+.velo-form-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(12, 12, 13, .72); margin-bottom: 7px; }
+.velo-input { width: 100%; background: #fff; border: 2px solid var(--ink); border-radius: 0; color: #0c0c0d; font-family: 'Barlow', sans-serif; font-weight: 500; font-size: 15px; padding: 12px 14px; }
+.velo-input:focus { outline: 3px solid rgba(12, 12, 13, .4); outline-offset: 0; }
+.velo-form-submit { transition: transform .18s ease, box-shadow .18s ease; }
+.velo-form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(12, 12, 13, .28); }
+.velo-form-submit:active { transform: translateY(0); }
+
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
   .velo-hero-grid { flex-direction: column-reverse !important; align-items: flex-start !important; }

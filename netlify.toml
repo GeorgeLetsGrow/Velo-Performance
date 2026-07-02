@@ -2,5 +2,10 @@
   command = "npm run build"
   publish = "out"
 
+# Serverless functions deploy alongside the static site. `submission-created`
+# is a reserved name Netlify triggers on every verified form submission.
+[functions]
+  directory = "netlify/functions"
+
 [build.environment]
   NODE_VERSION = "20"
