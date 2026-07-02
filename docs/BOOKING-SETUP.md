@@ -25,9 +25,16 @@ Abandoned checkout → hold expires (or release-hold fires on cancel) → slot f
 ## 1. Supabase (~5 minutes)
 
 1. Create a project (any name, e.g. `velo-bookings`) at supabase.com.
-2. **SQL Editor → New query** → paste the contents of `supabase/schema.sql`
-   → Run. This creates the `bookings` table with the no-double-booking
-   constraint and locks it behind row level security.
+2. Apply the schema in `supabase/migrations/` — it creates the `bookings`
+   table with the no-double-booking constraint and locks it behind row
+   level security. Either way works:
+   - **CLI** (repo is already `supabase init`-ed):
+     ```sh
+     npx supabase login
+     npx supabase link --project-ref <your-project-ref>
+     npx supabase db push
+     ```
+   - **Dashboard**: SQL Editor → New query → paste the migration file → Run.
 3. Grab two values from **Project Settings → API**:
    - Project URL → env var `SUPABASE_URL`
    - `service_role` secret key → env var `SUPABASE_SERVICE_ROLE_KEY`
