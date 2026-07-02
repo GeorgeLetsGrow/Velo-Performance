@@ -3,7 +3,7 @@ import './globals.css';
 export const metadata = {
   title: 'Velo Performance Labs — After-School Player Development | Apollo Beach, FL',
   description:
-    'Baseball-first after-school player development in Apollo Beach, FL. Real coaching, small groups (9 athletes/day), big results. Train different. Train smarter. Be elite.',
+    'After-school player development for baseball and softball athletes in Apollo Beach, FL. Real coaching, small groups, big results. Train different. Train smarter. Be elite.',
 };
 
 export const viewport = {
