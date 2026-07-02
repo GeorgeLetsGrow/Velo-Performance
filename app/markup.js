@@ -481,7 +481,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:rgba(12,12,13,.7);text-transform:uppercase;margin-bottom:20px">Register Now · Apollo Beach, FL</div>
         <h2 style="font-family:'Anton';font-size:clamp(40px,6vw,82px);line-height:.9;text-transform:uppercase;color:var(--ink)">Ready to Level Up? Reserve Your Spot!</h2>
         <p style="margin-top:22px;font-size:19px;line-height:1.5;color:rgba(12,12,13,.78);font-weight:600;max-width:540px">Small-group training means enrollment is intentionally limited. Send us your info and we'll reach out to confirm your athlete's spot.</p>
-        <form name="reserve-a-spot" method="POST" action="/thank-you" data-netlify="true" netlify-honeypot="bot-field" style="margin-top:32px;max-width:620px">
+        <form name="reserve-a-spot" method="POST" action="/thank-you/" data-netlify="true" netlify-honeypot="bot-field" style="margin-top:32px;max-width:620px">
           <input type="hidden" name="form-name" value="reserve-a-spot">
           <p style="display:none" aria-hidden="true"><label>Don't fill this out if you're human: <input name="bot-field"></label></p>
           <div class="velo-form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
