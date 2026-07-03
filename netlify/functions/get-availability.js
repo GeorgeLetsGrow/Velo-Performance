@@ -26,7 +26,14 @@ exports.handler = async (event) => {
     return json(200, { busy });
   } catch (err) {
     console.error(err);
-    return json(502, { error: 'unavailable', reason: err.code === 'missing_env' ? 'missing_env' : 'exception' });
+    // The message of a failed fetch names the URL/network problem and never
+    // contains credentials, so it's safe to surface for diagnosis.
+    const detail = String((err && err.message) || err).slice(0, 140);
+    return json(502, {
+      error: 'unavailable',
+      reason: err.code === 'missing_env' ? 'missing_env' : 'exception',
+      detail,
+    });
   }
 };
 
