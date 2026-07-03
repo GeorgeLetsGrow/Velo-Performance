@@ -545,8 +545,12 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         </div>
       </div>
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding-top:28px">
-      <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:var(--text-5)">© 2026 VELO PERFORMANCE LABS · APOLLO BEACH, FL</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px 24px;padding-top:28px">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:14px 20px">
+        <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:var(--text-5)">© 2026 VELO PERFORMANCE LABS · APOLLO BEACH, FL</div>
+        <a href="/privacy" class="footer-link" style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:var(--text-5);text-decoration:none">Privacy Policy</a>
+        <a href="/terms" class="footer-link" style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:var(--text-5);text-decoration:none">Terms &amp; Conditions</a>
+      </div>
       <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase">Not Daycare. Player Development.</div>
     </div>
   </div>
