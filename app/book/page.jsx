@@ -2,18 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  SERVICES as SERVICE_DEFS,
-  DAY_START,
-  DAY_END,
-  SLOT_STEP,
-  overlaps,
-} from '../../lib/services';
+import { PASSES as PASS_DEFS, CAPACITY } from '../../lib/services';
 
 /* ---------------- Data ---------------- */
-// Prices/durations live in lib/services.js (shared with the payment backend);
+// Prices live in lib/services.js (shared with the payment backend);
 // this just adds a display-ready price string.
-const SERVICES = SERVICE_DEFS.map((s) => ({ ...s, price: `$${s.cents / 100}` }));
+const PASSES = PASS_DEFS.map((p) => ({ ...p, price: `$${p.cents / 100}` }));
 
 const DOW = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -37,43 +31,22 @@ function buildWeek(offset) {
   return out;
 }
 
-function fmtTime(mins) {
-  let h = Math.floor(mins / 60);
-  const m = mins % 60;
-  const ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12;
-  if (h === 0) h = 12;
-  return `${h}:${String(m).padStart(2, '0')} ${ap}`;
-}
-
 function fmtDate(iso) {
   const d = new Date(iso + 'T00:00:00');
   const dn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
   return `${dn} · ${MON[d.getMonth()]} ${d.getDate()}`;
 }
 
-// Open slots for a service/day given the busy ranges from get-availability.
-function slotsFor(service, iso, busy) {
-  if (!service || !iso || !Array.isArray(busy)) return [];
-  const out = [];
-  for (let t = DAY_START; t + service.duration <= DAY_END; t += SLOT_STEP) {
-    const taken = busy.some(([s, e]) => overlaps(t, t + service.duration, s, e));
-    out.push({ mins: t, taken });
-  }
-  return out;
-}
-
 /* ---------------- Page ---------------- */
 export default function BookPage() {
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
-  const [serviceId, setServiceId] = useState(SERVICES[0].id);
+  const [passId, setPassId] = useState(PASSES[0].id);
   const [weekOffset, setWeekOffset] = useState(0);
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
+  const [selectedDates, setSelectedDates] = useState([]);
   const [form, setForm] = useState({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
-  // Availability for the selected date: null = loading, 'error', or busy ranges
-  const [busy, setBusy] = useState(null);
+  // Spots taken per day across both visible weeks: null = loading, 'error', or { capacity, taken }
+  const [avail, setAvail] = useState(null);
   const [availReload, setAvailReload] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState(null); // { kind: 'error'|'info', text }
@@ -87,39 +60,95 @@ export default function BookPage() {
     } else if (q.get('cancelled') === '1') {
       const bid = q.get('bid');
       if (bid) {
-        // Free the held slot right away instead of waiting out the 30-min hold.
+        // Free the held spots right away instead of waiting out the 30-min hold.
         fetch('/.netlify/functions/release-hold', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ bid }),
         }).catch(() => {});
       }
-      setNotice({ kind: 'info', text: 'Checkout cancelled — your slot was released. Pick a time whenever you’re ready.' });
+      setNotice({ kind: 'info', text: 'Checkout cancelled — your spots were released. Pick your days whenever you’re ready.' });
     }
     if (q.get('paid') || q.get('cancelled')) {
       window.history.replaceState(null, '', window.location.pathname);
     }
   }, []);
 
-  // Load real availability whenever a day is selected.
+  // Load spot counts for this week + next week in one call.
   useEffect(() => {
-    if (!date) return;
+    const from = buildWeek(0)[0].iso;
+    const to = buildWeek(1)[4].iso;
     let stale = false;
-    setBusy(null);
-    fetch(`/.netlify/functions/get-availability?date=${date}`)
+    setAvail(null);
+    fetch(`/.netlify/functions/get-availability?from=${from}&to=${to}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((d) => { if (!stale) setBusy(d.busy); })
-      .catch(() => { if (!stale) setBusy('error'); });
+      .then((d) => { if (!stale) setAvail(d); })
+      .catch(() => { if (!stale) setAvail('error'); });
     return () => { stale = true; };
-  }, [date, availReload]);
+  }, [availReload]);
 
-  const service = SERVICES.find((s) => s.id === serviceId) || null;
+  const pass = PASSES.find((p) => p.id === passId) || PASSES[0];
   const week = buildWeek(weekOffset);
-  const slots = slotsFor(service, date, busy);
+  const capacity = (avail && avail.capacity) || CAPACITY;
+
+  function spotsLeft(iso) {
+    if (!avail || avail === 'error') return null; // unknown while loading
+    return Math.max(0, capacity - ((avail.taken && avail.taken[iso]) || 0));
+  }
+  function selectable(d) {
+    if (d.past) return false;
+    const left = spotsLeft(d.iso);
+    return left === null || left > 0; // optimistic while loading; server re-validates
+  }
+
+  // Unlimited covers every remaining open day of the visible week.
+  useEffect(() => {
+    if (passId !== 'unlimited') return;
+    setSelectedDates(buildWeek(weekOffset).filter(selectable).map((d) => d.iso));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [passId, weekOffset, avail]);
+
+  function pickPass(id) {
+    setPassId(id);
+    setSelectedDates([]); // the unlimited effect repopulates when relevant
+  }
+  function switchWeek(n) {
+    setWeekOffset(n);
+    setSelectedDates([]);
+  }
+  function pickDay(d) {
+    if (!selectable(d) || passId === 'unlimited') return;
+    const iso = d.iso;
+    if (passId === 'dropin') {
+      setSelectedDates([iso]);
+      return;
+    }
+    // flex3: toggle; when a 4th day is picked, drop the oldest selection
+    setSelectedDates((cur) => {
+      if (cur.includes(iso)) return cur.filter((x) => x !== iso);
+      const next = [...cur, iso];
+      return next.length > 3 ? next.slice(1) : next;
+    });
+  }
+  function reset() {
+    setStep(1);
+    setPassId(PASSES[0].id);
+    setWeekOffset(0);
+    setSelectedDates([]);
+    setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
+    setNotice(null);
+    setSubmitting(false);
+    setAvailReload((n) => n + 1);
+  }
+
+  const needDays = pass.id === 'dropin' ? 1 : pass.id === 'flex3' ? 3 : Math.max(1, selectedDates.length);
+  const daysReady =
+    pass.id === 'unlimited' ? selectedDates.length >= 1 : selectedDates.length === needDays;
   const canSubmit = form.athlete.trim() && String(form.age).trim() && form.contact.trim() && !submitting;
+  const sortedDates = [...selectedDates].sort();
 
   async function goToPayment() {
-    if (!canSubmit || !service || !date || time == null) return;
+    if (!canSubmit || !daysReady) return;
     setSubmitting(true);
     setNotice(null);
     try {
@@ -127,9 +156,8 @@ export default function BookPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          serviceId: service.id,
-          date,
-          startMin: time,
+          passId: pass.id,
+          dates: sortedDates,
           athlete: form.athlete,
           age: form.age,
           sport: form.sport,
@@ -143,8 +171,8 @@ export default function BookPage() {
         return;
       }
       if (res.status === 409) {
-        setNotice({ kind: 'error', text: 'That time was just taken by someone else — please pick another slot.' });
-        setTime(null);
+        setNotice({ kind: 'error', text: 'One of those days just filled up — please pick again.' });
+        setSelectedDates([]);
         setStep(1);
         setAvailReload((n) => n + 1);
       } else {
@@ -163,26 +191,6 @@ export default function BookPage() {
     textTransform: 'uppercase', color: 'var(--text)',
   };
   const mono = { fontFamily: "'JetBrains Mono'", fontSize: 12, letterSpacing: '.1em', color: 'var(--text-4)' };
-
-  // Changing the service keeps the chosen day but clears the time — durations
-  // differ, so which start times fit changes with the service.
-  function pickService(id) {
-    setServiceId(id);
-    setTime(null);
-  }
-  function pickDate(iso) {
-    setDate(iso);
-    setTime(null);
-  }
-  function reset() {
-    setStep(1);
-    setServiceId(SERVICES[0].id);
-    setDate(null);
-    setTime(null);
-    setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
-    setNotice(null);
-    setSubmitting(false);
-  }
 
   /* ----- step indicator ----- */
   const steps = ['Session', 'Details', 'Done'];
@@ -211,7 +219,7 @@ export default function BookPage() {
     </div>
   );
 
-  /* ----- step 1: service + date & time, all in one place ----- */
+  /* ----- step 1: pass + days, all in one place ----- */
   const tab = (on) => ({
     flex: 1, padding: 12, cursor: 'pointer', font: 'inherit',
     fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 14, letterSpacing: '.08em', textTransform: 'uppercase',
@@ -219,21 +227,35 @@ export default function BookPage() {
     color: on ? 'var(--ink)' : 'var(--text-2)', background: on ? A : 'var(--bg-1)',
   });
 
+  const dayHint =
+    pass.id === 'dropin'
+      ? 'Pick your day'
+      : pass.id === 'flex3'
+        ? `Pick any 3 afternoons — ${selectedDates.length} of 3 selected`
+        : 'Covers every remaining day of this week';
+
   const sessionStep = (
     <div>
       <div className="velo-book-grid" style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 'clamp(24px,4vw,40px)', alignItems: 'start' }}>
-        {/* --- service (radio select) --- */}
+        {/* --- pass (radio select) --- */}
         <div>
-          <div style={{ ...label, marginBottom: 14 }}>1 · Choose a Service</div>
-          <div role="radiogroup" aria-label="Service" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {SERVICES.map((s) => {
-              const sel = s.id === serviceId;
+          <div style={{ ...label, marginBottom: 14 }}>1 · Pick Your Pass</div>
+          <div role="radiogroup" aria-label="Pass" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {PASSES.map((p) => {
+              const sel = p.id === passId;
               return (
-                <button key={s.id} role="radio" aria-checked={sel} onClick={() => pickService(s.id)} style={{
-                  textAlign: 'left', cursor: 'pointer', padding: '14px 16px', font: 'inherit',
+                <button key={p.id} role="radio" aria-checked={sel} onClick={() => pickPass(p.id)} style={{
+                  textAlign: 'left', cursor: 'pointer', padding: '14px 16px', font: 'inherit', position: 'relative',
                   background: sel ? '#16110c' : 'var(--bg-1)', border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
                   display: 'flex', alignItems: 'center', gap: 13,
                 }}>
+                  {p.popular && (
+                    <span style={{
+                      position: 'absolute', top: 0, right: 0, background: A, color: 'var(--ink)',
+                      fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 10, letterSpacing: '.12em',
+                      textTransform: 'uppercase', padding: '4px 9px',
+                    }}>Most Popular</span>
+                  )}
                   <span aria-hidden="true" style={{
                     width: 18, height: 18, borderRadius: '50%', flexShrink: 0,
                     border: `2px solid ${sel ? A : 'var(--border-strong)'}`,
@@ -242,86 +264,93 @@ export default function BookPage() {
                     {sel && <span style={{ width: 8, height: 8, borderRadius: '50%', background: A }} />}
                   </span>
                   <span style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{ display: 'block', fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 17.5, letterSpacing: '.02em', textTransform: 'uppercase', color: 'var(--text)', lineHeight: 1.15 }}>{s.name}</span>
-                    <span style={{ display: 'block', color: 'var(--text-3)', fontSize: 13, lineHeight: 1.45, marginTop: 3 }}>{s.desc}</span>
+                    <span style={{ display: 'block', fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 17.5, letterSpacing: '.02em', textTransform: 'uppercase', color: 'var(--text)', lineHeight: 1.15 }}>{p.name}</span>
+                    <span style={{ display: 'block', color: 'var(--text-3)', fontSize: 13, lineHeight: 1.45, marginTop: 3 }}>{p.desc}</span>
                   </span>
                   <span style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <span style={{ display: 'block', fontFamily: "'Anton'", fontSize: 19, color: sel ? A : 'var(--text)', lineHeight: 1 }}>{s.price}</span>
-                    <span style={{ display: 'block', ...mono, fontSize: 10, marginTop: 4, color: sel ? A : 'var(--text-4)' }}>{s.duration} MIN</span>
+                    <span style={{ display: 'block', fontFamily: "'Anton'", fontSize: 19, color: sel ? A : 'var(--text)', lineHeight: 1 }}>{p.price}</span>
+                    <span style={{ display: 'block', ...mono, fontSize: 10, marginTop: 4, color: sel ? A : 'var(--text-4)' }}>{p.unit.toUpperCase()}</span>
                   </span>
                 </button>
               );
             })}
           </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 16, padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)' }}>
+            <span style={{ fontFamily: "'Anton'", fontSize: 16, color: A }}>☀</span>
+            <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 600, fontSize: 14, letterSpacing: '.04em', textTransform: 'uppercase', color: 'var(--text-2)' }}>
+              After-school program · Monday–Friday until 5:00 PM
+            </span>
+          </div>
         </div>
 
-        {/* --- day & time (updates live with the service above) --- */}
+        {/* --- days (updates live with the pass above) --- */}
         <div>
-          <div style={{ ...label, marginBottom: 14 }}>2 · Pick a Day &amp; Time</div>
-          <div style={{ display: 'flex', gap: 8, margin: '0 0 14px', maxWidth: 340 }}>
-            <button onClick={() => { setWeekOffset(0); setDate(null); setTime(null); }} style={tab(weekOffset === 0)}>This Week</button>
-            <button onClick={() => { setWeekOffset(1); setDate(null); setTime(null); }} style={tab(weekOffset === 1)}>Next Week</button>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 14 }}>
+            <div style={label}>2 · Pick Your Days</div>
+            <div style={{ ...mono, fontSize: 11 }}>{dayHint.toUpperCase()}</div>
           </div>
+          <div style={{ display: 'flex', gap: 8, margin: '0 0 14px', maxWidth: 340 }}>
+            <button onClick={() => switchWeek(0)} style={tab(weekOffset === 0)}>This Week</button>
+            <button onClick={() => switchWeek(1)} style={tab(weekOffset === 1)}>Next Week</button>
+          </div>
+          {avail === 'error' && (
+            <div style={{ padding: '14px 16px', marginBottom: 12, border: '1px solid var(--border-2)', background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+              <span style={{ color: 'var(--text-2)', fontSize: 15 }}>Couldn&apos;t check open spots.</span>
+              <button onClick={() => setAvailReload((n) => n + 1)} style={{ ...ghostBtn, flex: 'none', padding: '9px 18px', fontSize: 13 }}>Retry</button>
+            </div>
+          )}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
             {week.map((d) => {
-              const sel = d.iso === date;
-              const disabled = d.past;
+              const sel = selectedDates.includes(d.iso);
+              const left = spotsLeft(d.iso);
+              const full = left === 0;
+              const disabled = d.past || full || passId === 'unlimited';
               return (
-                <button key={d.iso} disabled={disabled} onClick={() => pickDate(d.iso)} style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '14px 4px', font: 'inherit',
-                  cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
+                <button key={d.iso} disabled={disabled && !sel} onClick={() => pickDay(d)} style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '14px 4px 10px', font: 'inherit',
+                  cursor: d.past || full ? 'not-allowed' : passId === 'unlimited' ? 'default' : 'pointer',
+                  opacity: d.past || full ? 0.4 : 1,
                   border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? '#16110c' : 'var(--bg-1)',
                 }}>
                   <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, letterSpacing: '.1em', color: 'var(--text-4)' }}>{d.dow}</span>
                   <span style={{ fontFamily: "'Anton'", fontSize: 24, lineHeight: 1, color: sel ? A : 'var(--text)' }}>{d.day}</span>
                   <span style={{ fontFamily: "'Barlow'", fontSize: 11, color: 'var(--text-4)' }}>{d.mon}</span>
+                  <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, letterSpacing: '.08em', minHeight: 12, color: full ? 'var(--text-5)' : 'var(--gold)' }}>
+                    {d.past ? '' : full ? 'FULL' : left !== null && left <= 4 ? `${left} LEFT` : ''}
+                  </span>
+                  {sel && <span style={{ width: 20, height: 3, background: A }} />}
                 </button>
               );
             })}
           </div>
+          {avail === null && <div style={{ ...mono, marginTop: 10 }}>Checking open spots…</div>}
 
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', margin: '24px 0 12px' }}>
-            <div style={label}>{date ? `Open Times — ${fmtDate(date)}` : 'Select a day to see times'}</div>
-            {service && date && <div style={{ ...mono, fontSize: 11 }}>{service.name.toUpperCase()} · {service.duration} MIN</div>}
-          </div>
-          {date && busy === null && (
-            <div style={{ ...mono, padding: '14px 0' }}>Checking open times…</div>
-          )}
-          {date && busy === 'error' && (
-            <div style={{ padding: '14px 16px', border: '1px solid var(--border-2)', background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-              <span style={{ color: 'var(--text-2)', fontSize: 15 }}>Couldn&apos;t load availability.</span>
-              <button onClick={() => setAvailReload((n) => n + 1)} style={{ ...ghostBtn, flex: 'none', padding: '9px 18px', fontSize: 13 }}>Retry</button>
-            </div>
-          )}
-          {date && Array.isArray(busy) && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(96px,1fr))', gap: 8 }}>
-              {slots.map((slot) => {
-                const sel = slot.mins === time;
-                return (
-                  <button key={slot.mins} disabled={slot.taken} onClick={() => setTime(slot.mins)} style={{
-                    padding: '12px 6px', font: 'inherit', cursor: slot.taken ? 'not-allowed' : 'pointer',
-                    fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 15, letterSpacing: '.03em',
-                    border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
-                    background: sel ? A : slot.taken ? 'var(--bg-2)' : 'var(--bg-1)',
-                    color: sel ? 'var(--ink)' : slot.taken ? 'var(--text-5)' : 'var(--text)',
-                    textDecoration: slot.taken ? 'line-through' : 'none',
-                  }}>{fmtTime(slot.mins)}</button>
-                );
-              })}
+          {sortedDates.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
+              {sortedDates.map((iso) => (
+                <span key={iso} style={{
+                  fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 13.5, letterSpacing: '.05em', textTransform: 'uppercase',
+                  color: 'var(--text)', background: 'var(--bg)', border: `1px solid ${A}`, padding: '6px 12px',
+                }}>{fmtDate(iso)}</span>
+              ))}
             </div>
           )}
         </div>
       </div>
 
       <div style={{ marginTop: 28 }}>
-        <button disabled={!time} onClick={() => setStep(2)} style={{ ...primaryBtn(!!time), width: '100%', flex: 'none' }}>
-          {time && service ? `Continue — ${service.name} · ${fmtDate(date)} · ${fmtTime(time)} →` : 'Pick a time to continue'}
+        <button disabled={!daysReady} onClick={() => setStep(2)} style={{ ...primaryBtn(daysReady), width: '100%', flex: 'none' }}>
+          {daysReady
+            ? `Continue — ${pass.name} · ${sortedDates.length} day${sortedDates.length > 1 ? 's' : ''} · ${pass.price} →`
+            : pass.id === 'flex3'
+              ? `Pick ${3 - selectedDates.length} more day${3 - selectedDates.length > 1 ? 's' : ''} to continue`
+              : 'Pick a day to continue'}
         </button>
       </div>
     </div>
   );
 
-  /* ----- step 3: details ----- */
+  /* ----- step 2: details ----- */
   const field = {
     width: '100%', boxSizing: 'border-box', background: 'var(--bg)', border: '1.5px solid var(--border-2)',
     color: 'var(--text)', fontFamily: "'Barlow'", fontSize: 16, padding: '13px 15px', outline: 'none',
@@ -333,9 +362,11 @@ export default function BookPage() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', background: 'var(--bg)', border: '1px solid var(--border)', padding: '14px 18px', marginBottom: 24 }}>
         <span style={mono}>BOOKING</span>
-        <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: A }}>{service?.name}</span>
+        <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: A }}>{pass.name}</span>
         <span style={{ color: 'var(--border-strong)' }}>·</span>
-        <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: 'var(--text)' }}>{fmtDate(date)} · {fmtTime(time)}</span>
+        <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: 'var(--text)' }}>
+          {sortedDates.map(fmtDate).join('  ·  ')}
+        </span>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 14, marginBottom: 14 }}>
@@ -364,26 +395,26 @@ export default function BookPage() {
       <div style={{ display: 'flex', gap: 12 }}>
         <button onClick={() => setStep(1)} style={ghostBtn}>← Back</button>
         <button disabled={!canSubmit} onClick={goToPayment} style={primaryBtn(!!canSubmit)}>
-          {submitting ? 'Opening Secure Checkout…' : `Continue to Payment — ${service?.price}`}
+          {submitting ? 'Opening Secure Checkout…' : `Continue to Payment — ${pass.price}`}
         </button>
       </div>
       <p style={{ marginTop: 14, ...mono, fontSize: 11, letterSpacing: '.06em', color: 'var(--text-5)', textAlign: 'center' }}>
-        Secure payment by Stripe. Your slot is held for 30 minutes while you check out.
+        Secure payment by Stripe. Your spots are held for 30 minutes while you check out.
       </p>
     </div>
   );
 
-  /* ----- step 4: paid & confirmed (arrived via Stripe's success redirect,
+  /* ----- step 3: paid & confirmed (arrived via Stripe's success redirect,
          so local selection state is gone — keep it generic) ----- */
   const confirmedStep = (
     <div style={{ textAlign: 'center', padding: '12px 0' }}>
       <div style={{ width: 72, height: 72, borderRadius: '50%', background: A, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 22px', fontSize: 38, color: 'var(--ink)' }}>✓</div>
-      <h2 style={{ fontFamily: "'Anton'", fontSize: 'clamp(30px,5vw,46px)', lineHeight: 1.05, textTransform: 'uppercase', color: 'var(--text)' }}>Session Booked</h2>
+      <h2 style={{ fontFamily: "'Anton'", fontSize: 'clamp(30px,5vw,46px)', lineHeight: 1.05, textTransform: 'uppercase', color: 'var(--text)' }}>You're Locked In</h2>
       <p style={{ marginTop: 14, color: 'var(--text-2)', fontSize: 17, maxWidth: 460, margin: '14px auto 0' }}>
-        Payment received — your athlete is locked in. A Stripe receipt is on its
-        way to your email, and Coach has been notified. See you at the field!
+        Payment received — your athlete&apos;s spots are reserved. A Stripe receipt
+        is on its way to your email, and Coach has been notified. See you at the field!
       </p>
-      <div><button onClick={reset} style={{ ...ghostBtn, marginTop: 28, flex: 'none', padding: '14px 30px' }}>Book Another Session</button></div>
+      <div><button onClick={reset} style={{ ...ghostBtn, marginTop: 28, flex: 'none', padding: '14px 30px' }}>Book Another Pass</button></div>
     </div>
   );
 
@@ -391,7 +422,7 @@ export default function BookPage() {
     <main style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
       {/* header */}
       <header style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--header-bg)', backdropFilter: 'blur(14px)', borderBottom: '1px solid var(--border-2)' }}>
-        <div style={{ maxWidth: 920, margin: '0 auto', padding: '0 22px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ maxWidth: 980, margin: '0 auto', padding: '0 22px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
             <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" style={{ height: 52, width: 'auto', display: 'block' }} />
           </Link>
@@ -405,12 +436,13 @@ export default function BookPage() {
         </div>
       </header>
 
-      <div style={{ maxWidth: 920, margin: '0 auto', padding: 'clamp(28px,5vw,56px) 22px 80px' }}>
+      <div style={{ maxWidth: 980, margin: '0 auto', padding: 'clamp(28px,5vw,56px) 22px 80px' }}>
         <div style={{ textAlign: 'center', marginBottom: 26 }}>
-          <div style={{ ...mono, color: A, letterSpacing: '.3em', marginBottom: 14 }}>BOOK A SESSION</div>
-          <h1 style={{ fontFamily: "'Anton'", fontSize: 'clamp(36px,7vw,68px)', lineHeight: 1.02, textTransform: 'uppercase', color: 'var(--text)' }}>Reserve Your Time</h1>
-          <p style={{ marginTop: 14, color: 'var(--text-3)', fontSize: 16, maxWidth: 520, margin: '14px auto 0' }}>
-            Pick a service, choose a day, and grab an open time slot. Sessions run Monday–Friday, 3:00–7:00 PM in Apollo Beach, FL.
+          <div style={{ ...mono, color: A, letterSpacing: '.3em', marginBottom: 14 }}>RESERVE YOUR SPOT</div>
+          <h1 style={{ fontFamily: "'Anton'", fontSize: 'clamp(36px,7vw,68px)', lineHeight: 1.02, textTransform: 'uppercase', color: 'var(--text)' }}>Train Your Way</h1>
+          <p style={{ marginTop: 14, color: 'var(--text-3)', fontSize: 16, maxWidth: 540, margin: '14px auto 0' }}>
+            Pick your pass, choose your days, and lock in your athlete&apos;s spot.
+            The after-school program runs Monday–Friday until 5:00 PM in Apollo Beach, FL.
           </p>
         </div>
 

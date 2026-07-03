@@ -1,8 +1,10 @@
 # Booking System — Setup Guide
 
-The `/book` page sells private lessons: pick a service → pick a real open
-slot → pay with Stripe Checkout → the slot is locked and the owner gets a
-text. This guide wires up the two external services it depends on.
+The `/book` page sells the same passes as the homepage pricing section —
+Drop-In ($60/day), 3-Day Flex Pass ($150/week), Unlimited Week ($175/week):
+pick a pass → pick training days with live spots-left counts → pay with
+Stripe Checkout → the spots are locked and the owner gets a text. This
+guide wires up the two external services it depends on.
 
 **Current state:** the page is live at `/book` but nothing on the site links
 to it yet, so it's safe to test in Stripe test mode on the deployed site.
@@ -10,24 +12,25 @@ to it yet, so it's safe to test in Stripe test mode on the deployed site.
 ## How it works
 
 ```
-Parent picks slot → create-checkout fn:
-                      1. validates slot (prices come from lib/services.js, never the client)
-                      2. inserts a 35-min "hold" row — Postgres' no-overlap
-                         constraint makes double-booking impossible
+Parent picks pass + days → create-checkout fn:
+                      1. validates pass/days (prices come from lib/services.js, never the client)
+                      2. inserts a 35-min "hold" (booking + booking_days) — a
+                         Postgres trigger caps each day at 12 athletes, atomically
                       3. creates a 30-min Stripe Checkout Session
                     → parent pays on Stripe's hosted page
-                    → stripe-webhook fn: hold → paid, owner gets SMS
+                    → stripe-webhook fn: hold → paid, owner gets SMS with the day list
                     → parent lands back on /book (confirmation screen)
 
-Abandoned checkout → hold expires (or release-hold fires on cancel) → slot frees itself
+Abandoned checkout → hold expires (or release-hold fires on cancel) → spots free themselves
 ```
 
 ## 1. Supabase (~5 minutes)
 
 1. Create a project (any name, e.g. `velo-bookings`) at supabase.com.
-2. Apply the schema in `supabase/migrations/` — it creates the `bookings`
-   table with the no-double-booking constraint and locks it behind row
-   level security. Either way works:
+2. Apply the schema in `supabase/migrations/` — the latest migration
+   creates `bookings` + `booking_days` with a 12-athletes-per-day capacity
+   trigger, locked behind row level security. (If you applied the older
+   slot-based schema, the new migration replaces it.) Either way works:
    - **CLI** (repo is already `supabase init`-ed):
      ```sh
      npx supabase login
@@ -69,27 +72,28 @@ Redeploy after saving.
 ## 4. Test the whole loop
 
 1. Visit `https://<your-site>/book` directly.
-2. Book a slot; pay with Stripe's test card `4242 4242 4242 4242`, any
-   future expiry, any CVC/ZIP.
-3. Confirm: you land back on `/book` with the confirmation screen; the row
-   in Supabase (**Table Editor → bookings**) has `status = paid`; the owner
-   SMS arrived (if Twilio is configured); re-selecting that day shows the
-   slot struck through.
+2. Pick a pass and day(s); pay with Stripe's test card `4242 4242 4242 4242`,
+   any future expiry, any CVC/ZIP.
+3. Confirm: you land back on `/book` with the confirmation screen; Supabase
+   (**Table Editor**) shows the `bookings` row with `status = paid` plus its
+   `booking_days`; the owner SMS arrived (if Twilio is configured). Day
+   cells show "N LEFT" once a day is 4 spots from full, and "FULL" at 12.
 4. Also test backing out: start a checkout, click the back arrow on the
-   Stripe page — the slot should free up immediately.
+   Stripe page — the spots should free up immediately.
 
 ## Going live
 
 - Activate the Stripe account (business verification), switch
   `STRIPE_SECRET_KEY` to the live key, and create a **live-mode** webhook
   endpoint (same URL/events) — its `whsec_…` replaces the test one.
-- Link the page into the site (e.g. a "Book a Lesson" nav item) when ready.
-- Prices/durations/services are edited in one place: `lib/services.js`.
+- Link the page into the site (point the pricing-card buttons and nav CTA
+  at `/book`) when ready.
+- Prices/passes and the 12-athlete daily cap are edited in one place:
+  `lib/services.js` (capacity also lives in the DB trigger — change both).
 
 ## Not built yet (phase two)
 
 - Organizer tools: daily roster digest, block-out days, cancel/refund flow.
-  Refunds work today via the Stripe dashboard, but they don't free the slot
-  automatically — delete/cancel the row in Supabase too.
-- Weekly-pass purchases (the after-school program) still go through the
-  contact form by design.
+  Refunds work today via the Stripe dashboard, but they don't free the
+  spots automatically — set the booking's status to `cancelled` in
+  Supabase too.

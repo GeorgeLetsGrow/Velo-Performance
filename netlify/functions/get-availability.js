@@ -1,33 +1,39 @@
-// GET /.netlify/functions/get-availability?date=YYYY-MM-DD
-// Returns the busy time ranges (minutes from midnight, half-open) for a day,
-// counting paid bookings and holds that haven't expired. The booking page
-// derives open slots from these ranges per service duration.
+// GET /.netlify/functions/get-availability?from=YYYY-MM-DD&to=YYYY-MM-DD
+// Returns how many athletes are already signed up per training day —
+// { capacity: 12, taken: { "2026-07-06": 3, ... } } — counting paid bookings
+// and holds that haven't expired. The booking page shows spots left per day.
 
 const { sb } = require('../../lib/db');
+const { CAPACITY, isIsoDate } = require('../../lib/services');
 
 exports.handler = async (event) => {
-  const date = (event.queryStringParameters || {}).date || '';
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json(400, { error: 'bad_date' });
+  const q = event.queryStringParameters || {};
+  const from = q.from || '';
+  const to = q.to || '';
+  if (!isIsoDate(from) || !isIsoDate(to) || to < from) return json(400, { error: 'bad_range' });
+  if ((Date.parse(to) - Date.parse(from)) / 86400000 > 31) return json(400, { error: 'range_too_wide' });
 
   try {
     const res = await sb(
-      `/bookings?select=start_min,duration_min,status,hold_expires_at` +
-        `&session_date=eq.${date}&status=in.(paid,hold)`
+      `/booking_days?select=session_date,booking:bookings!inner(status,hold_expires_at)` +
+        `&session_date=gte.${from}&session_date=lte.${to}`
     );
     if (!res.ok) {
       console.error('availability query failed:', res.status, res.text);
-      // status is safe to expose and pinpoints the failure (401 = bad key, …)
       return json(502, { error: 'db', upstream_status: res.status });
     }
     const now = Date.now();
-    const busy = res.data
-      .filter((r) => r.status === 'paid' || (r.hold_expires_at && Date.parse(r.hold_expires_at) > now))
-      .map((r) => [r.start_min, r.start_min + r.duration_min]);
-    return json(200, { busy });
+    const taken = {};
+    for (const r of res.data) {
+      const b = r.booking;
+      const active =
+        b && (b.status === 'paid' ||
+          (b.status === 'hold' && b.hold_expires_at && Date.parse(b.hold_expires_at) > now));
+      if (active) taken[r.session_date] = (taken[r.session_date] || 0) + 1;
+    }
+    return json(200, { capacity: CAPACITY, taken });
   } catch (err) {
     console.error(err);
-    // The message of a failed fetch names the URL/network problem and never
-    // contains credentials, so it's safe to surface for diagnosis.
     const detail = String((err && err.message) || err).slice(0, 140);
     return json(502, {
       error: 'unavailable',
