@@ -131,6 +131,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
   .velo-desktop-nav { display: none !important; }
   .velo-mobile-btn { display: flex !important; }
   .velo-nine-grid { grid-template-columns: 1fr !important; }
+  .velo-book-grid { grid-template-columns: 1fr !important; }
   .velo-split { grid-template-columns: 1fr !important; gap: 36px !important; }
   .velo-footer-grid { grid-template-columns: 1fr !important; }
   .velo-form-row { grid-template-columns: 1fr !important; }

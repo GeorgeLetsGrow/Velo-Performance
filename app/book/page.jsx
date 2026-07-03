@@ -67,7 +67,7 @@ function slotsFor(service, iso, busy) {
 export default function BookPage() {
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
-  const [serviceId, setServiceId] = useState(null);
+  const [serviceId, setServiceId] = useState(SERVICES[0].id);
   const [weekOffset, setWeekOffset] = useState(0);
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
@@ -83,7 +83,7 @@ export default function BookPage() {
     setMounted(true);
     const q = new URLSearchParams(window.location.search);
     if (q.get('paid') === '1') {
-      setStep(4);
+      setStep(3);
     } else if (q.get('cancelled') === '1') {
       const bid = q.get('bid');
       if (bid) {
@@ -145,7 +145,7 @@ export default function BookPage() {
       if (res.status === 409) {
         setNotice({ kind: 'error', text: 'That time was just taken by someone else — please pick another slot.' });
         setTime(null);
-        setStep(2);
+        setStep(1);
         setAvailReload((n) => n + 1);
       } else {
         setNotice({ kind: 'error', text: 'Something went wrong starting checkout. Please try again in a moment.' });
@@ -164,10 +164,11 @@ export default function BookPage() {
   };
   const mono = { fontFamily: "'JetBrains Mono'", fontSize: 12, letterSpacing: '.1em', color: 'var(--text-4)' };
 
+  // Changing the service keeps the chosen day but clears the time — durations
+  // differ, so which start times fit changes with the service.
   function pickService(id) {
     setServiceId(id);
     setTime(null);
-    setStep(2);
   }
   function pickDate(iso) {
     setDate(iso);
@@ -175,7 +176,7 @@ export default function BookPage() {
   }
   function reset() {
     setStep(1);
-    setServiceId(null);
+    setServiceId(SERVICES[0].id);
     setDate(null);
     setTime(null);
     setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
@@ -184,7 +185,7 @@ export default function BookPage() {
   }
 
   /* ----- step indicator ----- */
-  const steps = ['Service', 'Date & Time', 'Details', 'Done'];
+  const steps = ['Session', 'Details', 'Done'];
   const indicator = (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, flexWrap: 'wrap', margin: '0 0 28px' }}>
       {steps.map((s, i) => {
@@ -210,33 +211,7 @@ export default function BookPage() {
     </div>
   );
 
-  /* ----- step 1: service ----- */
-  const serviceStep = (
-    <div>
-      <div style={{ ...label, marginBottom: 14 }}>Choose a Service</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 12 }}>
-        {SERVICES.map((s) => {
-          const sel = s.id === serviceId;
-          return (
-            <button key={s.id} onClick={() => pickService(s.id)} style={{
-              textAlign: 'left', cursor: 'pointer', padding: '20px 22px', font: 'inherit',
-              background: sel ? '#16110c' : 'var(--bg-1)', border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
-              display: 'flex', flexDirection: 'column', gap: 10,
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10 }}>
-                <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 20, letterSpacing: '.02em', textTransform: 'uppercase', color: 'var(--text)' }}>{s.name}</span>
-                <span style={{ fontFamily: "'Anton'", fontSize: 22, color: sel ? A : 'var(--text)' }}>{s.price}</span>
-              </div>
-              <div style={{ color: 'var(--text-3)', fontSize: 14.5, lineHeight: 1.5 }}>{s.desc}</div>
-              <div style={{ ...mono, color: sel ? A : 'var(--text-4)' }}>{s.duration} MIN SESSION</div>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  /* ----- step 2: date & time ----- */
+  /* ----- step 1: service + date & time, all in one place ----- */
   const tab = (on) => ({
     flex: 1, padding: 12, cursor: 'pointer', font: 'inherit',
     fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 14, letterSpacing: '.08em', textTransform: 'uppercase',
@@ -244,67 +219,104 @@ export default function BookPage() {
     color: on ? 'var(--ink)' : 'var(--text-2)', background: on ? A : 'var(--bg-1)',
   });
 
-  const dateTimeStep = (
+  const sessionStep = (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
-        <div style={label}>Pick a Day</div>
-        {service && <div style={mono}>{service.name} · {service.duration} min</div>}
-      </div>
-      <div style={{ display: 'flex', gap: 8, margin: '10px 0 16px', maxWidth: 340 }}>
-        <button onClick={() => { setWeekOffset(0); setDate(null); setTime(null); }} style={tab(weekOffset === 0)}>This Week</button>
-        <button onClick={() => { setWeekOffset(1); setDate(null); setTime(null); }} style={tab(weekOffset === 1)}>Next Week</button>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
-        {week.map((d) => {
-          const sel = d.iso === date;
-          const disabled = d.past;
-          return (
-            <button key={d.iso} disabled={disabled} onClick={() => pickDate(d.iso)} style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '16px 4px', font: 'inherit',
-              cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
-              border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? '#16110c' : 'var(--bg-1)',
-            }}>
-              <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, letterSpacing: '.1em', color: 'var(--text-4)' }}>{d.dow}</span>
-              <span style={{ fontFamily: "'Anton'", fontSize: 26, lineHeight: 1, color: sel ? A : 'var(--text)' }}>{d.day}</span>
-              <span style={{ fontFamily: "'Barlow'", fontSize: 11, color: 'var(--text-4)' }}>{d.mon}</span>
-            </button>
-          );
-        })}
+      <div className="velo-book-grid" style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 'clamp(24px,4vw,40px)', alignItems: 'start' }}>
+        {/* --- service (radio select) --- */}
+        <div>
+          <div style={{ ...label, marginBottom: 14 }}>1 · Choose a Service</div>
+          <div role="radiogroup" aria-label="Service" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {SERVICES.map((s) => {
+              const sel = s.id === serviceId;
+              return (
+                <button key={s.id} role="radio" aria-checked={sel} onClick={() => pickService(s.id)} style={{
+                  textAlign: 'left', cursor: 'pointer', padding: '14px 16px', font: 'inherit',
+                  background: sel ? '#16110c' : 'var(--bg-1)', border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
+                  display: 'flex', alignItems: 'center', gap: 13,
+                }}>
+                  <span aria-hidden="true" style={{
+                    width: 18, height: 18, borderRadius: '50%', flexShrink: 0,
+                    border: `2px solid ${sel ? A : 'var(--border-strong)'}`,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {sel && <span style={{ width: 8, height: 8, borderRadius: '50%', background: A }} />}
+                  </span>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{ display: 'block', fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 17.5, letterSpacing: '.02em', textTransform: 'uppercase', color: 'var(--text)', lineHeight: 1.15 }}>{s.name}</span>
+                    <span style={{ display: 'block', color: 'var(--text-3)', fontSize: 13, lineHeight: 1.45, marginTop: 3 }}>{s.desc}</span>
+                  </span>
+                  <span style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <span style={{ display: 'block', fontFamily: "'Anton'", fontSize: 19, color: sel ? A : 'var(--text)', lineHeight: 1 }}>{s.price}</span>
+                    <span style={{ display: 'block', ...mono, fontSize: 10, marginTop: 4, color: sel ? A : 'var(--text-4)' }}>{s.duration} MIN</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* --- day & time (updates live with the service above) --- */}
+        <div>
+          <div style={{ ...label, marginBottom: 14 }}>2 · Pick a Day &amp; Time</div>
+          <div style={{ display: 'flex', gap: 8, margin: '0 0 14px', maxWidth: 340 }}>
+            <button onClick={() => { setWeekOffset(0); setDate(null); setTime(null); }} style={tab(weekOffset === 0)}>This Week</button>
+            <button onClick={() => { setWeekOffset(1); setDate(null); setTime(null); }} style={tab(weekOffset === 1)}>Next Week</button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
+            {week.map((d) => {
+              const sel = d.iso === date;
+              const disabled = d.past;
+              return (
+                <button key={d.iso} disabled={disabled} onClick={() => pickDate(d.iso)} style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '14px 4px', font: 'inherit',
+                  cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
+                  border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? '#16110c' : 'var(--bg-1)',
+                }}>
+                  <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, letterSpacing: '.1em', color: 'var(--text-4)' }}>{d.dow}</span>
+                  <span style={{ fontFamily: "'Anton'", fontSize: 24, lineHeight: 1, color: sel ? A : 'var(--text)' }}>{d.day}</span>
+                  <span style={{ fontFamily: "'Barlow'", fontSize: 11, color: 'var(--text-4)' }}>{d.mon}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', margin: '24px 0 12px' }}>
+            <div style={label}>{date ? `Open Times — ${fmtDate(date)}` : 'Select a day to see times'}</div>
+            {service && date && <div style={{ ...mono, fontSize: 11 }}>{service.name.toUpperCase()} · {service.duration} MIN</div>}
+          </div>
+          {date && busy === null && (
+            <div style={{ ...mono, padding: '14px 0' }}>Checking open times…</div>
+          )}
+          {date && busy === 'error' && (
+            <div style={{ padding: '14px 16px', border: '1px solid var(--border-2)', background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+              <span style={{ color: 'var(--text-2)', fontSize: 15 }}>Couldn&apos;t load availability.</span>
+              <button onClick={() => setAvailReload((n) => n + 1)} style={{ ...ghostBtn, flex: 'none', padding: '9px 18px', fontSize: 13 }}>Retry</button>
+            </div>
+          )}
+          {date && Array.isArray(busy) && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(96px,1fr))', gap: 8 }}>
+              {slots.map((slot) => {
+                const sel = slot.mins === time;
+                return (
+                  <button key={slot.mins} disabled={slot.taken} onClick={() => setTime(slot.mins)} style={{
+                    padding: '12px 6px', font: 'inherit', cursor: slot.taken ? 'not-allowed' : 'pointer',
+                    fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 15, letterSpacing: '.03em',
+                    border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
+                    background: sel ? A : slot.taken ? 'var(--bg-2)' : 'var(--bg-1)',
+                    color: sel ? 'var(--ink)' : slot.taken ? 'var(--text-5)' : 'var(--text)',
+                    textDecoration: slot.taken ? 'line-through' : 'none',
+                  }}>{fmtTime(slot.mins)}</button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div style={{ ...label, margin: '28px 0 14px' }}>
-        {date ? `Available Times — ${fmtDate(date)}` : 'Select a day to see times'}
-      </div>
-      {date && busy === null && (
-        <div style={{ ...mono, padding: '18px 0' }}>Checking open times…</div>
-      )}
-      {date && busy === 'error' && (
-        <div style={{ padding: '14px 16px', border: '1px solid var(--border-2)', background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-          <span style={{ color: 'var(--text-2)', fontSize: 15 }}>Couldn&apos;t load availability.</span>
-          <button onClick={() => setAvailReload((n) => n + 1)} style={{ ...ghostBtn, flex: 'none', padding: '9px 18px', fontSize: 13 }}>Retry</button>
-        </div>
-      )}
-      {date && Array.isArray(busy) && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: 8 }}>
-          {slots.map((slot) => {
-            const sel = slot.mins === time;
-            return (
-              <button key={slot.mins} disabled={slot.taken} onClick={() => setTime(slot.mins)} style={{
-                padding: '13px 8px', font: 'inherit', cursor: slot.taken ? 'not-allowed' : 'pointer',
-                fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 15, letterSpacing: '.03em',
-                border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
-                background: sel ? A : slot.taken ? 'var(--bg-2)' : 'var(--bg-1)',
-                color: sel ? 'var(--ink)' : slot.taken ? 'var(--text-5)' : 'var(--text)',
-                textDecoration: slot.taken ? 'line-through' : 'none',
-              }}>{fmtTime(slot.mins)}</button>
-            );
-          })}
-        </div>
-      )}
-
-      <div style={{ display: 'flex', gap: 12, marginTop: 28 }}>
-        <button onClick={() => setStep(1)} style={ghostBtn}>← Back</button>
-        <button disabled={!time} onClick={() => setStep(3)} style={primaryBtn(!!time)}>Continue →</button>
+      <div style={{ marginTop: 28 }}>
+        <button disabled={!time} onClick={() => setStep(2)} style={{ ...primaryBtn(!!time), width: '100%', flex: 'none' }}>
+          {time && service ? `Continue — ${service.name} · ${fmtDate(date)} · ${fmtTime(time)} →` : 'Pick a time to continue'}
+        </button>
       </div>
     </div>
   );
@@ -350,7 +362,7 @@ export default function BookPage() {
         <label><span style={fieldLabel}>Email or Phone</span><input value={form.contact} onChange={set('contact')} placeholder="you@email.com" style={field} /></label>
       </div>
       <div style={{ display: 'flex', gap: 12 }}>
-        <button onClick={() => setStep(2)} style={ghostBtn}>← Back</button>
+        <button onClick={() => setStep(1)} style={ghostBtn}>← Back</button>
         <button disabled={!canSubmit} onClick={goToPayment} style={primaryBtn(!!canSubmit)}>
           {submitting ? 'Opening Secure Checkout…' : `Continue to Payment — ${service?.price}`}
         </button>
@@ -420,9 +432,8 @@ export default function BookPage() {
         <div style={{ ...card, padding: 'clamp(22px,4vw,40px)' }}>
           {!mounted ? (
             <div style={{ ...mono, textAlign: 'center', padding: '40px 0' }}>Loading booking…</div>
-          ) : step === 1 ? serviceStep
-            : step === 2 ? dateTimeStep
-            : step === 3 ? detailsStep
+          ) : step === 1 ? sessionStep
+            : step === 2 ? detailsStep
             : confirmedStep}
         </div>
       </div>
