@@ -121,6 +121,15 @@ body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-se
 .velo-form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(12, 12, 13, .28); }
 .velo-form-submit:active { transform: translateY(0); }
 
+/* ============ LEGAL PAGES (/privacy, /terms) ============ */
+.legal-body h2 { font-family:'Barlow Condensed'; font-weight:800; font-size:22px; letter-spacing:.02em; text-transform:uppercase; color:var(--text); margin:36px 0 12px; }
+.legal-body h2:first-child { margin-top:0; }
+.legal-body p { margin:0 0 14px; }
+.legal-body ul { margin:0 0 14px; padding-left:22px; }
+.legal-body li { margin-bottom:8px; }
+.legal-body a { color:var(--accent); }
+.legal-body strong { color:var(--text); }
+
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
   .velo-hero-grid { flex-direction: column-reverse !important; align-items: flex-start !important; }
