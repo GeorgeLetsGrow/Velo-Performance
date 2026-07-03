@@ -1,10 +1,18 @@
 # Booking System — Setup Guide
 
-The `/book` page sells the same passes as the homepage pricing section —
-Drop-In ($60/day), 3-Day Flex Pass ($150/week), Unlimited Week ($175/week):
-pick a pass → pick training days with live spots-left counts → pay with
-Stripe Checkout → the spots are locked and the owner gets a text. This
-guide wires up the two external services it depends on.
+The `/book` page sells two things behind a toggle:
+
+- **Day Passes** — the same passes as the homepage pricing section: Drop-In
+  ($60/day), 3-Day Flex Pass ($150/week), Unlimited Week ($175/week). Day
+  attendance with live spots-left counts, capped at 12 athletes/day.
+- **Individual Training** — 1-on-1 sessions (hitting, pitching, defense,
+  speed, evaluation) in exclusive time slots, Mon–Fri 5:00–7:00 PM, after
+  the program ends. The window is one constant in `lib/services.js`
+  (`LESSON_START`/`LESSON_END`).
+
+Either way: pick → pay with Stripe Checkout → the reservation is locked and
+the owner gets a text. This guide wires up the two external services it
+depends on.
 
 **Current state:** the page is live at `/book` but nothing on the site links
 to it yet, so it's safe to test in Stripe test mode on the deployed site.
@@ -28,9 +36,10 @@ Abandoned checkout → hold expires (or release-hold fires on cancel) → spots 
 
 1. Create a project (any name, e.g. `velo-bookings`) at supabase.com.
 2. Apply the schema in `supabase/migrations/` — the latest migration
-   creates `bookings` + `booking_days` with a 12-athletes-per-day capacity
-   trigger, locked behind row level security. (If you applied the older
-   slot-based schema, the new migration replaces it.) Either way works:
+   creates `bookings` (passes *and* lessons) + `booking_days`, with a
+   12-athletes-per-day capacity trigger for passes and a no-overlap
+   constraint for 1-on-1 slots, locked behind row level security. (Each
+   newer migration replaces the previous test schema.) Either way works:
    - **CLI** (repo is already `supabase init`-ed):
      ```sh
      npx supabase login

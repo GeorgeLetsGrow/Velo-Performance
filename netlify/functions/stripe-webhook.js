@@ -11,7 +11,7 @@
 const crypto = require('crypto');
 const { sb } = require('../../lib/db');
 const { notifyOwner } = require('../../lib/sms');
-const { fmtDay } = require('../../lib/services');
+const { fmtDay, fmtTime } = require('../../lib/services');
 
 const TOLERANCE_SEC = 300;
 
@@ -65,16 +65,21 @@ exports.handler = async (event) => {
       });
       const b = res.ok && res.data && res.data[0];
       if (b) {
-        const daysRes = await sb(
-          `/booking_days?booking_id=eq.${bookingId}&select=session_date&order=session_date.asc`
-        );
-        const days = (daysRes.ok && daysRes.data ? daysRes.data : [])
-          .map((d) => fmtDay(d.session_date))
-          .join(', ');
+        let when;
+        if (b.kind === 'lesson') {
+          when = `${fmtDay(b.session_date)} ${fmtTime(b.start_min)}`;
+        } else {
+          const daysRes = await sb(
+            `/booking_days?booking_id=eq.${bookingId}&select=session_date&order=session_date.asc`
+          );
+          when = (daysRes.ok && daysRes.data ? daysRes.data : [])
+            .map((d) => fmtDay(d.session_date))
+            .join(', ') || 'days pending';
+        }
         await notifyOwner(
-          `Velo pass BOOKED & PAID:\n` +
+          `Velo ${b.kind === 'lesson' ? '1-on-1' : 'pass'} BOOKED & PAID:\n` +
             `${b.athlete_name}${b.athlete_age ? ` (age ${b.athlete_age})` : ''}${b.sport ? ` — ${b.sport}` : ''}\n` +
-            `${b.pass_name}: ${days || 'days pending'}\n` +
+            `${b.item_name}: ${when}\n` +
             `Contact: ${b.contact}`
         );
       } else {
