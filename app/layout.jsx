@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Velo Performance Labs — After-School Player Development | Apollo Beach, FL',
+  title: 'Velo Performance Lab — After-School Player Development | Apollo Beach, FL',
   description:
     'After-school player development for baseball and softball athletes in Apollo Beach, FL. Real coaching, small groups, big results. Train different. Train smarter. Be elite.',
 };

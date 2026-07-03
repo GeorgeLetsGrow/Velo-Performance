@@ -1,4 +1,4 @@
--- Velo Performance Labs — booking system schema
+-- Velo Performance Lab — booking system schema
 -- Apply with the Supabase CLI: `supabase link --project-ref <ref>` then
 -- `supabase db push`. (Or paste into the dashboard SQL Editor and run once.)
 

@@ -1,15 +1,15 @@
 import LegalLayout from '../legal/LegalLayout';
 
 export const metadata = {
-  title: 'Privacy Policy — Velo Performance Labs',
-  description: 'How Velo Performance Labs collects, uses, and protects your information.',
+  title: 'Privacy Policy — Velo Performance Lab',
+  description: 'How Velo Performance Lab collects, uses, and protects your information.',
 };
 
 export default function PrivacyPolicy() {
   return (
     <LegalLayout eyebrow="Legal" title="Privacy Policy" updated="July 2026">
       <p>
-        Velo Performance Labs (&ldquo;Velo,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;) operates an
+        Velo Performance Lab (&ldquo;Velo,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;) operates an
         after-school baseball and softball training program in Apollo Beach, FL. This
         page explains what information we collect through our website, why we collect
         it, and how it&apos;s used.

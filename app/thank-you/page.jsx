@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Request Received — Velo Performance Labs',
+  title: 'Request Received — Velo Performance Lab',
   robots: { index: false },
 };
 
@@ -22,7 +22,7 @@ export default function ThankYou() {
         <Link href="/" style={{ display: 'inline-block' }}>
           <img
             src="/assets/velo-logo-transparent.png"
-            alt="Velo Performance Labs"
+            alt="Velo Performance Lab"
             style={{ height: 110, width: 'auto', display: 'block', margin: '0 auto 30px' }}
           />
         </Link>

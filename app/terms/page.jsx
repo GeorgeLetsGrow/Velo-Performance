@@ -1,8 +1,8 @@
 import LegalLayout from '../legal/LegalLayout';
 
 export const metadata = {
-  title: 'Terms & Conditions — Velo Performance Labs',
-  description: 'Terms and conditions for booking and training with Velo Performance Labs.',
+  title: 'Terms & Conditions — Velo Performance Lab',
+  description: 'Terms and conditions for booking and training with Velo Performance Lab.',
 };
 
 export default function Terms() {
@@ -10,7 +10,7 @@ export default function Terms() {
     <LegalLayout eyebrow="Legal" title="Terms & Conditions" updated="July 2026">
       <p>
         These terms apply to anyone who submits our contact form, books a pass, or
-        books an individual training session with Velo Performance Labs
+        books an individual training session with Velo Performance Lab
         (&ldquo;Velo,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo;) in Apollo Beach, FL. By using our
         website or booking a session, you agree to these terms.
       </p>

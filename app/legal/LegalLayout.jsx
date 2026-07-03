@@ -6,11 +6,11 @@ import Link from 'next/link';
 // copy needs to read like a document, not marketing display type.
 export default function LegalLayout({ eyebrow, title, updated, children }) {
   return (
-    <main style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
+    <main style={{ minHeight: '100vh', background: 'var(--bg-wash), var(--bg)', color: 'var(--text)' }}>
       <header style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--header-bg)', backdropFilter: 'blur(14px)', borderBottom: '1px solid var(--border-2)' }}>
         <div style={{ maxWidth: 820, margin: '0 auto', padding: '0 22px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" style={{ height: 52, width: 'auto', display: 'block' }} />
+            <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" style={{ height: 52, width: 'auto', display: 'block' }} />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Link href="/" style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 14, letterSpacing: '.07em', textTransform: 'uppercase', color: 'var(--text-2)', textDecoration: 'none' }}>← Home</Link>

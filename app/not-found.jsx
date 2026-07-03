@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Page Not Found — Velo Performance Labs',
+  title: 'Page Not Found — Velo Performance Lab',
 };
 
 export default function NotFound() {
@@ -41,7 +41,7 @@ export default function NotFound() {
         <Link href="/" style={{ display: 'inline-block' }}>
           <img
             src="/assets/velo-logo-transparent.png"
-            alt="Velo Performance Labs"
+            alt="Velo Performance Lab"
             style={{ height: 110, width: 'auto', display: 'block', margin: '0 auto 30px' }}
           />
         </Link>

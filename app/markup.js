@@ -4,7 +4,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
 <header style="position:sticky;top:0;z-index:50;background:var(--header-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border-2)">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between">
     <a href="#top" style="display:flex;align-items:center;text-decoration:none">
-      <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" style="height:66px;width:auto;display:block">
+      <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" style="height:66px;width:auto;display:block">
     </a>
     <nav class="velo-desktop-nav" style="display:flex;align-items:center;gap:30px">
       <a href="#programs" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Programs</a>
@@ -20,7 +20,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
       <button class="velo-mobile-btn" onclick="toggleMobileMenu()" style="display:none;background:none;border:1px solid var(--border-2);color:var(--text);width:44px;height:44px;cursor:pointer;font-size:18px;align-items:center;justify-content:center">☰</button>
     </div>
   </div>
-  <div id="mobileMenu" style="display:none;border-top:1px solid var(--border-2);padding:14px 28px 20px;flex-direction:column;gap:4px;background:var(--bg)">
+  <div id="mobileMenu" style="display:none;border-top:1px solid var(--border-2);padding:14px 28px 20px;flex-direction:column;gap:4px;background:var(--bg-wash),var(--bg)">
     <a href="#programs" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Programs</a>
     <a href="#schedule" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Schedule</a>
     <a href="#coaches" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Coaches</a>
@@ -69,7 +69,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         </div>
       </div>
       </div>
-      <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" class="velo-hero-logo" style="width:min(560px,48vw);height:auto;display:block;flex-shrink:0">
+      <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" class="velo-hero-logo" style="width:min(560px,48vw);height:auto;display:block;flex-shrink:0">
     </div>
   </div>
 </section>
@@ -93,7 +93,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
 </div>
 
 <!-- ============ PROGRAM OVERVIEW ============ -->
-<section id="programs" style="background:var(--bg);padding:104px 0">
+<section id="programs" style="background:var(--bg-wash),var(--bg);padding:104px 0">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-bottom:54px">
       <div style="max-width:640px">
@@ -183,7 +183,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
 </section>
 
 <!-- ============ SCHEDULE ============ -->
-<section id="schedule" style="background:var(--bg);padding:104px 0">
+<section id="schedule" style="background:var(--bg-wash),var(--bg);padding:104px 0">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
     <div style="margin-bottom:54px;max-width:680px">
       <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:16px">03 / The Afternoon</div>
@@ -343,7 +343,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
 </section>
 
 <!-- ============ WHAT EACH AFTERNOON INCLUDES ============ -->
-<section style="background:var(--bg);padding:104px 0">
+<section style="background:var(--bg-wash),var(--bg);padding:104px 0">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
     <div class="velo-split" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
       <div>
@@ -374,7 +374,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         </div>
       </div>
       <div style="position:relative;background:var(--bg);border:1px solid var(--border);overflow:hidden;display:flex">
-        <img src="/assets/team-card.png" alt="Velo Performance Labs team card" style="width:100%;height:auto;display:block">
+        <img src="/assets/team-card.png" alt="Velo Performance Lab team card" style="width:100%;height:auto;display:block">
         <div style="position:absolute;top:20px;left:20px;background:var(--accent);color:var(--ink);font-family:'Barlow Condensed';font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;transform:skewX(-9deg);box-shadow:0 4px 16px rgba(0,0,0,.45)"><span style="display:inline-block;transform:skewX(9deg)">Baseball + Softball</span></div>
       </div>
     </div>
@@ -382,7 +382,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
 </section>
 
 <!-- ============ CHAMPIONS BOARD ============ -->
-<section style="background:var(--bg);padding:96px 0 40px">
+<section style="background:var(--bg-wash),var(--bg);padding:96px 0 40px">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:34px;flex-wrap:wrap">
       <span style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase">Champions Board</span>
@@ -472,7 +472,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
 </section>
 
 <!-- ============ REGISTRATION CTA ============ -->
-<section id="register" style="position:relative;background:var(--bg);padding:0;overflow:hidden">
+<section id="register" style="position:relative;background:var(--bg-wash),var(--bg);padding:0;overflow:hidden">
   <div style="position:absolute;inset:0;background:repeating-linear-gradient(118deg,var(--stripe-a),var(--stripe-a) 16px,var(--stripe-b) 16px,var(--stripe-b) 32px);opacity:.6"></div>
   <div style="position:relative;max-width:1240px;margin:0 auto;padding:104px 28px">
     <div style="background:var(--accent);padding:clamp(44px,6vw,80px);position:relative;overflow:hidden">
@@ -513,7 +513,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
             </div>
             <div style="grid-column:1 / -1;display:flex;align-items:flex-start;gap:10px;margin-top:2px">
               <input type="checkbox" id="rf-sms-optin" name="sms-opt-in" value="yes" style="margin-top:3px;width:17px;height:17px;flex-shrink:0;accent-color:#0c0c0d;cursor:pointer">
-              <label for="rf-sms-optin" style="font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:600;line-height:1.5;color:rgba(12,12,13,.92);cursor:pointer">I agree to receive text messages from Velo Performance Labs about my reservation. Message &amp; data rates may apply. Reply STOP to opt out anytime.</label>
+              <label for="rf-sms-optin" style="font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:600;line-height:1.5;color:rgba(12,12,13,.92);cursor:pointer">I agree to receive text messages from Velo Performance Lab about my reservation. Message &amp; data rates may apply. Reply STOP to opt out anytime.</label>
             </div>
           </div>
           <button type="submit" class="velo-form-submit" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--bg);padding:18px 36px;border:none;cursor:pointer;margin-top:18px">Reserve Your Spot →</button>
@@ -529,7 +529,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
     <div class="velo-footer-grid" style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:48px;border-bottom:1px solid var(--hairline)">
       <div>
-        <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" style="height:124px;width:auto;display:block;margin:-12px 0 14px -8px">
+        <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" style="height:124px;width:auto;display:block;margin:-12px 0 14px -8px">
         <p style="color:var(--text-4);font-size:15px;line-height:1.6;max-width:300px">After-school player development for baseball and softball athletes. Train different. Train smarter. Be elite.</p>
       </div>
       <div>
