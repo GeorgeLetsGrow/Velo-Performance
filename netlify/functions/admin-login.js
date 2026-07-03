@@ -9,12 +9,14 @@ const { createSessionCookie } = require('../../lib/auth');
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
 
-  const expected = process.env.ADMIN_PASSWORD;
+  // trim: a stray newline/space from pasting into the Netlify UI breaks
+  // the exact-match check (same class of bug as SUPABASE_URL/KEY in lib/db.js)
+  const expected = (process.env.ADMIN_PASSWORD || '').trim();
   if (!expected) return json(500, { error: 'not_configured' });
 
   let password = '';
   try {
-    password = JSON.parse(event.body || '{}').password || '';
+    password = String(JSON.parse(event.body || '{}').password || '').trim();
   } catch {
     return json(400, { error: 'bad_request' });
   }
