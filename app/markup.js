@@ -486,20 +486,21 @@ export const MARKUP = `<!-- ============ NAV ============ -->
           <p style="display:none" aria-hidden="true"><label>Don't fill this out if you're human: <input name="bot-field"></label></p>
           <div class="velo-form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div>
-              <label for="rf-name" class="velo-form-label">Parent Name *</label>
-              <input id="rf-name" name="parent-name" type="text" required autocomplete="name" class="velo-input">
+              <label for="rf-name" class="sr-only">Parent Name</label>
+              <input id="rf-name" name="parent-name" type="text" required autocomplete="name" placeholder="Parent Name *" class="velo-input">
             </div>
             <div>
-              <label for="rf-email" class="velo-form-label">Email *</label>
-              <input id="rf-email" name="email" type="email" required autocomplete="email" class="velo-input">
+              <label for="rf-email" class="sr-only">Email</label>
+              <input id="rf-email" name="email" type="email" required autocomplete="email" placeholder="Email *" class="velo-input">
             </div>
             <div>
-              <label for="rf-phone" class="velo-form-label">Phone</label>
-              <input id="rf-phone" name="phone" type="tel" autocomplete="tel" class="velo-input">
+              <label for="rf-phone" class="sr-only">Phone</label>
+              <input id="rf-phone" name="phone" type="tel" autocomplete="tel" placeholder="Phone" class="velo-input">
             </div>
             <div>
-              <label for="rf-interest" class="velo-form-label">Interested In</label>
+              <label for="rf-interest" class="sr-only">Interested In</label>
               <select id="rf-interest" name="interest" class="velo-input">
+                <option value="" disabled selected>Interested In</option>
                 <option>Drop-In — $60 / day</option>
                 <option>3-Day Flex Pass — $150 / week</option>
                 <option>Unlimited Week — $175 / week</option>
@@ -507,12 +508,12 @@ export const MARKUP = `<!-- ============ NAV ============ -->
               </select>
             </div>
             <div style="grid-column:1 / -1">
-              <label for="rf-message" class="velo-form-label">Athlete's age &amp; anything we should know</label>
-              <textarea id="rf-message" name="message" rows="3" class="velo-input" style="resize:vertical"></textarea>
+              <label for="rf-message" class="sr-only">Athlete's age &amp; anything we should know</label>
+              <textarea id="rf-message" name="message" rows="3" placeholder="Athlete's age &amp; anything we should know" class="velo-input" style="resize:vertical"></textarea>
             </div>
             <div style="grid-column:1 / -1;display:flex;align-items:flex-start;gap:10px;margin-top:2px">
               <input type="checkbox" id="rf-sms-optin" name="sms-opt-in" value="yes" style="margin-top:3px;width:17px;height:17px;flex-shrink:0;accent-color:#0c0c0d;cursor:pointer">
-              <label for="rf-sms-optin" style="font-family:'Barlow',sans-serif;font-size:13px;line-height:1.5;color:rgba(12,12,13,.78);cursor:pointer">I agree to receive text messages from Velo Performance Labs about my reservation. Message &amp; data rates may apply. Reply STOP to opt out anytime.</label>
+              <label for="rf-sms-optin" style="font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:600;line-height:1.5;color:rgba(12,12,13,.92);cursor:pointer">I agree to receive text messages from Velo Performance Labs about my reservation. Message &amp; data rates may apply. Reply STOP to opt out anytime.</label>
             </div>
           </div>
           <button type="submit" class="velo-form-submit" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--bg);padding:18px 36px;border:none;cursor:pointer;margin-top:18px">Reserve Your Spot →</button>
