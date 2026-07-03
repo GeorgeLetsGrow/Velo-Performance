@@ -27,6 +27,10 @@
   --bg-55: rgba(12, 12, 13, .55);
   --header-bg: rgba(12, 12, 13, .82);
   --stat-bg: rgba(18, 19, 22, .6);
+  /* very light navy wash layered over --bg; a second background-image layer,
+     so it never touches --bg itself (which SVG stroke/fill also reads as a
+     solid color and can't accept a gradient) */
+  --bg-wash: linear-gradient(180deg, rgba(20, 60, 130, .16) 0%, rgba(20, 60, 130, .05) 45%, rgba(20, 60, 130, 0) 100%);
 }
 
 :root[data-theme="light"] {
@@ -53,6 +57,7 @@
   --bg-55: rgba(246, 246, 244, .55);
   --header-bg: rgba(246, 246, 244, .82);
   --stat-bg: rgba(255, 255, 255, .65);
+  --bg-wash: none; /* navy wash is a dark-theme-only accent */
 }
 
 /* Booking module stays an intentional dark "spotlight" panel in both themes */
@@ -74,12 +79,13 @@
   --border-strong: #36373c;
   --hairline: #1c1d20;
   --dash: #3a3b40;
+  --bg-wash: linear-gradient(180deg, rgba(20, 60, 130, .16) 0%, rgba(20, 60, 130, .05) 45%, rgba(20, 60, 130, 0) 100%);
 }
 
 /* ============ BASE ============ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background-color .25s ease, color .25s ease; }
+body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background-color .25s ease, color .25s ease; }
 ::selection { background: var(--accent); color: var(--ink); }
 @keyframes veloMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes veloPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { IoBaseball, IoBaseballOutline } from 'react-icons/io5';
 import {
   PASSES as PASS_DEFS,
   LESSONS as LESSON_DEFS,
@@ -334,7 +335,7 @@ export default function BookPage() {
   const modeTab = (on) => ({
     flex: 1, padding: '14px 12px', cursor: 'pointer', font: 'inherit', textAlign: 'center',
     border: `1.5px solid ${on ? A : 'var(--border-2)'}`,
-    background: on ? '#16110c' : 'var(--bg-1)',
+    background: on ? 'var(--bg-3)' : 'var(--bg-1)',
   });
   const modeToggle = (
     <div style={{ display: 'flex', gap: 10, marginBottom: 26 }}>
@@ -361,7 +362,7 @@ export default function BookPage() {
         return (
           <button key={o.id} role="radio" aria-checked={sel} onClick={() => onPick(o.id)} style={{
             textAlign: 'left', cursor: 'pointer', padding: '14px 16px', font: 'inherit', position: 'relative',
-            background: sel ? '#16110c' : 'var(--bg-1)', border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
+            background: sel ? 'var(--bg-3)' : 'var(--bg-1)', border: `1.5px solid ${sel ? A : 'var(--border-2)'}`,
             display: 'flex', alignItems: 'center', gap: 13,
           }}>
             {o.popular && (
@@ -469,7 +470,7 @@ export default function BookPage() {
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '14px 4px 10px', font: 'inherit',
                   cursor: d.past || full ? 'not-allowed' : mode === 'pass' && passId === 'unlimited' ? 'default' : 'pointer',
                   opacity: d.past || full ? 0.4 : 1,
-                  border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? '#16110c' : 'var(--bg-1)',
+                  border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? 'var(--bg-3)' : 'var(--bg-1)',
                 }}>
                   <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, letterSpacing: '.1em', color: 'var(--text-4)' }}>{d.dow}</span>
                   <span style={{ fontFamily: "'Anton'", fontSize: 24, lineHeight: 1, color: sel ? A : 'var(--text)' }}>{d.day}</span>
@@ -570,29 +571,41 @@ export default function BookPage() {
         </span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 14, marginBottom: 14 }}>
-        <label><span style={fieldLabel}>Athlete Name</span><input value={form.athlete} onChange={set('athlete')} placeholder="Jordan Smith" style={field} /></label>
-        <label><span style={fieldLabel}>Age</span><input value={form.age} onChange={set('age')} placeholder="12" style={field} inputMode="numeric" /></label>
-      </div>
+      <label style={{ display: 'block', marginBottom: 14 }}>
+        <span style={fieldLabel}>Athlete Name</span>
+        <input value={form.athlete} onChange={set('athlete')} placeholder="Jordan Smith" style={field} />
+      </label>
+      <label style={{ display: 'block', marginBottom: 14 }}>
+        <span style={fieldLabel}>Age</span>
+        <input value={form.age} onChange={set('age')} placeholder="12" style={field} inputMode="numeric" />
+      </label>
       <div style={{ marginBottom: 14 }}>
         <span style={fieldLabel}>Sport</span>
         <div style={{ display: 'flex', gap: 8 }}>
           {['Baseball', 'Softball'].map((sp) => {
             const on = form.sport === sp;
+            const sportColor = sp === 'Baseball' ? A : '#AEEA00';
             return (
               <button key={sp} onClick={() => setForm((f) => ({ ...f, sport: sp }))} style={{
-                flex: 1, padding: 13, cursor: 'pointer', font: 'inherit',
+                flex: 1, padding: 13, cursor: 'pointer', font: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                 fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 15, letterSpacing: '.06em', textTransform: 'uppercase',
-                border: `1.5px solid ${on ? A : 'var(--border-2)'}`, background: on ? '#16110c' : 'var(--bg)', color: on ? A : 'var(--text-2)',
-              }}>{sp === 'Baseball' ? '⚾' : '🥎'} {sp}</button>
+                border: `1.5px solid ${on ? sportColor : 'var(--border-2)'}`, background: on ? 'var(--bg-3)' : 'var(--bg)', color: on ? sportColor : 'var(--text-2)',
+              }}>
+                {sp === 'Baseball' ? <IoBaseball style={{ fontSize: 26 }} /> : <IoBaseballOutline style={{ fontSize: 26 }} />}
+                {sp}
+              </button>
             );
           })}
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 18 }}>
-        <label><span style={fieldLabel}>Parent / Guardian</span><input value={form.parent} onChange={set('parent')} placeholder="Optional" style={field} /></label>
-        <label><span style={fieldLabel}>Email or Phone</span><input value={form.contact} onChange={set('contact')} placeholder="you@email.com" style={field} /></label>
-      </div>
+      <label style={{ display: 'block', marginBottom: 14 }}>
+        <span style={fieldLabel}>Parent / Guardian</span>
+        <input value={form.parent} onChange={set('parent')} placeholder="Optional" style={field} />
+      </label>
+      <label style={{ display: 'block', marginBottom: 18 }}>
+        <span style={fieldLabel}>Email or Phone</span>
+        <input value={form.contact} onChange={set('contact')} placeholder="you@email.com" style={field} />
+      </label>
       <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 26, cursor: 'pointer' }}>
         <input
           type="checkbox"
@@ -631,12 +644,12 @@ export default function BookPage() {
   );
 
   return (
-    <main style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
+    <main style={{ minHeight: '100vh', background: 'var(--bg-wash), var(--bg)', color: 'var(--text)' }}>
       {/* header */}
       <header style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--header-bg)', backdropFilter: 'blur(14px)', borderBottom: '1px solid var(--border-2)' }}>
         <div style={{ maxWidth: 980, margin: '0 auto', padding: '0 22px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Labs" style={{ height: 52, width: 'auto', display: 'block' }} />
+            <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" style={{ height: 52, width: 'auto', display: 'block' }} />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Link href="/" style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 14, letterSpacing: '.07em', textTransform: 'uppercase', color: 'var(--text-2)', textDecoration: 'none' }}>← Home</Link>
