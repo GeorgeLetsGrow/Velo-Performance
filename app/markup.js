@@ -510,6 +510,10 @@ export const MARKUP = `<!-- ============ NAV ============ -->
               <label for="rf-message" class="velo-form-label">Athlete's age &amp; anything we should know</label>
               <textarea id="rf-message" name="message" rows="3" class="velo-input" style="resize:vertical"></textarea>
             </div>
+            <div style="grid-column:1 / -1;display:flex;align-items:flex-start;gap:10px;margin-top:2px">
+              <input type="checkbox" id="rf-sms-optin" name="sms-opt-in" value="yes" style="margin-top:3px;width:17px;height:17px;flex-shrink:0;accent-color:#0c0c0d;cursor:pointer">
+              <label for="rf-sms-optin" style="font-family:'Barlow',sans-serif;font-size:13px;line-height:1.5;color:rgba(12,12,13,.78);cursor:pointer">I agree to receive text messages from Velo Performance Labs about my reservation. Message &amp; data rates may apply. Reply STOP to opt out anytime.</label>
+            </div>
           </div>
           <button type="submit" class="velo-form-submit" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--bg);padding:18px 36px;border:none;cursor:pointer;margin-top:18px">Reserve Your Spot →</button>
           <p style="margin-top:14px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:rgba(12,12,13,.6);text-transform:uppercase">We confirm every request personally before a spot is locked in</p>

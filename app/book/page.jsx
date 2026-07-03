@@ -69,7 +69,7 @@ export default function BookPage() {
   const [selectedDates, setSelectedDates] = useState([]); // pass mode
   const [lessonDate, setLessonDate] = useState(null);     // lesson mode
   const [lessonTime, setLessonTime] = useState(null);
-  const [form, setForm] = useState({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
+  const [form, setForm] = useState({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '', smsOptIn: false });
   // Availability for both weeks: null = loading, 'error', or { capacity, taken, busy }
   const [avail, setAvail] = useState(null);
   const [availReload, setAvailReload] = useState(0);
@@ -228,7 +228,7 @@ export default function BookPage() {
     setSelectedDates([]);
     setLessonDate(null);
     setLessonTime(null);
-    setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '' });
+    setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '', smsOptIn: false });
     setNotice(null);
     setSubmitting(false);
     setAvailReload((n) => n + 1);
@@ -257,6 +257,7 @@ export default function BookPage() {
         sport: form.sport,
         parent: form.parent,
         contact: form.contact,
+        smsOptIn: form.smsOptIn,
       };
       if (mode === 'lesson') {
         body.date = lessonDate;
@@ -588,10 +589,21 @@ export default function BookPage() {
           })}
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 26 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 18 }}>
         <label><span style={fieldLabel}>Parent / Guardian</span><input value={form.parent} onChange={set('parent')} placeholder="Optional" style={field} /></label>
         <label><span style={fieldLabel}>Email or Phone</span><input value={form.contact} onChange={set('contact')} placeholder="you@email.com" style={field} /></label>
       </div>
+      <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 26, cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={form.smsOptIn}
+          onChange={(e) => setForm((f) => ({ ...f, smsOptIn: e.target.checked }))}
+          style={{ marginTop: 3, width: 17, height: 17, flexShrink: 0, accentColor: 'var(--accent)', cursor: 'pointer' }}
+        />
+        <span style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--text-3)' }}>
+          I agree to receive text messages about my booking. Message &amp; data rates may apply. Reply STOP to opt out anytime.
+        </span>
+      </label>
       <div style={{ display: 'flex', gap: 12 }}>
         <button onClick={() => setStep(1)} style={ghostBtn}>← Back</button>
         <button disabled={!canSubmit} onClick={goToPayment} style={primaryBtn(!!canSubmit)}>

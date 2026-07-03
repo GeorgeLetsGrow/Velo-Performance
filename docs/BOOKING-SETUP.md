@@ -100,6 +100,18 @@ Redeploy after saving.
 - Prices/passes and the 12-athlete daily cap are edited in one place:
   `lib/services.js` (capacity also lives in the DB trigger — change both).
 
+## SMS consent
+
+Both the homepage contact form and the `/book` details step have an
+unchecked-by-default "I agree to receive text messages…" checkbox. Today's
+texts (owner notifications for form leads and paid bookings) don't legally
+require this — the messages go to the business's own phone, not the
+customer's — but capturing consent now means no retrofit is needed before
+ever texting a parent directly (session reminders, "a spot opened up",
+etc.). The booking checkbox is stored as `sms_opt_in` on the `bookings` row;
+the homepage checkbox rides along as a normal Netlify Forms field
+(`sms-opt-in`), visible in the Netlify dashboard's Forms submissions.
+
 ## Not built yet (phase two)
 
 - Organizer tools: daily roster digest, block-out days, cancel/refund flow.

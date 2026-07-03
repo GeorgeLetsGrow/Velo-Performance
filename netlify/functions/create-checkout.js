@@ -87,6 +87,7 @@ exports.handler = async (event) => {
       sport: String(input.sport || '').trim() || null,
       parent_name: String(input.parent || '').trim() || null,
       contact,
+      sms_opt_in: input.smsOptIn === true,
       status: 'hold',
       hold_expires_at: new Date(Date.now() + HOLD_MINUTES * 60000).toISOString(),
     };
