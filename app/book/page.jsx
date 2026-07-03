@@ -131,10 +131,46 @@ export default function BookPage() {
     ? slotsFor(lesson, loaded && avail.busy ? avail.busy[lessonDate] : [])
     : [];
 
-  // Unlimited covers every remaining open day of the visible week.
+  // How many bookable days the visible week still has — drives the guards
+  // below that stop late-week purchases that can't work (Flex) or aren't
+  // worth it (Unlimited).
+  const openDaysInWeek = (mode === 'lesson' ? week.filter((d) => !d.past) : week.filter(selectable)).length;
+  const pass_ = PASSES.find((p) => p.id === passId) || PASSES[0];
+  const weekGuard = (() => {
+    if (openDaysInWeek === 0) {
+      return {
+        title: 'This training week is done',
+        text: weekOffset === 0
+          ? 'Switch to next week to keep training.'
+          : 'No open days this week.',
+      };
+    }
+    if (mode !== 'pass') return null;
+    if (pass_.id === 'flex3' && openDaysInWeek < 3) {
+      return {
+        title: 'Not enough days left this week for a Flex Pass',
+        text: `Only ${openDaysInWeek} bookable ${openDaysInWeek === 1 ? 'day remains' : 'days remain'} this week. ` +
+          (weekOffset === 0
+            ? 'Pick any 3 days next week, or book a Drop-In for the remaining time.'
+            : 'Book a Drop-In for the open days instead.'),
+      };
+    }
+    if (pass_.id === 'unlimited' && openDaysInWeek <= 2) {
+      return {
+        title: 'Unlimited isn’t worth it this late in the week',
+        text: `Only ${openDaysInWeek} training ${openDaysInWeek === 1 ? 'day is' : 'days are'} left this week — a $60 Drop-In per day is the better value.` +
+          (weekOffset === 0 ? ' Or go Unlimited next week.' : ''),
+      };
+    }
+    return null;
+  })();
+
+  // Unlimited covers every remaining open day of the visible week — unless
+  // the week is too far gone (≤2 days), where the guard steers elsewhere.
   useEffect(() => {
     if (mode !== 'pass' || passId !== 'unlimited') return;
-    setSelectedDates(buildWeek(weekOffset).filter(selectable).map((d) => d.iso));
+    const open = buildWeek(weekOffset).filter(selectable);
+    setSelectedDates(open.length <= 2 ? [] : open.map((d) => d.iso));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, passId, weekOffset, avail]);
 
@@ -168,6 +204,9 @@ export default function BookPage() {
       return;
     }
     if (!selectable(d) || passId === 'unlimited') return;
+    // A guarded week (e.g. Flex with <3 days left) can't lead anywhere —
+    // don't collect selections that can never complete.
+    if (passId === 'flex3' && openDaysInWeek < 3) return;
     const iso = d.iso;
     if (passId === 'dropin') {
       setSelectedDates([iso]);
@@ -444,6 +483,20 @@ export default function BookPage() {
           </div>
           {avail === null && <div style={{ ...mono, marginTop: 10 }}>Checking availability…</div>}
 
+          {weekGuard && (
+            <div style={{ marginTop: 14, padding: '14px 16px', border: '1.5px solid var(--gold)', background: 'var(--bg)', display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-start' }}>
+              <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 15, letterSpacing: '.04em', textTransform: 'uppercase', color: 'var(--gold)' }}>{weekGuard.title}</span>
+              <span style={{ color: 'var(--text-2)', fontSize: 14.5, lineHeight: 1.5 }}>{weekGuard.text}</span>
+              {weekOffset === 0 && (
+                <button onClick={() => switchWeek(1)} style={{
+                  marginTop: 4, padding: '9px 16px', cursor: 'pointer', font: 'inherit',
+                  fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 13, letterSpacing: '.07em', textTransform: 'uppercase',
+                  color: 'var(--ink)', background: 'var(--gold)', border: 'none',
+                }}>Go to Next Week →</button>
+              )}
+            </div>
+          )}
+
           {/* pass mode: chips of picked days */}
           {mode === 'pass' && sortedDates.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
@@ -488,8 +541,8 @@ export default function BookPage() {
       </div>
 
       <div style={{ marginTop: 28 }}>
-        <button disabled={!daysReady} onClick={() => setStep(2)} style={{ ...primaryBtn(daysReady), width: '100%', flex: 'none' }}>
-          {continueLabel}
+        <button disabled={!daysReady || Boolean(weekGuard)} onClick={() => setStep(2)} style={{ ...primaryBtn(daysReady && !weekGuard), width: '100%', flex: 'none' }}>
+          {weekGuard ? weekGuard.title : continueLabel}
         </button>
       </div>
     </div>
