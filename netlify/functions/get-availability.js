@@ -10,20 +10,23 @@ exports.handler = async (event) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json(400, { error: 'bad_date' });
 
   try {
-    const nowIso = new Date().toISOString();
     const res = await sb(
-      `/bookings?select=start_min,duration_min&session_date=eq.${date}` +
-        `&or=(status.eq.paid,and(status.eq.hold,hold_expires_at.gt.${nowIso}))`
+      `/bookings?select=start_min,duration_min,status,hold_expires_at` +
+        `&session_date=eq.${date}&status=in.(paid,hold)`
     );
     if (!res.ok) {
       console.error('availability query failed:', res.status, res.text);
-      return json(502, { error: 'db' });
+      // status is safe to expose and pinpoints the failure (401 = bad key, …)
+      return json(502, { error: 'db', upstream_status: res.status });
     }
-    const busy = res.data.map((r) => [r.start_min, r.start_min + r.duration_min]);
+    const now = Date.now();
+    const busy = res.data
+      .filter((r) => r.status === 'paid' || (r.hold_expires_at && Date.parse(r.hold_expires_at) > now))
+      .map((r) => [r.start_min, r.start_min + r.duration_min]);
     return json(200, { busy });
   } catch (err) {
     console.error(err);
-    return json(502, { error: 'unavailable' });
+    return json(502, { error: 'unavailable', reason: err.code === 'missing_env' ? 'missing_env' : 'exception' });
   }
 };
 

@@ -1,5 +1,6 @@
 -- Velo Performance Labs — booking system schema
--- Run this once in the Supabase dashboard: SQL Editor → New query → paste → Run.
+-- Apply with the Supabase CLI: `supabase link --project-ref <ref>` then
+-- `supabase db push`. (Or paste into the dashboard SQL Editor and run once.)
 
 -- Needed for the "no two bookings can overlap" constraint below.
 create extension if not exists btree_gist;
