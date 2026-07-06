@@ -86,7 +86,8 @@ export default function PrivacyPolicy() {
       <h2>Contact Us</h2>
       <p>
         Questions about this policy or your information? Reach out through our{' '}
-        <a href="/#register">contact form</a>.
+        <a href="/#register">contact form</a> or email{' '}
+        <a href="mailto:team@veloperformancelab.com">team@veloperformancelab.com</a>.
       </p>
     </LegalLayout>
   );
