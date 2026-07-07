@@ -552,7 +552,10 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <a href="/privacy" class="footer-link" style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:var(--text-5);text-decoration:none">Privacy Policy</a>
         <a href="/terms" class="footer-link" style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:var(--text-5);text-decoration:none">Terms &amp; Conditions</a>
       </div>
-      <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase">Not Daycare. Player Development.</div>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:14px 20px">
+        <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase">Not Daycare. Player Development.</div>
+        <a href="https://letsgrow.dev?utm_source=veloperformancelab&utm_medium=referral&utm_campaign=footer_credit" target="_blank" rel="noopener" class="footer-link" style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:var(--text-5);text-decoration:none">Site by LetsGrow</a>
+      </div>
     </div>
   </div>
 </footer>`;
