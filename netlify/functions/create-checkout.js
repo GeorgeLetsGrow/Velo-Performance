@@ -148,6 +148,30 @@ exports.handler = async (event) => {
     });
     if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact)) params.set('customer_email', contact);
 
+    // ---- Optional platform fee via Stripe Connect (destination charge) ------
+    // When STRIPE_SECRET_KEY is the *platform* account's key and a connected
+    // account id is configured, split each payment: the platform keeps
+    // PLATFORM_FEE_CENTS and the remainder is transferred to the connected
+    // account. `on_behalf_of` makes the connected account the merchant of
+    // record (its statement descriptor on the customer's card, and it bears
+    // Stripe's processing fee — so the platform fee lands clean).
+    // Leave STRIPE_CONNECTED_ACCOUNT_ID unset to run as a plain single-account
+    // checkout exactly as before.
+    const connectedAccount = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
+    const feeCents = Number.parseInt(process.env.PLATFORM_FEE_CENTS || '0', 10);
+    if (connectedAccount) {
+      if (!Number.isInteger(feeCents) || feeCents < 0 || feeCents >= item.cents) {
+        console.error('invalid PLATFORM_FEE_CENTS:', process.env.PLATFORM_FEE_CENTS, 'for price', item.cents);
+        await sb(`/bookings?id=eq.${booking.id}&status=eq.hold`, { method: 'DELETE' });
+        return json(500, { error: 'fee_misconfigured' });
+      }
+      params.set('payment_intent_data[transfer_data][destination]', connectedAccount);
+      params.set('payment_intent_data[on_behalf_of]', connectedAccount);
+      if (feeCents > 0) {
+        params.set('payment_intent_data[application_fee_amount]', String(feeCents));
+      }
+    }
+
     const sres = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
