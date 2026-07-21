@@ -156,6 +156,7 @@ body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: '
   .velo-form-row { grid-template-columns: 1fr !important; }
   .velo-gallery { grid-template-columns: 1fr !important; }
   .velo-coach-grid { grid-template-columns: 1fr !important; }
+  .velo-video-grid { grid-template-columns: 1fr !important; }
 }
 @media (max-width: 560px) {
   .velo-cal-grid { grid-template-columns: repeat(2, 1fr) !important; }

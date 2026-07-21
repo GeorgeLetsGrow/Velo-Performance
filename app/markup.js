@@ -409,6 +409,39 @@ export const MARKUP = `<!-- ============ NAV ============ -->
   </div>
 </section>
 
+<!-- ============ IN ACTION (VIDEO) ============ -->
+<section id="in-action" style="background:var(--bg-wash),var(--bg);padding:40px 0 96px">
+  <div style="max-width:1240px;margin:0 auto;padding:0 28px">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:34px;flex-wrap:wrap">
+      <span style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase">In The Lab</span>
+      <span style="flex:1;min-width:40px;height:1px;background:var(--border)"></span>
+      <span style="font-family:'Barlow Condensed';font-weight:800;font-size:clamp(22px,3vw,34px);letter-spacing:.02em;text-transform:uppercase;color:var(--text)">See the Work in Motion</span>
+    </div>
+    <div class="velo-video-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="background:var(--bg-2);border:1px solid var(--border);overflow:hidden">
+        <video controls preload="metadata" playsinline style="width:100%;height:auto;display:block;aspect-ratio:16/9;background:#000">
+          <source src="/assets/video/velo-training-1.mp4" type="video/mp4">
+          Your browser doesn't support embedded video.
+        </video>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap">
+          <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.03em;text-transform:uppercase;color:var(--text)">Training Session</div>
+          <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:var(--accent)">REAL REPS · REAL COACHING</div>
+        </div>
+      </div>
+      <div style="background:var(--bg-2);border:1px solid var(--border);overflow:hidden">
+        <video controls preload="metadata" playsinline style="width:100%;height:auto;display:block;aspect-ratio:16/9;background:#000">
+          <source src="/assets/video/velo-training-2.mp4" type="video/mp4">
+          Your browser doesn't support embedded video.
+        </video>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-top:1px solid var(--border);flex-wrap:wrap">
+          <div style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.03em;text-transform:uppercase;color:var(--text)">Training Session</div>
+          <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:var(--accent)">SMALL GROUPS · BIG RESULTS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ PARENT PROOF ============ -->
 <section id="results" style="background:var(--bg-2);padding:104px 0;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline)">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
