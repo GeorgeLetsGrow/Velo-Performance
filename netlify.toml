@@ -9,3 +9,9 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/proform"
+  to = "https://velo-pro-form-ai.base44.app/"
+  status = 301
+  force = true
