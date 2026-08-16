@@ -3,7 +3,7 @@
 The `/book` page sells two things behind a toggle:
 
 - **Day Passes** — the same passes as the homepage pricing section: Drop-In
-  ($60/day), 3-Day Flex Pass ($150/week), Unlimited Week ($175/week). Day
+  ($50/day), 3-Day Flex Pass ($100/week), Unlimited Week ($150/week). Day
   attendance with live spots-left counts, capped at 12 athletes/day.
 - **Individual Training** — 1-on-1 sessions (hitting, pitching, defense,
   speed, evaluation) in exclusive time slots, Mon–Fri 5:00–7:00 PM, after

@@ -159,7 +159,7 @@ export default function BookPage() {
     if (pass_.id === 'unlimited' && openDaysInWeek <= 2) {
       return {
         title: 'Unlimited isn’t worth it this late in the week',
-        text: `Only ${openDaysInWeek} training ${openDaysInWeek === 1 ? 'day is' : 'days are'} left this week — a $60 Drop-In per day is the better value.` +
+        text: `Only ${openDaysInWeek} training ${openDaysInWeek === 1 ? 'day is' : 'days are'} left this week — a $50 Drop-In per day is the better value.` +
           (weekOffset === 0 ? ' Or go Unlimited next week.' : ''),
       };
     }

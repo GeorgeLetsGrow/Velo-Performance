@@ -26,9 +26,9 @@ const ACCENT = '#ff5e1a';
 const GOLD = '#f4b223';
 
 const PASSES = [
-  { id: 'dropin',    name: 'Drop-In',         price: '$60',  sub: 'per day'  },
-  { id: 'flex',      name: '3-Day Flex Pass', price: '$150', sub: 'per week' },
-  { id: 'unlimited', name: 'Unlimited Week',  price: '$175', sub: 'per week' },
+  { id: 'dropin',    name: 'Drop-In',         price: '$50',  sub: 'per day'  },
+  { id: 'flex',      name: '3-Day Flex Pass', price: '$100', sub: 'per week' },
+  { id: 'unlimited', name: 'Unlimited Week',  price: '$150', sub: 'per week' },
 ];
 
 function seatsTaken(iso) {

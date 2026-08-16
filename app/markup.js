@@ -290,7 +290,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)">Drop-In</div>
         <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
           <span style="font-family:'Anton';font-size:30px;color:var(--text);padding-top:8px">$</span>
-          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">60</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">50</span>
         </div>
         <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Day</div>
         <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Perfect for busy schedules, extra reps, or experiencing the Velo difference.</p>
@@ -308,7 +308,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">3-Day Flex Pass</div>
         <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
           <span style="font-family:'Anton';font-size:30px;color:var(--text);padding-top:8px">$</span>
-          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">150</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">100</span>
         </div>
         <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Week</div>
         <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Perfect for multi-sport athletes and busy families. Train any 3 days Monday–Friday with the flexibility your family needs while receiving the same elite coaching every session.</p>
@@ -325,7 +325,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Unlimited Week</div>
         <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
           <span style="font-family:'Anton';font-size:30px;color:var(--text);padding-top:8px">$</span>
-          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">175</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">150</span>
         </div>
         <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Week</div>
         <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">The fastest path to consistent improvement. Train Monday through Friday for the athlete committed to reaching their full potential.</p>
@@ -501,9 +501,9 @@ export const MARKUP = `<!-- ============ NAV ============ -->
               <label for="rf-interest" class="sr-only">Interested In</label>
               <select id="rf-interest" name="interest" class="velo-input">
                 <option value="" disabled selected>Interested In</option>
-                <option>Drop-In — $60 / day</option>
-                <option>3-Day Flex Pass — $150 / week</option>
-                <option>Unlimited Week — $175 / week</option>
+                <option>Drop-In — $50 / day</option>
+                <option>3-Day Flex Pass — $100 / week</option>
+                <option>Unlimited Week — $150 / week</option>
                 <option>Not sure yet — just have questions</option>
               </select>
             </div>
