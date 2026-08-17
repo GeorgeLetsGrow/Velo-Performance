@@ -1,9 +1,11 @@
 import LegalLayout from '../legal/LegalLayout';
+import { createPageMetadata } from '../../lib/seo';
 
-export const metadata = {
-  title: 'Privacy Policy — Velo Performance Lab',
+export const metadata = createPageMetadata({
+  title: 'Privacy Policy',
   description: 'How Velo Performance Lab collects, uses, and protects your information.',
-};
+  path: '/privacy/',
+});
 
 export default function PrivacyPolicy() {
   return (

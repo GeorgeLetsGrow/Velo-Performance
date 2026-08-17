@@ -1,9 +1,11 @@
 import Link from 'next/link';
+import { createPageMetadata } from '../../lib/seo';
 
-export const metadata = {
-  title: 'Request Received — Velo Performance Lab',
+export const metadata = createPageMetadata({
+  title: 'Request Received',
+  path: '/thank-you/',
   robots: { index: false },
-};
+});
 
 export default function ThankYou() {
   return (

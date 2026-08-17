@@ -142,6 +142,7 @@ body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: '
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
+  .velo-sunday-promo { grid-template-columns: 1fr !important; }
   .velo-hero-grid { flex-direction: column-reverse !important; align-items: flex-start !important; }
   .velo-hero-logo { display: none !important; }
   #top { min-height: auto !important; }
@@ -164,4 +165,94 @@ body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: '
    heading wraps to multiple lines on a phone — give it room on small screens. */
 @media (max-width: 768px) {
   [style*="font-family:'Anton'"] { line-height: 1.1 !important; letter-spacing: .02em !important; }
+}
+
+/* ============ MULTI-PAGE SITE SHELL ============ */
+.site-header { position:sticky; top:0; z-index:60; background:var(--header-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border-2); }
+.site-header-inner { max-width:1240px; height:74px; margin:auto; padding:0 28px; display:flex; align-items:center; justify-content:space-between; }
+.site-brand img { height:66px; width:auto; display:block; }
+.site-nav { display:flex; align-items:center; gap:24px; }
+.site-nav a, .site-mobile-menu a { font-family:'Barlow Condensed'; font-weight:700; font-size:14px; letter-spacing:.07em; text-transform:uppercase; color:var(--text-2); text-decoration:none; }
+.site-nav a:hover, .site-mobile-menu a:hover { color:var(--accent); }
+.site-nav .site-nav-app { color:var(--gold); }
+.site-nav .site-nav-cta, .site-mobile-menu .site-nav-cta { color:var(--ink); background:var(--accent); padding:11px 19px; }
+.site-theme, .site-menu-button { width:40px; height:40px; display:grid; place-items:center; border:1px solid var(--border-strong); background:transparent; color:var(--text); cursor:pointer; font-size:18px; }
+.site-mobile-actions { display:none; gap:8px; }
+.site-mobile-menu { padding:8px 28px 22px; display:flex; flex-direction:column; background:var(--bg); }
+.site-mobile-menu a { padding:12px 0; border-bottom:1px solid var(--border-2); }
+
+.site-footer { background:var(--bg-footer); border-top:1px solid var(--hairline); padding:64px max(28px, calc((100vw - 1184px)/2)) 28px; }
+.site-footer-grid { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:48px; padding-bottom:42px; border-bottom:1px solid var(--hairline); }
+.site-footer img { width:190px; display:block; margin:-20px 0 6px; }
+.site-footer p { max-width:340px; color:var(--text-4); line-height:1.6; }
+.site-footer h3 { font-family:'Barlow Condensed'; font-size:15px; text-transform:uppercase; letter-spacing:.12em; margin-bottom:15px; }
+.site-footer-grid > div:not(:first-child) { display:flex; flex-direction:column; align-items:flex-start; gap:10px; }
+.site-footer a { color:var(--text-3); text-decoration:none; }
+.site-footer a:hover { color:var(--accent); }
+.site-footer-bottom { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; padding-top:25px; font-family:'JetBrains Mono'; color:var(--text-5); font-size:10px; letter-spacing:.08em; }
+
+.detail-page, .proform-page { background:var(--bg-wash),var(--bg); min-height:70vh; }
+.detail-hero { min-height:540px; display:flex; align-items:center; padding:80px max(28px, calc((100vw - 1184px)/2)); border-bottom:1px solid var(--border); background:repeating-linear-gradient(118deg,var(--stripe-a),var(--stripe-a) 16px,var(--stripe-b) 16px,var(--stripe-b) 32px); }
+.detail-hero > div { max-width:850px; }
+.detail-eyebrow { font-family:'JetBrains Mono'; font-size:12px; letter-spacing:.26em; color:var(--accent); text-transform:uppercase; margin-bottom:18px; }
+.detail-hero h1, .proform-hero h1 { font-family:'Anton'; font-size:clamp(58px,8vw,108px); line-height:.9; text-transform:uppercase; font-weight:400; }
+.detail-intro, .proform-copy > p:not(.detail-eyebrow) { max-width:690px; margin-top:24px; color:var(--text-2); font-size:20px; line-height:1.55; }
+.detail-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:34px; }
+.detail-actions a, .detail-cta a, .subscribe-card > a, .proform-bottom a { font-family:'Barlow Condensed'; font-weight:800; letter-spacing:.06em; text-transform:uppercase; text-decoration:none; padding:16px 25px; display:inline-block; }
+.detail-primary, .detail-cta a, .subscribe-card > a { background:var(--accent); color:var(--ink); }
+.detail-secondary { border:1px solid var(--border-strong); color:var(--text); }
+.detail-grid { max-width:1184px; margin:auto; padding:88px 0; display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); }
+.detail-grid article { background:var(--bg-1); padding:42px; }
+.detail-grid article > span { color:var(--accent); }
+.detail-grid h2, .coach-list h2, .proform-benefits h2 { font-family:'Barlow Condensed'; font-size:28px; text-transform:uppercase; margin:18px 0 10px; }
+.detail-grid p, .coach-list p, .proform-benefits p { color:var(--text-3); line-height:1.6; }
+.coach-list { max-width:1184px; margin:auto; padding:88px 0; display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+.coach-list article { border:1px solid var(--border); background:var(--bg-1); }
+.coach-list img { width:100%; display:block; }
+.coach-list article > div { padding:24px; }
+.coach-list strong { display:block; margin-top:14px; color:var(--accent); text-transform:uppercase; }
+.detail-cta { padding:80px 28px; background:var(--bg-2); text-align:center; border-top:1px solid var(--border); }
+.detail-cta p { font-family:'JetBrains Mono'; color:var(--accent); letter-spacing:.2em; text-transform:uppercase; font-size:11px; }
+.detail-cta h2 { font-family:'Anton'; font-size:clamp(38px,5vw,62px); text-transform:uppercase; margin:12px 0 28px; }
+
+.proform-hero { max-width:1240px; min-height:700px; margin:auto; padding:90px 28px; display:grid; grid-template-columns:1.2fr .8fr; gap:80px; align-items:center; }
+.proform-hero em { color:var(--accent); font-style:normal; }
+.app-preview { width:min(100%,380px); justify-self:center; background:#101113; border:1px solid #303136; border-radius:32px; padding:24px; color:#f6f5f3; box-shadow:0 40px 90px rgba(0,0,0,.35); transform:rotate(2deg); }
+.app-preview-top { display:flex; align-items:center; justify-content:space-between; font-family:'JetBrains Mono'; color:var(--accent); letter-spacing:.16em; }
+.app-preview-top img { width:100px; }
+.app-score { margin:34px 0; padding:28px; background:linear-gradient(145deg,#1b1d20,#121315); }
+.app-score small { color:#8b8c92; font-family:'JetBrains Mono'; }
+.app-score strong { display:block; font-family:'Anton'; font-size:82px; line-height:1; color:var(--accent); }
+.app-score strong span { font-size:30px; color:#777; }
+.app-score p { color:#aaa; }
+.app-line { display:flex; justify-content:space-between; padding:17px 3px; border-top:1px solid #2b2c30; font-family:'Barlow Condensed'; text-transform:uppercase; letter-spacing:.06em; }
+.app-line span { color:var(--gold); }
+.proform-benefits { max-width:1184px; margin:auto; padding:0 0 100px; display:grid; grid-template-columns:repeat(3,1fr); }
+.proform-benefits article { padding:38px; border:1px solid var(--border); background:var(--bg-1); }
+.proform-benefits article > span { font-family:'JetBrains Mono'; color:var(--accent); }
+.subscribe-panel { padding:100px max(28px, calc((100vw - 1184px)/2)); background:var(--bg-2); display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:80px; border-block:1px solid var(--border); }
+.subscribe-panel > div > h2 { font-family:'Anton'; font-size:clamp(48px,6vw,78px); line-height:.92; text-transform:uppercase; }
+.subscribe-panel > div > p:not(.detail-eyebrow) { color:var(--text-3); font-size:18px; line-height:1.6; margin-top:20px; }
+.subscribe-card { background:var(--bg-1); border:1px solid var(--accent); padding:42px; }
+.subscribe-card > p { font-family:'JetBrains Mono'; color:var(--accent); letter-spacing:.15em; font-size:11px; }
+.subscribe-card h3 { font-family:'Barlow Condensed'; text-transform:uppercase; font-size:30px; margin:16px 0 22px; }
+.subscribe-card ul { list-style:none; display:grid; gap:14px; color:var(--text-2); margin-bottom:28px; }
+.subscribe-card li::before { content:'▸'; color:var(--accent); margin-right:10px; }
+.subscribe-card small { display:block; color:var(--text-5); margin-top:14px; }
+.proform-bottom { padding:80px 28px; text-align:center; }
+.proform-bottom h2 { font-family:'Anton'; font-size:48px; text-transform:uppercase; }
+.proform-bottom p { color:var(--text-3); margin:8px 0 24px; }
+.proform-bottom a { color:var(--text); border:1px solid var(--border-strong); margin:6px; }
+
+@media (max-width: 900px) {
+  .site-nav { display:none; } .site-mobile-actions { display:flex; }
+  .site-footer-grid, .proform-hero, .subscribe-panel { grid-template-columns:1fr; }
+  .proform-hero { gap:48px; } .app-preview { transform:none; }
+  .detail-grid, .coach-list, .proform-benefits { grid-template-columns:1fr; margin-inline:28px; }
+  .velo-proform-home { grid-template-columns:1fr !important; }
+}
+@media (max-width: 560px) {
+  .site-header-inner { padding-inline:18px; } .site-brand img { height:58px; }
+  .detail-hero { min-height:470px; } .detail-grid article { padding:30px; }
+  .site-footer-grid { gap:32px; }
 }

@@ -1,9 +1,27 @@
 import './globals.css';
+import { createPageMetadata, defaultDescription, defaultTitle, siteName, siteUrl } from '../lib/seo';
 
 export const metadata = {
-  title: 'Velo Performance Lab — After-School Player Development | Apollo Beach, FL',
-  description:
-    'After-school player development for baseball and softball athletes in Apollo Beach, FL. Real coaching, small groups, big results. Train different. Train smarter. Be elite.',
+  metadataBase: new URL(siteUrl),
+  applicationName: siteName,
+  title: {
+    default: defaultTitle,
+    template: `%s | ${siteName}`,
+  },
+  description: defaultDescription,
+  keywords: [
+    'baseball training Apollo Beach',
+    'softball training Apollo Beach',
+    'after school sports training Apollo Beach',
+    'youth baseball lessons Apollo Beach',
+    'player development Florida',
+  ],
+  alternates: {
+    canonical: '/',
+  },
+  category: 'sports',
+  openGraph: createPageMetadata({ path: '/' }).openGraph,
+  twitter: createPageMetadata({ path: '/' }).twitter,
 };
 
 export const viewport = {

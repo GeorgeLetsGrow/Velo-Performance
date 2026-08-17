@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { createPageMetadata } from '../lib/seo';
 
-export const metadata = {
-  title: 'Page Not Found — Velo Performance Lab',
-};
+export const metadata = createPageMetadata({
+  title: 'Page Not Found',
+  path: '/404',
+  robots: { index: false, follow: false },
+});
 
 export default function NotFound() {
   return (

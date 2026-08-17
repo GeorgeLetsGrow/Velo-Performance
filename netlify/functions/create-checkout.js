@@ -135,6 +135,7 @@ exports.handler = async (event) => {
 
     const params = new URLSearchParams({
       mode: 'payment',
+      allow_promotion_codes: 'true',
       expires_at: String(Math.floor(Date.now() / 1000) + 30 * 60),
       'line_items[0][quantity]': '1',
       'line_items[0][price_data][currency]': 'usd',

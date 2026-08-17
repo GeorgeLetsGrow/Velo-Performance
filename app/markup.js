@@ -3,17 +3,19 @@
 export const MARKUP = `<!-- ============ NAV ============ -->
 <header style="position:sticky;top:0;z-index:50;background:var(--header-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border-2)">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between">
-    <a href="#top" style="display:flex;align-items:center;text-decoration:none">
+    <a href="/" style="display:flex;align-items:center;text-decoration:none">
       <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" style="height:66px;width:auto;display:block">
     </a>
     <nav class="velo-desktop-nav" style="display:flex;align-items:center;gap:30px">
-      <a href="#programs" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Programs</a>
-      <a href="#schedule" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Schedule</a>
-      <a href="#coaches" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Coaches</a>
-      <a href="#pricing" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Pricing</a>
-      <a href="#results" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Results</a>
+      <a href="/programs" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Programs</a>
+      <a href="/schedule" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Schedule</a>
+      <a href="/coaches" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Coaches</a>
+      <a href="/pricing" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Pricing</a>
+      <a href="/results" class="nav-link" style="font-family:'Barlow Condensed';font-weight:600;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);text-decoration:none">Results</a>
+      <a href="/proform" class="nav-link" style="font-family:'Barlow Condensed';font-weight:700;font-size:14.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);text-decoration:none">Proform</a>
       <button onclick="toggleTheme()" class="velo-theme-toggle" aria-label="Toggle light and dark theme" title="Toggle light / dark"><span class="theme-icon-moon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="theme-icon-sun" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
-      <a href="#register" style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:11px 20px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot</span></a>
+      <a href="#register" style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);padding:9.5px 18px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Talk to a Coach</span></a>
+      <a href="/book" style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:11px 20px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Book Now</span></a>
     </nav>
     <div style="display:flex;align-items:center;gap:10px">
       <button onclick="toggleTheme()" class="velo-theme-toggle velo-mobile-toggle" aria-label="Toggle light and dark theme" title="Toggle light / dark"><span class="theme-icon-moon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="theme-icon-sun" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
@@ -21,12 +23,14 @@ export const MARKUP = `<!-- ============ NAV ============ -->
     </div>
   </div>
   <div id="mobileMenu" style="display:none;border-top:1px solid var(--border-2);padding:14px 28px 20px;flex-direction:column;gap:4px;background:var(--bg-wash),var(--bg)">
-    <a href="#programs" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Programs</a>
-    <a href="#schedule" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Schedule</a>
-    <a href="#coaches" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Coaches</a>
-    <a href="#pricing" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Pricing</a>
-    <a href="#results" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Results</a>
-    <a href="#register" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);text-align:center;padding:13px 0;text-decoration:none;margin-top:8px;display:block">Reserve a Spot</a>
+    <a href="/programs" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Programs</a>
+    <a href="/schedule" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Schedule</a>
+    <a href="/coaches" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Coaches</a>
+    <a href="/pricing" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Pricing</a>
+    <a href="/results" style="font-family:'Barlow Condensed';font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Results</a>
+    <a href="/proform" style="font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--hairline);display:block">Velo Proform App</a>
+    <a href="#register" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);text-align:center;padding:11px 0;text-decoration:none;margin-top:8px;display:block">Talk to a Coach</a>
+    <a href="/book" onclick="closeMobileMenu()" style="font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);text-align:center;padding:13px 0;text-decoration:none;margin-top:8px;display:block">Book Now</a>
   </div>
 </header>
 
@@ -51,8 +55,8 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         Real coaching. Small groups. Big results. A player development program for baseball and softball athletes in Apollo Beach, FL — not daycare.
       </p>
       <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:38px">
-        <a href="#register" class="velo-btn velo-btn-primary" style="font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 32px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve a Spot →</span></a>
-        <a href="#programs" class="velo-btn velo-btn-ghost" style="font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">See the Program</span></a>
+        <a href="/book" class="velo-btn velo-btn-primary" style="font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 32px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Book Now →</span></a>
+        <a href="#register" class="velo-btn velo-btn-ghost" style="font-family:'Barlow Condensed';font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Talk to a Coach</span></a>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:0;margin-top:54px;border:1px solid var(--border-2);background:var(--stat-bg);width:fit-content">
         <div style="flex:1;padding:16px 20px;border-right:1px solid var(--border-2)">
@@ -91,6 +95,19 @@ export const MARKUP = `<!-- ============ NAV ============ -->
     </div>
   </div>
 </div>
+
+<!-- ============ SUNDAY FUNDAY ============ -->
+<section style="background:var(--bg-2);padding:64px 0;border-bottom:1px solid var(--hairline)">
+  <div class="velo-sunday-promo" style="max-width:1240px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 1fr">
+    <div style="background:var(--bg-1);border:1px solid var(--border);padding:clamp(34px,5vw,68px);display:flex;flex-direction:column;justify-content:center">
+      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:18px">New · Select Sundays this fall</div>
+      <h2 style="font-family:'Anton';font-size:clamp(46px,7vw,86px);line-height:.88;text-transform:uppercase;color:var(--text)">Sunday <span style="color:var(--accent)">Funday</span></h2>
+      <p style="margin-top:22px;color:var(--text-2);font-size:18px;line-height:1.55">Two hours of small-group hitting, fielding, throwing, and competition. 9:00–11:00 AM · $30 per player.</p>
+      <a href="/sunday-funday" class="velo-btn velo-btn-primary" style="align-self:flex-start;margin-top:28px;font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">View Dates &amp; Reserve →</span></a>
+    </div>
+    <img src="/assets/sunday-funday.jpg" alt="Young baseball player fielding a ball during outdoor training" style="width:100%;height:100%;min-height:420px;object-fit:cover;display:block">
+  </div>
+</section>
 
 <!-- ============ PROGRAM OVERVIEW ============ -->
 <section id="programs" style="background:var(--bg-wash),var(--bg);padding:104px 0">
@@ -471,6 +488,27 @@ export const MARKUP = `<!-- ============ NAV ============ -->
   </div>
 </section>
 
+<!-- ============ VELO PROFORM APP ============ -->
+<section style="background:var(--bg);padding:104px 0;border-top:1px solid var(--hairline)">
+  <div class="velo-proform-home" style="max-width:1184px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1.15fr .85fr;gap:72px;align-items:center">
+    <div>
+      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:18px">Training · Beyond the facility</div>
+      <h2 style="font-family:'Anton';font-size:clamp(48px,7vw,86px);line-height:.9;text-transform:uppercase;color:var(--text)">Meet Velo <span style="color:var(--accent)">Proform.</span></h2>
+      <p style="margin-top:22px;color:var(--text-2);font-size:19px;line-height:1.6;max-width:600px">Structured training, athlete progress, and next-step guidance in one focused experience. Keep the Velo development mindset working wherever you train.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:30px">
+        <a href="/proform#subscribe" class="velo-btn velo-btn-primary" style="font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Explore Membership →</span></a>
+        <a href="/proform" class="velo-btn velo-btn-ghost" style="font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--text);border:1px solid var(--border-strong);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Open the App</span></a>
+      </div>
+    </div>
+    <div style="background:var(--bg-1);border:1px solid var(--border);padding:34px;box-shadow:18px 18px 0 var(--accent)">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:22px;border-bottom:1px solid var(--border)"><span style="font-family:'JetBrains Mono';color:var(--accent);font-size:11px;letter-spacing:.16em">VELO PROFORM</span><span style="width:9px;height:9px;background:var(--accent);border-radius:50%"></span></div>
+      <div style="font-family:'Anton';font-size:68px;color:var(--text);margin-top:26px">4<span style="font-size:28px;color:var(--text-5)">/5</span></div>
+      <div style="font-family:'Barlow Condensed';font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Sessions complete this week</div>
+      <div style="height:8px;background:var(--border);margin-top:24px"><div style="height:100%;width:80%;background:var(--accent)"></div></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ REGISTRATION CTA ============ -->
 <section id="register" style="position:relative;background:var(--bg-wash),var(--bg);padding:0;overflow:hidden">
   <div style="position:absolute;inset:0;background:repeating-linear-gradient(118deg,var(--stripe-a),var(--stripe-a) 16px,var(--stripe-b) 16px,var(--stripe-b) 32px);opacity:.6"></div>
@@ -516,7 +554,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
               <label for="rf-sms-optin" style="font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:600;line-height:1.5;color:rgba(12,12,13,.92);cursor:pointer">I agree to receive text messages from Velo Performance Lab about my reservation. Message &amp; data rates may apply. Reply STOP to opt out anytime.</label>
             </div>
           </div>
-          <button type="submit" class="velo-form-submit" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--bg);padding:18px 36px;border:none;cursor:pointer;margin-top:18px">Reserve Your Spot →</button>
+          <button type="submit" class="velo-form-submit" style="font-family:'Barlow Condensed';font-weight:800;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--bg);padding:18px 36px;border:none;cursor:pointer;margin-top:18px">Submit →</button>
           <p style="margin-top:14px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:rgba(12,12,13,.6);text-transform:uppercase">We confirm every request personally before a spot is locked in</p>
         </form>
       </div>
@@ -540,8 +578,10 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <div style="font-family:'Barlow Condensed';font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:18px">Get Started</div>
         <div style="display:flex;flex-direction:column;gap:11px">
           <a href="#register" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Reserve a Spot</a>
-          <a href="#pricing" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">View Pricing</a>
-          <a href="#programs" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Programs</a>
+          <a href="/book" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Book Training</a>
+          <a href="/pricing" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">View Pricing</a>
+          <a href="/programs" class="footer-link" style="color:var(--text-3);font-size:15px;text-decoration:none">Programs</a>
+          <a href="/proform" class="footer-link" style="color:var(--gold);font-size:15px;text-decoration:none">Velo Proform App</a>
           <a href="mailto:team@veloperformancelab.com" class="footer-link" style="font-family:'JetBrains Mono';font-size:12px;color:var(--text-5);margin-top:6px;text-decoration:none">team@veloperformancelab.com</a>
         </div>
       </div>

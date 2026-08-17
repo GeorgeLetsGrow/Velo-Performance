@@ -192,6 +192,7 @@ export default function BookPage() {
     setLessonTime(null);
   }
   function switchWeek(n) {
+    if (n === weekOffset) return;
     setWeekOffset(n);
     setSelectedDates([]);
     setLessonDate(null);

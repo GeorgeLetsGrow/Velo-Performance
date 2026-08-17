@@ -1,9 +1,11 @@
 import LegalLayout from '../legal/LegalLayout';
+import { createPageMetadata } from '../../lib/seo';
 
-export const metadata = {
-  title: 'Terms & Conditions — Velo Performance Lab',
+export const metadata = createPageMetadata({
+  title: 'Terms & Conditions',
   description: 'Terms and conditions for booking and training with Velo Performance Lab.',
-};
+  path: '/terms/',
+});
 
 export default function Terms() {
   return (
