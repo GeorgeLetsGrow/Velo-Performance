@@ -143,6 +143,7 @@ body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: '
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
   .velo-sunday-promo { grid-template-columns: 1fr !important; }
+  .velo-pitching-clinic { grid-template-columns: 1fr !important; max-width: 600px !important; }
   .velo-hero-grid { flex-direction: column-reverse !important; align-items: flex-start !important; }
   .velo-hero-logo { display: none !important; }
   #top { min-height: auto !important; }
