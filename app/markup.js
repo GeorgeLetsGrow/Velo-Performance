@@ -109,6 +109,22 @@ export const MARKUP = `<!-- ============ NAV ============ -->
   </div>
 </section>
 
+<!-- ============ PITCHING CLINIC ============ -->
+<section aria-labelledby="pitching-clinic-title" style="background:var(--bg-wash),var(--bg);padding:72px 0;border-bottom:1px solid var(--hairline)">
+  <div class="velo-pitching-clinic" style="max-width:1060px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:minmax(280px,520px) 1fr;gap:clamp(36px,7vw,80px);align-items:center">
+    <a href="/nevins-pitching" aria-label="Book Nevin Griffith's pitching clinic" style="display:block;background:#000;box-shadow:18px 18px 0 var(--accent)">
+      <img src="/assets/pitching-clinic.jpg" alt="Velo Performance Lab pitching clinic with former White Sox pitcher Nevin Griffith, Wednesdays and Thursdays from 6:00 to 7:00 PM, $20 per player" style="display:block;width:100%;height:auto">
+    </a>
+    <div>
+      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:18px">Pitching Development · $20 Per Player</div>
+      <h2 id="pitching-clinic-title" style="font-family:'Anton';font-size:clamp(48px,7vw,82px);line-height:.9;text-transform:uppercase;color:var(--text)">Pitch With <span style="color:var(--accent)">Purpose.</span></h2>
+      <p style="margin-top:22px;color:var(--text-2);font-size:18px;line-height:1.6">Train with former White Sox pitcher Nevin Griffith to improve accuracy, increase velocity, and sharpen mechanics.</p>
+      <p style="margin-top:18px;font-family:'Barlow Condensed';font-weight:800;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text)">Wednesdays &amp; Thursdays · 6:00–7:00 PM</p>
+      <a href="/nevins-pitching" class="velo-btn velo-btn-primary" style="margin-top:28px;font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve Your Spot →</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- ============ PROGRAM OVERVIEW ============ -->
 <section id="programs" style="background:var(--bg-wash),var(--bg);padding:104px 0">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px">
