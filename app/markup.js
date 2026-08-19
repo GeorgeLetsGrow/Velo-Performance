@@ -96,32 +96,22 @@ export const MARKUP = `<!-- ============ NAV ============ -->
   </div>
 </div>
 
-<!-- ============ SUNDAY FUNDAY ============ -->
-<section style="background:var(--bg-2);padding:64px 0;border-bottom:1px solid var(--hairline)">
-  <div class="velo-sunday-promo" style="max-width:1240px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 1fr">
-    <div style="background:var(--bg-1);border:1px solid var(--border);padding:clamp(34px,5vw,68px);display:flex;flex-direction:column;justify-content:center">
-      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:18px">New · Select Sundays this fall</div>
-      <h2 style="font-family:'Anton';font-size:clamp(46px,7vw,86px);line-height:.88;text-transform:uppercase;color:var(--text)">Sunday <span style="color:var(--accent)">Funday</span></h2>
-      <p style="margin-top:22px;color:var(--text-2);font-size:18px;line-height:1.55">Two hours of small-group hitting, fielding, throwing, and competition. 9:00–11:00 AM · $30 per player.</p>
-      <a href="/sunday-funday" class="velo-btn velo-btn-primary" style="align-self:flex-start;margin-top:28px;font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">View Dates &amp; Reserve →</span></a>
-    </div>
-    <img src="/assets/sunday-funday.jpg" alt="Young baseball player fielding a ball during outdoor training" style="width:100%;height:100%;min-height:420px;object-fit:cover;display:block">
+<!-- ============ FEATURED BASEBALL OFFERINGS ============ -->
+<section class="velo-offerings" aria-labelledby="offerings-title">
+  <div class="velo-offerings-header">
+    <div><div class="velo-offerings-eyebrow">Featured Training · Pick Your Path</div><h2 id="offerings-title">Two Ways To <span>Level Up.</span></h2></div>
+    <p>Choose the reps your player needs now—complete-game development or focused pitching instruction.</p>
   </div>
-</section>
-
-<!-- ============ PITCHING CLINIC ============ -->
-<section aria-labelledby="pitching-clinic-title" style="background:var(--bg-wash),var(--bg);padding:72px 0;border-bottom:1px solid var(--hairline)">
-  <div class="velo-pitching-clinic" style="max-width:1060px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:minmax(280px,520px) 1fr;gap:clamp(36px,7vw,80px);align-items:center">
-    <a href="/nevins-pitching" aria-label="Book Nevin Griffith's pitching clinic" style="display:block;background:#000;box-shadow:18px 18px 0 var(--accent)">
-      <img src="/assets/pitching-clinic.jpg" alt="Velo Performance Lab pitching clinic with former White Sox pitcher Nevin Griffith, Wednesdays and Thursdays from 6:00 to 7:00 PM, $20 per player" style="display:block;width:100%;height:auto">
-    </a>
-    <div>
-      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:18px">Pitching Development · $20 Per Player</div>
-      <h2 id="pitching-clinic-title" style="font-family:'Anton';font-size:clamp(48px,7vw,82px);line-height:.9;text-transform:uppercase;color:var(--text)">Pitch With <span style="color:var(--accent)">Purpose.</span></h2>
-      <p style="margin-top:22px;color:var(--text-2);font-size:18px;line-height:1.6">Train with former White Sox pitcher Nevin Griffith to improve accuracy, increase velocity, and sharpen mechanics.</p>
-      <p style="margin-top:18px;font-family:'Barlow Condensed';font-weight:800;font-size:22px;letter-spacing:.04em;text-transform:uppercase;color:var(--text)">Wednesdays &amp; Thursdays · 6:00–7:00 PM</p>
-      <a href="/nevins-pitching" class="velo-btn velo-btn-primary" style="margin-top:28px;font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">Reserve Your Spot →</span></a>
-    </div>
+  <div class="velo-offerings-grid">
+    <article class="velo-offering-card velo-offering-funday">
+      <a class="velo-offering-photo" href="/sunday-funday" aria-label="Explore Sunday Funday camps"><img src="/assets/sunday-funday.jpg" alt="Young baseball player fielding a ball during outdoor training"><span class="velo-offering-number">01</span><span class="velo-offering-tag">All-Around Development</span></a>
+      <div class="velo-offering-copy"><div class="velo-offering-meta"><span>Select Sundays</span><strong>$30 / Player</strong></div><h3>Sunday <em>Funday</em></h3><p>Two high-energy hours of hitting, fielding, throwing, and competition for baseball and softball athletes.</p><ul><li>9:00–11:00 AM</li><li>Small groups</li><li>Game-speed reps</li></ul><a class="velo-offering-cta" href="/sunday-funday">Choose Sunday Funday <span>→</span></a></div>
+    </article>
+    <div class="velo-offerings-versus" aria-hidden="true"><span>OR</span></div>
+    <article class="velo-offering-card velo-offering-pitching">
+      <a class="velo-offering-photo" href="/nevins-pitching" aria-label="Explore Nevin Griffith's pitching clinic"><img src="/assets/pitching-clinic.jpg" alt="Nevin Griffith pitching clinic at Velo Performance Lab"><span class="velo-offering-number">02</span><span class="velo-offering-tag">Pitching Development</span></a>
+      <div class="velo-offering-copy"><div class="velo-offering-meta"><span>Wed &amp; Thu · 6–7 PM</span><strong>$20 / Player</strong></div><h3>Nevin's <em>Pitching</em></h3><p>Train with former White Sox pitcher Nevin Griffith to improve accuracy, increase velocity, and sharpen mechanics.</p><ul><li>Pitch design</li><li>Command</li><li>Mechanics</li></ul><a class="velo-offering-cta" href="/nevins-pitching">Choose Pitching Clinic <span>→</span></a></div>
+    </article>
   </div>
 </section>
 
