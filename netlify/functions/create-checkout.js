@@ -13,7 +13,7 @@
 
 const {
   PASSES, LESSONS, LESSON_START, LESSON_END, SLOT_STEP,
-  isIsoDate, isWeekday, isProgramDate, programPriceCents, mondayOf, fmtDay, fmtTime,
+  isIsoDate, isSunday, isProgramDate, programPriceCents, mondayOf, fmtDay, fmtTime,
 } = require('../../lib/services');
 const { sb } = require('../../lib/db');
 
@@ -53,7 +53,7 @@ exports.handler = async (event) => {
   } else {
     const date = String(input.date || '');
     startMin = Number(input.startMin);
-    if (!isIsoDate(date) || !isWeekday(date)) return json(400, { error: 'bad_dates' });
+    if (!isIsoDate(date) || !isSunday(date)) return json(400, { error: 'bad_dates' });
     if (date < today) return json(400, { error: 'past_date' });
     if (
       !Number.isInteger(startMin) ||

@@ -351,12 +351,12 @@ export const MARKUP = `<!-- ============ NAV ============ -->
           <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">55+</span>
         </div>
         <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per One-on-One Session</div>
-        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Individual coaching built around your athlete’s specific goals, position, and development needs.</p>
+        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Sunday one-on-one coaching from 12:00–7:00 PM, built around your athlete’s specific goals and development needs.</p>
         <div style="height:1px;border-top:1px solid var(--border-2);margin:22px 0"></div>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Hitting, pitching or defensive focus</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Dedicated coach attention</span></li>
-          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Book an available weekday time</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Available Sundays from 12:00–7:00 PM</span></li>
         </ul>
         <a href="/book" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Book Private Training</a>
       </div>

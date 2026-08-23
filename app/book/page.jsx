@@ -44,6 +44,15 @@ function buildWeek(offset) {
   return out;
 }
 
+function buildSunday(offset) {
+  const base = new Date();
+  base.setHours(0, 0, 0, 0);
+  const d = new Date(base);
+  d.setDate(base.getDate() + ((7 - base.getDay()) % 7) + offset * 7);
+  const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  return { iso, dow: 'SUN', day: d.getDate(), mon: MON[d.getMonth()], past: d < base };
+}
+
 function fmtDate(iso) {
   const d = new Date(iso + 'T00:00:00');
   const dn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
@@ -104,8 +113,8 @@ export default function BookPage() {
 
   // Load spot counts + lesson busy ranges for this week + next week in one call.
   useEffect(() => {
-    const from = buildWeek(0)[0].iso;
-    const to = buildWeek(1)[4].iso;
+    const from = [buildWeek(0)[0].iso, buildSunday(0).iso].sort()[0];
+    const to = [buildWeek(1)[4].iso, buildSunday(1).iso].sort().at(-1);
     let stale = false;
     setAvail(null);
     fetch(`/.netlify/functions/get-availability?from=${from}&to=${to}`)
@@ -117,7 +126,7 @@ export default function BookPage() {
 
   const pass = PASSES.find((p) => p.id === passId) || PASSES[0];
   const lesson = LESSONS.find((l) => l.id === lessonId) || LESSONS[0];
-  const week = buildWeek(weekOffset);
+  const week = mode === 'lesson' ? [buildSunday(weekOffset)] : buildWeek(weekOffset);
   const capacity = (avail && avail.capacity) || CAPACITY;
   const loaded = avail && avail !== 'error';
 
@@ -307,7 +316,7 @@ export default function BookPage() {
       {[
         ['afterschool', 'After-School', 'Mon–Fri · until 5:00 PM'],
         ['diamond-skills', 'Evening Skills', 'Mon, Wed, Thu · 5:30–7:00 PM'],
-        ['lesson', 'Private Training', '1-on-1 weekday sessions'],
+        ['lesson', 'Private Training', 'Sundays · 12:00–7:00 PM'],
       ].map(([choice, title, sub]) => {
         const on = choice === 'lesson' ? mode === 'lesson' : mode === 'pass' && passId === choice;
         return (
@@ -416,7 +425,7 @@ export default function BookPage() {
                 ? pass.id === 'diamond-skills'
                   ? 'Evening Skills Training · Mon, Wed & Thu · 5:30–7:00 PM'
                   : 'After-school training · Monday–Friday until 5:00 PM'
-                : '1-on-1 with a coach · Monday–Friday 5:00–7:00 PM'}
+                : '1-on-1 with a coach · Sundays 12:00–7:00 PM'}
             </span>
           </div>
         </div>
@@ -428,8 +437,8 @@ export default function BookPage() {
             <div style={{ ...mono, fontSize: 11 }}>{dayHint.toUpperCase()}</div>
           </div>
           <div style={{ display: 'flex', gap: 8, margin: '0 0 14px', maxWidth: 340 }}>
-            <button onClick={() => switchWeek(0)} style={tab(weekOffset === 0)}>This Week</button>
-            <button onClick={() => switchWeek(1)} style={tab(weekOffset === 1)}>Next Week</button>
+            <button onClick={() => switchWeek(0)} style={tab(weekOffset === 0)}>{mode === 'lesson' ? 'This Sunday' : 'This Week'}</button>
+            <button onClick={() => switchWeek(1)} style={tab(weekOffset === 1)}>{mode === 'lesson' ? 'Next Sunday' : 'Next Week'}</button>
           </div>
           {avail === 'error' && (
             <div style={{ padding: '14px 16px', marginBottom: 12, border: '1px solid var(--border-2)', background: 'var(--bg)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
@@ -437,7 +446,7 @@ export default function BookPage() {
               <button onClick={() => setAvailReload((n) => n + 1)} style={{ ...ghostBtn, flex: 'none', padding: '9px 18px', fontSize: 13 }}>Retry</button>
             </div>
           )}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: mode === 'lesson' ? 'minmax(150px,220px)' : 'repeat(5,1fr)', gap: 8 }}>
             {week.map((d) => {
               const sel = mode === 'lesson' ? d.iso === lessonDate : selectedDates.includes(d.iso);
               const left = mode === 'pass' ? spotsLeft(d.iso) : null;

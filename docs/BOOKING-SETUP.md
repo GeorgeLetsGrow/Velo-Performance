@@ -7,8 +7,8 @@ The `/book` page sells three types of training:
 - **Evening Skills Training** — $20 per player per session, Monday, Wednesday, and
   Thursday from 5:30–7:00 PM, with its own daily capacity pool.
 - **Individual Training** — 1-on-1 sessions (hitting, pitching, defense,
-  speed, evaluation) in exclusive time slots, Mon–Fri 5:00–7:00 PM, after
-  the program ends. The window is one constant in `lib/services.js`
+  speed, evaluation) in exclusive time slots on Sundays from 12:00–7:00 PM.
+  The window is defined in `lib/services.js`
   (`LESSON_START`/`LESSON_END`).
 
 Either way: pick → pay with Stripe Checkout → the reservation is locked and
