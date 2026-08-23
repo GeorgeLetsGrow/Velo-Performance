@@ -298,19 +298,28 @@ export default function BookPage() {
 
   /* ----- mode toggle ----- */
   const modeTab = (on) => ({
-    flex: 1, padding: '14px 12px', cursor: 'pointer', font: 'inherit', textAlign: 'center',
+    flex: '1 1 180px', padding: '14px 12px', cursor: 'pointer', font: 'inherit', textAlign: 'center',
     border: `1.5px solid ${on ? A : 'var(--border-2)'}`,
     background: on ? 'var(--bg-3)' : 'var(--bg-1)',
   });
   const modeToggle = (
-    <div style={{ display: 'flex', gap: 10, marginBottom: 26 }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 26 }}>
       {[
-        ['pass', 'Group Programs', 'After-school & Diamond Skills'],
-        ['lesson', 'Individual Training', '1-on-1 sessions · 5:00–7:00 PM'],
-      ].map(([m, title, sub]) => {
-        const on = mode === m;
+        ['afterschool', 'After-School', 'Mon–Fri · until 5:00 PM'],
+        ['diamond-skills', 'Evening Skills', 'Mon, Wed, Thu · 5:30–7:00 PM'],
+        ['lesson', 'Private Training', '1-on-1 weekday sessions'],
+      ].map(([choice, title, sub]) => {
+        const on = choice === 'lesson' ? mode === 'lesson' : mode === 'pass' && passId === choice;
         return (
-          <button key={m} onClick={() => switchMode(m)} style={modeTab(on)} aria-pressed={on}>
+          <button key={choice} onClick={() => {
+            if (choice === 'lesson') switchMode('lesson');
+            else {
+              setMode('pass');
+              pickPass(choice);
+              setLessonDate(null);
+              setLessonTime(null);
+            }
+          }} style={modeTab(on)} aria-pressed={on}>
             <span style={{ display: 'block', fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 18, letterSpacing: '.04em', textTransform: 'uppercase', color: on ? A : 'var(--text)' }}>{title}</span>
             <span style={{ display: 'block', ...mono, fontSize: 10, marginTop: 4 }}>{sub.toUpperCase()}</span>
           </button>
@@ -391,17 +400,21 @@ export default function BookPage() {
         {/* --- option (radio select) --- */}
         <div>
           <div style={{ ...label, marginBottom: 14 }}>
-            1 · {mode === 'pass' ? 'Pick Your Program' : 'Pick Your Session'}
+            1 · {mode === 'pass' ? 'Your Training' : 'Pick Your Focus'}
           </div>
           {mode === 'pass'
-            ? optionRadio(PASSES, passId, pickPass)
+            ? <div style={{ padding: '18px', background: 'var(--bg-3)', border: `1.5px solid ${A}` }}>
+                <div style={{ fontFamily: "'Barlow Condensed'", fontWeight: 800, fontSize: 20, textTransform: 'uppercase', color: A }}>{pass.name}</div>
+                <p style={{ marginTop: 7, color: 'var(--text-3)', fontSize: 14, lineHeight: 1.5 }}>{pass.desc}</p>
+                <div style={{ marginTop: 12, fontFamily: "'JetBrains Mono'", fontSize: 11, textTransform: 'uppercase', color: 'var(--text-2)' }}>{pass.unit}</div>
+              </div>
             : optionRadio(LESSONS, lessonId, pickLesson)}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 16, padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)' }}>
             <span style={{ fontFamily: "'Anton'", fontSize: 16, color: A }}>{mode === 'pass' ? '☀' : '★'}</span>
             <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 600, fontSize: 14, letterSpacing: '.04em', textTransform: 'uppercase', color: 'var(--text-2)' }}>
               {mode === 'pass'
                 ? pass.id === 'diamond-skills'
-                  ? 'Diamond Skills · Mon, Wed & Thu · 5:30–7:00 PM'
+                  ? 'Evening Skills Training · Mon, Wed & Thu · 5:30–7:00 PM'
                   : 'After-school training · Monday–Friday until 5:00 PM'
                 : '1-on-1 with a coach · Monday–Friday 5:00–7:00 PM'}
             </span>
@@ -636,7 +649,7 @@ export default function BookPage() {
           <div style={{ ...mono, color: A, letterSpacing: '.3em', marginBottom: 14 }}>RESERVE YOUR SPOT</div>
           <h1 style={{ fontFamily: "'Anton'", fontSize: 'clamp(36px,7vw,68px)', lineHeight: 1.02, textTransform: 'uppercase', color: 'var(--text)' }}>Train Your Way</h1>
           <p style={{ marginTop: 14, color: 'var(--text-3)', fontSize: 16, maxWidth: 560, margin: '14px auto 0' }}>
-            Book after-school development, Diamond Skills practice, or a 1-on-1
+            Book after-school development, evening skills training, or a 1-on-1
             training session in Apollo Beach, FL.
           </p>
         </div>

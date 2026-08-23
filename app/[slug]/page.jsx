@@ -43,7 +43,7 @@ const pages = {
     items: [
       ['After-School · $25 Monday', 'Start the week with coach-led player development and focused reps until 5:00 PM.'],
       ['After-School · $20 Tue–Fri', 'Choose the after-school dates that fit your athlete’s schedule.'],
-      ['Diamond Skills · $20/session', 'Fielding, throwing, hitting, base running, and game IQ, Monday, Wednesday, and Thursday from 5:30–7:00 PM.'],
+      ['Evening Skills Training · $20/session', 'Fielding, throwing, hitting, base running, and game IQ, Monday, Wednesday, and Thursday from 5:30–7:00 PM.'],
     ],
   },
   results: {

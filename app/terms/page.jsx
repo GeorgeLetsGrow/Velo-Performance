@@ -19,7 +19,7 @@ export default function Terms() {
 
       <h2>Our Program</h2>
       <p>
-        Velo offers daily after-school player development, Diamond Skills group
+        Velo offers daily after-school player development, evening skills group
         practices, and individual 1-on-1 training sessions for baseball and softball
         athletes in Apollo Beach, FL. Program capacity is limited each day, and
         individual sessions are booked in exclusive time slots.

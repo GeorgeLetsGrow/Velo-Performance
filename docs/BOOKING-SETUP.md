@@ -4,7 +4,7 @@ The `/book` page sells three types of training:
 
 - **After-School Training** — $25 Monday and $20 Tuesday–Friday, with live
   spots-left counts and a 12-athlete daily capacity.
-- **Diamond Skills** — $20 per player per session, Monday, Wednesday, and
+- **Evening Skills Training** — $20 per player per session, Monday, Wednesday, and
   Thursday from 5:30–7:00 PM, with its own daily capacity pool.
 - **Individual Training** — 1-on-1 sessions (hitting, pitching, defense,
   speed, evaluation) in exclusive time slots, Mon–Fri 5:00–7:00 PM, after
