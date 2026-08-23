@@ -12,12 +12,14 @@ import {
   SLOT_STEP,
   fmtTime,
   overlaps,
+  isProgramDate,
+  programPriceCents,
 } from '../../lib/services';
 
 /* ---------------- Data ---------------- */
 // Prices live in lib/services.js (shared with the payment backend);
 // this just adds a display-ready price string.
-const PASSES = PASS_DEFS.map((p) => ({ ...p, price: `$${p.cents / 100}` }));
+const PASSES = PASS_DEFS.map((p) => ({ ...p, price: p.id === 'afterschool' ? '$20–$25' : `$${p.cents / 100}` }));
 const LESSONS = LESSON_DEFS.map((l) => ({ ...l, price: `$${l.cents / 100}` }));
 
 const DOW = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
@@ -121,10 +123,11 @@ export default function BookPage() {
 
   function spotsLeft(iso) {
     if (!loaded) return null; // unknown while loading
-    return Math.max(0, capacity - ((avail.taken && avail.taken[iso]) || 0));
+    const programTaken = avail.takenByProgram && avail.takenByProgram[pass.id];
+    return Math.max(0, capacity - ((programTaken && programTaken[iso]) || 0));
   }
   function selectable(d) {
-    if (d.past) return false;
+    if (d.past || !isProgramDate(pass, d.iso)) return false;
     const left = spotsLeft(d.iso);
     return left === null || left > 0; // optimistic while loading; server re-validates
   }
@@ -132,11 +135,7 @@ export default function BookPage() {
     ? slotsFor(lesson, loaded && avail.busy ? avail.busy[lessonDate] : [])
     : [];
 
-  // How many bookable days the visible week still has — drives the guards
-  // below that stop late-week purchases that can't work (Flex) or aren't
-  // worth it (Unlimited).
   const openDaysInWeek = (mode === 'lesson' ? week.filter((d) => !d.past) : week.filter(selectable)).length;
-  const pass_ = PASSES.find((p) => p.id === passId) || PASSES[0];
   const weekGuard = (() => {
     if (openDaysInWeek === 0) {
       return {
@@ -146,34 +145,8 @@ export default function BookPage() {
           : 'No open days this week.',
       };
     }
-    if (mode !== 'pass') return null;
-    if (pass_.id === 'flex3' && openDaysInWeek < 3) {
-      return {
-        title: 'Not enough days left this week for a Flex Pass',
-        text: `Only ${openDaysInWeek} bookable ${openDaysInWeek === 1 ? 'day remains' : 'days remain'} this week. ` +
-          (weekOffset === 0
-            ? 'Pick any 3 days next week, or book a Drop-In for the remaining time.'
-            : 'Book a Drop-In for the open days instead.'),
-      };
-    }
-    if (pass_.id === 'unlimited' && openDaysInWeek <= 2) {
-      return {
-        title: 'Unlimited isn’t worth it this late in the week',
-        text: `Only ${openDaysInWeek} training ${openDaysInWeek === 1 ? 'day is' : 'days are'} left this week — a $50 Drop-In per day is the better value.` +
-          (weekOffset === 0 ? ' Or go Unlimited next week.' : ''),
-      };
-    }
     return null;
   })();
-
-  // Unlimited covers every remaining open day of the visible week — unless
-  // the week is too far gone (≤2 days), where the guard steers elsewhere.
-  useEffect(() => {
-    if (mode !== 'pass' || passId !== 'unlimited') return;
-    const open = buildWeek(weekOffset).filter(selectable);
-    setSelectedDates(open.length <= 2 ? [] : open.map((d) => d.iso));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, passId, weekOffset, avail]);
 
   function switchMode(m) {
     setMode(m);
@@ -183,7 +156,7 @@ export default function BookPage() {
   }
   function pickPass(id) {
     setPassId(id);
-    setSelectedDates([]); // the unlimited effect repopulates when relevant
+    setSelectedDates([]);
   }
   // Changing the lesson keeps the chosen day but clears the time — durations
   // differ, so which start times fit changes with the lesson.
@@ -205,20 +178,11 @@ export default function BookPage() {
       setLessonTime(null);
       return;
     }
-    if (!selectable(d) || passId === 'unlimited') return;
-    // A guarded week (e.g. Flex with <3 days left) can't lead anywhere —
-    // don't collect selections that can never complete.
-    if (passId === 'flex3' && openDaysInWeek < 3) return;
+    if (!selectable(d)) return;
     const iso = d.iso;
-    if (passId === 'dropin') {
-      setSelectedDates([iso]);
-      return;
-    }
-    // flex3: toggle; when a 4th day is picked, drop the oldest selection
     setSelectedDates((cur) => {
       if (cur.includes(iso)) return cur.filter((x) => x !== iso);
-      const next = [...cur, iso];
-      return next.length > 3 ? next.slice(1) : next;
+      return [...cur, iso].sort();
     });
   }
   function reset() {
@@ -237,12 +201,12 @@ export default function BookPage() {
   }
 
   const sortedDates = [...selectedDates].sort();
+  const passTotalCents = programPriceCents(pass, sortedDates);
+  const checkoutPrice = mode === 'lesson' ? lesson.price : `$${passTotalCents / 100}`;
   const daysReady =
     mode === 'lesson'
       ? Boolean(lessonDate && lessonTime != null)
-      : pass.id === 'unlimited'
-        ? selectedDates.length >= 1
-        : selectedDates.length === (pass.id === 'dropin' ? 1 : 3);
+      : selectedDates.length >= 1;
   const item = mode === 'lesson' ? lesson : pass;
   const canSubmit = form.athlete.trim() && String(form.age).trim() && form.contact.trim() && !submitting;
 
@@ -341,7 +305,7 @@ export default function BookPage() {
   const modeToggle = (
     <div style={{ display: 'flex', gap: 10, marginBottom: 26 }}>
       {[
-        ['pass', 'Day Passes', 'After-school program · until 5:00 PM'],
+        ['pass', 'Group Programs', 'After-school & Diamond Skills'],
         ['lesson', 'Individual Training', '1-on-1 sessions · 5:00–7:00 PM'],
       ].map(([m, title, sub]) => {
         const on = mode === m;
@@ -357,7 +321,7 @@ export default function BookPage() {
 
   /* ----- option radio list (passes or lessons) ----- */
   const optionRadio = (options, currentId, onPick) => (
-    <div role="radiogroup" aria-label={mode === 'pass' ? 'Pass' : 'Training session'} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div role="radiogroup" aria-label={mode === 'pass' ? 'Group program' : 'Training session'} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {options.map((o) => {
         const sel = o.id === currentId;
         return (
@@ -406,21 +370,19 @@ export default function BookPage() {
 
   const dayHint = mode === 'lesson'
     ? (lessonDate ? 'Now pick a time below' : 'Pick a day to see open times')
-    : pass.id === 'dropin'
-      ? 'Pick your day'
-      : pass.id === 'flex3'
-        ? `Pick any 3 afternoons — ${selectedDates.length} of 3 selected`
-        : 'Covers every remaining day of this week';
+    : selectedDates.length
+      ? `${selectedDates.length} ${selectedDates.length === 1 ? 'session' : 'sessions'} selected · ${checkoutPrice}`
+      : pass.id === 'diamond-skills'
+        ? 'Choose Mon, Wed, or Thu'
+        : 'Choose one or more weekdays';
 
   const continueLabel = !daysReady
     ? mode === 'lesson'
       ? 'Pick a day & time to continue'
-      : pass.id === 'flex3'
-        ? `Pick ${3 - selectedDates.length} more day${3 - selectedDates.length > 1 ? 's' : ''} to continue`
-        : 'Pick a day to continue'
+      : 'Pick one or more dates to continue'
     : mode === 'lesson'
       ? `Continue — ${lesson.name} · ${fmtDate(lessonDate)} · ${fmtTime(lessonTime)} →`
-      : `Continue — ${pass.name} · ${sortedDates.length} day${sortedDates.length > 1 ? 's' : ''} · ${pass.price} →`;
+      : `Continue — ${pass.name} · ${sortedDates.length} ${sortedDates.length > 1 ? 'sessions' : 'session'} · ${checkoutPrice} →`;
 
   const sessionStep = (
     <div>
@@ -429,7 +391,7 @@ export default function BookPage() {
         {/* --- option (radio select) --- */}
         <div>
           <div style={{ ...label, marginBottom: 14 }}>
-            1 · {mode === 'pass' ? 'Pick Your Pass' : 'Pick Your Session'}
+            1 · {mode === 'pass' ? 'Pick Your Program' : 'Pick Your Session'}
           </div>
           {mode === 'pass'
             ? optionRadio(PASSES, passId, pickPass)
@@ -438,7 +400,9 @@ export default function BookPage() {
             <span style={{ fontFamily: "'Anton'", fontSize: 16, color: A }}>{mode === 'pass' ? '☀' : '★'}</span>
             <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 600, fontSize: 14, letterSpacing: '.04em', textTransform: 'uppercase', color: 'var(--text-2)' }}>
               {mode === 'pass'
-                ? 'After-school program · Monday–Friday until 5:00 PM'
+                ? pass.id === 'diamond-skills'
+                  ? 'Diamond Skills · Mon, Wed & Thu · 5:30–7:00 PM'
+                  : 'After-school training · Monday–Friday until 5:00 PM'
                 : '1-on-1 with a coach · Monday–Friday 5:00–7:00 PM'}
             </span>
           </div>
@@ -465,19 +429,24 @@ export default function BookPage() {
               const sel = mode === 'lesson' ? d.iso === lessonDate : selectedDates.includes(d.iso);
               const left = mode === 'pass' ? spotsLeft(d.iso) : null;
               const full = left === 0;
-              const disabled = d.past || (mode === 'pass' && (full || passId === 'unlimited'));
+              const wrongProgramDay = mode === 'pass' && !isProgramDate(pass, d.iso);
+              const disabled = d.past || wrongProgramDay || (mode === 'pass' && full);
               return (
                 <button key={d.iso} disabled={disabled && !sel} onClick={() => pickDay(d)} style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '14px 4px 10px', font: 'inherit',
-                  cursor: d.past || full ? 'not-allowed' : mode === 'pass' && passId === 'unlimited' ? 'default' : 'pointer',
-                  opacity: d.past || full ? 0.4 : 1,
+                  cursor: disabled ? 'not-allowed' : 'pointer',
+                  opacity: disabled ? 0.4 : 1,
                   border: `1.5px solid ${sel ? A : 'var(--border-2)'}`, background: sel ? 'var(--bg-3)' : 'var(--bg-1)',
                 }}>
                   <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 11, letterSpacing: '.1em', color: 'var(--text-4)' }}>{d.dow}</span>
                   <span style={{ fontFamily: "'Anton'", fontSize: 24, lineHeight: 1, color: sel ? A : 'var(--text)' }}>{d.day}</span>
                   <span style={{ fontFamily: "'Barlow'", fontSize: 11, color: 'var(--text-4)' }}>{d.mon}</span>
                   <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, letterSpacing: '.08em', minHeight: 12, color: full ? 'var(--text-5)' : 'var(--gold)' }}>
-                    {mode === 'pass' && !d.past ? (full ? 'FULL' : left !== null && left <= 4 ? `${left} LEFT` : '') : ''}
+                    {mode === 'pass' && !d.past && !wrongProgramDay
+                      ? full ? 'FULL' : pass.id === 'afterschool'
+                        ? d.dow === 'MON' ? '$25' : '$20'
+                        : '$20'
+                      : ''}
                   </span>
                   {sel && <span style={{ width: 20, height: 3, background: A }} />}
                 </button>
@@ -507,7 +476,7 @@ export default function BookPage() {
                 <span key={iso} style={{
                   fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 13.5, letterSpacing: '.05em', textTransform: 'uppercase',
                   color: 'var(--text)', background: 'var(--bg)', border: `1px solid ${A}`, padding: '6px 12px',
-                }}>{fmtDate(iso)}</span>
+                }}>{fmtDate(iso)} · {pass.id === 'afterschool' && new Date(`${iso}T00:00:00`).getDay() === 1 ? '$25' : '$20'}</span>
               ))}
             </div>
           )}
@@ -621,7 +590,7 @@ export default function BookPage() {
       <div style={{ display: 'flex', gap: 12 }}>
         <button onClick={() => setStep(1)} style={ghostBtn}>← Back</button>
         <button disabled={!canSubmit} onClick={goToPayment} style={primaryBtn(!!canSubmit)}>
-          {submitting ? 'Opening Secure Checkout…' : `Continue to Payment — ${item.price}`}
+          {submitting ? 'Opening Secure Checkout…' : `Continue to Payment — ${checkoutPrice}`}
         </button>
       </div>
       <p style={{ marginTop: 14, ...mono, fontSize: 11, letterSpacing: '.06em', color: 'var(--text-5)', textAlign: 'center' }}>
@@ -667,8 +636,8 @@ export default function BookPage() {
           <div style={{ ...mono, color: A, letterSpacing: '.3em', marginBottom: 14 }}>RESERVE YOUR SPOT</div>
           <h1 style={{ fontFamily: "'Anton'", fontSize: 'clamp(36px,7vw,68px)', lineHeight: 1.02, textTransform: 'uppercase', color: 'var(--text)' }}>Train Your Way</h1>
           <p style={{ marginTop: 14, color: 'var(--text-3)', fontSize: 16, maxWidth: 560, margin: '14px auto 0' }}>
-            Join the after-school program with a day pass, or book a 1-on-1
-            training session. Monday–Friday in Apollo Beach, FL.
+            Book after-school development, Diamond Skills practice, or a 1-on-1
+            training session in Apollo Beach, FL.
           </p>
         </div>
 

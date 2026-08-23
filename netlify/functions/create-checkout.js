@@ -13,7 +13,7 @@
 
 const {
   PASSES, LESSONS, LESSON_START, LESSON_END, SLOT_STEP,
-  isIsoDate, isWeekday, mondayOf, fmtDay, fmtTime,
+  isIsoDate, isWeekday, isProgramDate, programPriceCents, mondayOf, fmtDay, fmtTime,
 } = require('../../lib/services');
 const { sb } = require('../../lib/db');
 
@@ -47,13 +47,9 @@ exports.handler = async (event) => {
   let startMin = null;
   if (kind === 'pass') {
     dates = Array.isArray(input.dates) ? [...new Set(input.dates.map(String))].sort() : [];
-    if (!dates.length || !dates.every((d) => isIsoDate(d) && isWeekday(d))) return json(400, { error: 'bad_dates' });
+    if (!dates.length || dates.length > 5 || !dates.every((d) => isProgramDate(item, d))) return json(400, { error: 'bad_dates' });
     if (dates[0] < today) return json(400, { error: 'past_date' });
-    // Day-count rules per pass; weekly passes must stay within one Mon–Fri week.
-    if (item.id === 'dropin' && dates.length !== 1) return json(400, { error: 'bad_dates' });
-    if (item.id === 'flex3' && dates.length !== 3) return json(400, { error: 'bad_dates' });
-    if (item.id === 'unlimited' && (dates.length < 1 || dates.length > 5)) return json(400, { error: 'bad_dates' });
-    if (item.id !== 'dropin' && new Set(dates.map(mondayOf)).size !== 1) return json(400, { error: 'not_same_week' });
+    if (new Set(dates.map(mondayOf)).size !== 1) return json(400, { error: 'not_same_week' });
   } else {
     const date = String(input.date || '');
     startMin = Number(input.startMin);
@@ -77,11 +73,12 @@ exports.handler = async (event) => {
       method: 'DELETE',
     });
 
+    const totalCents = kind === 'pass' ? programPriceCents(item, dates) : item.cents;
     const holdBody = {
       kind,
       item_id: item.id,
       item_name: item.name,
-      price_cents: item.cents,
+      price_cents: totalCents,
       athlete_name: athlete,
       athlete_age: String(input.age || '').trim() || null,
       sport: String(input.sport || '').trim() || null,
@@ -131,7 +128,7 @@ exports.handler = async (event) => {
       : dates.map(fmtDay).join(', ');
     const productName = kind === 'lesson'
       ? `${item.name} — 1-on-1 · ${whenLabel}`
-      : `${item.name} — Velo After-School Training`;
+      : `${item.name} — ${dates.length} ${dates.length === 1 ? 'session' : 'sessions'}`;
 
     const params = new URLSearchParams({
       mode: 'payment',
@@ -139,7 +136,7 @@ exports.handler = async (event) => {
       expires_at: String(Math.floor(Date.now() / 1000) + 30 * 60),
       'line_items[0][quantity]': '1',
       'line_items[0][price_data][currency]': 'usd',
-      'line_items[0][price_data][unit_amount]': String(item.cents),
+      'line_items[0][price_data][unit_amount]': String(totalCents),
       'line_items[0][price_data][product_data][name]': productName,
       'line_items[0][price_data][product_data][description]': `Athlete: ${athlete} · ${whenLabel}`,
       success_url: `${origin}/book/?paid=1&sid={CHECKOUT_SESSION_ID}`,

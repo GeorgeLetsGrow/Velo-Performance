@@ -1,10 +1,11 @@
 # Booking System — Setup Guide
 
-The `/book` page sells two things behind a toggle:
+The `/book` page sells three types of training:
 
-- **Day Passes** — the same passes as the homepage pricing section: Drop-In
-  ($50/day), 3-Day Flex Pass ($100/week), Unlimited Week ($150/week). Day
-  attendance with live spots-left counts, capped at 12 athletes/day.
+- **After-School Training** — $25 Monday and $20 Tuesday–Friday, with live
+  spots-left counts and a 12-athlete daily capacity.
+- **Diamond Skills** — $20 per player per session, Monday, Wednesday, and
+  Thursday from 5:30–7:00 PM, with its own daily capacity pool.
 - **Individual Training** — 1-on-1 sessions (hitting, pitching, defense,
   speed, evaluation) in exclusive time slots, Mon–Fri 5:00–7:00 PM, after
   the program ends. The window is one constant in `lib/services.js`
@@ -20,8 +21,8 @@ to it yet, so it's safe to test in Stripe test mode on the deployed site.
 ## How it works
 
 ```
-Parent picks pass + days → create-checkout fn:
-                      1. validates pass/days (prices come from lib/services.js, never the client)
+Parent picks program + days → create-checkout fn:
+                      1. validates program/days (prices come from lib/services.js, never the client)
                       2. inserts a 35-min "hold" (booking + booking_days) — a
                          Postgres trigger caps each day at 12 athletes, atomically
                       3. creates a 30-min Stripe Checkout Session

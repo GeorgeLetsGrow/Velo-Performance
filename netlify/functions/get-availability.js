@@ -17,7 +17,7 @@ exports.handler = async (event) => {
   try {
     const [dayRes, lessonRes] = await Promise.all([
       sb(
-        `/booking_days?select=session_date,booking:bookings!inner(status,hold_expires_at)` +
+        `/booking_days?select=session_date,booking:bookings!inner(status,hold_expires_at,item_id)` +
           `&session_date=gte.${from}&session_date=lte.${to}`
       ),
       sb(
@@ -37,8 +37,15 @@ exports.handler = async (event) => {
         (b.status === 'hold' && b.hold_expires_at && Date.parse(b.hold_expires_at) > now));
 
     const taken = {};
+    const takenByProgram = {};
     for (const r of dayRes.data) {
-      if (active(r.booking)) taken[r.session_date] = (taken[r.session_date] || 0) + 1;
+      if (active(r.booking)) {
+        const rawId = r.booking.item_id;
+        const program = ['dropin', 'flex3', 'unlimited', 'afterschool'].includes(rawId) ? 'afterschool' : rawId;
+        taken[r.session_date] = (taken[r.session_date] || 0) + 1;
+        takenByProgram[program] = takenByProgram[program] || {};
+        takenByProgram[program][r.session_date] = (takenByProgram[program][r.session_date] || 0) + 1;
+      }
     }
     const busy = {};
     for (const r of lessonRes.data) {
@@ -49,7 +56,7 @@ exports.handler = async (event) => {
         ]);
       }
     }
-    return json(200, { capacity: CAPACITY, taken, busy });
+    return json(200, { capacity: CAPACITY, taken, takenByProgram, busy });
   } catch (err) {
     console.error(err);
     const detail = String((err && err.message) || err).slice(0, 140);
