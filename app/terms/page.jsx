@@ -19,16 +19,15 @@ export default function Terms() {
 
       <h2>Our Program</h2>
       <p>
-        Velo offers an after-school player development program (Drop-In, 3-Day Flex
-        Pass, and Unlimited Week passes) and individual 1-on-1 training sessions for
-        baseball and softball athletes, Monday through Friday in Apollo Beach, FL.
-        Program capacity is limited each day, and individual sessions are booked in
-        exclusive time slots.
+        Velo offers daily after-school player development, evening skills group
+        practices, and individual 1-on-1 training sessions for baseball and softball
+        athletes in Apollo Beach, FL. Program capacity is limited each day, and
+        individual sessions are booked in exclusive time slots.
       </p>
 
       <h2>Bookings &amp; Payment</h2>
       <ul>
-        <li>Passes and individual sessions are paid in full at the time of booking via Stripe.</li>
+        <li>Group programs and individual sessions are paid in full at the time of booking via Stripe.</li>
         <li>Your spot or time slot is reserved once payment is confirmed. A reservation is held for a short window during checkout and released automatically if payment isn&apos;t completed.</li>
         <li>Prices are as listed on our website at the time of booking.</li>
       </ul>
