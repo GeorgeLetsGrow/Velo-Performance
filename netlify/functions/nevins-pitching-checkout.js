@@ -1,7 +1,7 @@
 const {sb}=require('../../lib/db');
 const HOLD_MINUTES=35;
 const json=(statusCode,obj)=>({statusCode,headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)});
-const validClinicDate=value=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;const d=new Date(`${value}T12:00:00Z`),day=d.getUTCDay();return !Number.isNaN(d.valueOf())&&(day===3||day===4)};
+const validClinicDate=value=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;const d=new Date(`${value}T12:00:00Z`);return !Number.isNaN(d.valueOf())&&d.getUTCDay()===4};
 const day=d=>new Intl.DateTimeFormat('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'}).format(new Date(`${d}T12:00:00Z`));
 
 exports.handler=async event=>{
