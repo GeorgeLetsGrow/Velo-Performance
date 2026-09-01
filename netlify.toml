@@ -12,6 +12,6 @@
 
 [[redirects]]
   from = "/proform"
-  to = "https://velo-pro-form-ai.base44.app/"
+  to = "http://proform.veloperformancelab.com/"
   status = 301
   force = true
