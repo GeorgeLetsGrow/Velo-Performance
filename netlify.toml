@@ -10,8 +10,3 @@
 [build.environment]
   NODE_VERSION = "20"
 
-[[redirects]]
-  from = "/proform"
-  to = "http://proform.veloperformancelab.com/"
-  status = 301
-  force = true
