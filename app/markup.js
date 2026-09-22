@@ -96,16 +96,22 @@ export const MARKUP = `<!-- ============ NAV ============ -->
   </div>
 </div>
 
-<!-- ============ SUNDAY FUNDAY ============ -->
-<section style="background:var(--bg-2);padding:64px 0;border-bottom:1px solid var(--hairline)">
-  <div class="velo-sunday-promo" style="max-width:1240px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 1fr">
-    <div style="background:var(--bg-1);border:1px solid var(--border);padding:clamp(34px,5vw,68px);display:flex;flex-direction:column;justify-content:center">
-      <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:18px">New · Select Sundays this fall</div>
-      <h2 style="font-family:'Anton';font-size:clamp(46px,7vw,86px);line-height:.88;text-transform:uppercase;color:var(--text)">Sunday <span style="color:var(--accent)">Funday</span></h2>
-      <p style="margin-top:22px;color:var(--text-2);font-size:18px;line-height:1.55">Two hours of small-group hitting, fielding, throwing, and competition. 9:00–11:00 AM · $30 per player.</p>
-      <a href="/sunday-funday" class="velo-btn velo-btn-primary" style="align-self:flex-start;margin-top:28px;font-family:'Barlow Condensed';font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--accent);padding:17px 30px;text-decoration:none;transform:skewX(-9deg);display:inline-block"><span style="display:inline-block;transform:skewX(9deg)">View Dates &amp; Reserve →</span></a>
-    </div>
-    <img src="/assets/sunday-funday.jpg" alt="Young baseball player fielding a ball during outdoor training" style="width:100%;height:100%;min-height:420px;object-fit:cover;display:block">
+<!-- ============ FEATURED BASEBALL OFFERINGS ============ -->
+<section class="velo-offerings" aria-labelledby="offerings-title">
+  <div class="velo-offerings-header">
+    <div><div class="velo-offerings-eyebrow">Featured Training · Pick Your Path</div><h2 id="offerings-title">Two Ways To <span>Level Up.</span></h2></div>
+    <p>Choose the reps your player needs now—complete-game development or focused pitching instruction.</p>
+  </div>
+  <div class="velo-offerings-grid">
+    <article class="velo-offering-card velo-offering-funday">
+      <a class="velo-offering-photo" href="/sunday-funday" aria-label="Explore Sunday Funday camps"><img src="/assets/sunday-funday.jpg" alt="Young baseball player fielding a ball during outdoor training"><span class="velo-offering-number">01</span><span class="velo-offering-tag">All-Around Development</span></a>
+      <div class="velo-offering-copy"><div class="velo-offering-meta"><span>Select Sundays</span><strong>$30 / Player</strong></div><h3>Sunday <em>Funday</em></h3><p>Two high-energy hours of hitting, fielding, throwing, and competition for baseball and softball athletes.</p><ul><li>9:00–11:00 AM</li><li>Small groups</li><li>Game-speed reps</li></ul><a class="velo-offering-cta" href="/sunday-funday">Choose Sunday Funday <span>→</span></a></div>
+    </article>
+    <div class="velo-offerings-versus" aria-hidden="true"><span>OR</span></div>
+    <article class="velo-offering-card velo-offering-pitching">
+      <a class="velo-offering-photo" href="/nevins-pitching" aria-label="Explore Nevin Griffith's pitching clinic"><img src="/assets/pitching-clinic.jpg" alt="Nevin Griffith pitching clinic at Velo Performance Lab"><span class="velo-offering-number">02</span><span class="velo-offering-tag">Pitching Development</span></a>
+      <div class="velo-offering-copy"><div class="velo-offering-meta"><span>Thu · 6–7 PM</span><strong>$25 / Player</strong></div><h3>Nevin's <em>Pitching</em></h3><p>Train with former White Sox pitcher Nevin Griffith to improve accuracy, increase velocity, and sharpen mechanics.</p><ul><li>Pitch design</li><li>Command</li><li>Mechanics</li></ul><a class="velo-offering-cta" href="/nevins-pitching">Choose Pitching Clinic <span>→</span></a></div>
+    </article>
   </div>
 </section>
 
@@ -318,57 +324,57 @@ export const MARKUP = `<!-- ============ NAV ============ -->
       <p style="margin-top:16px;color:var(--text-3);font-size:17px;max-width:520px;margin-left:auto;margin-right:auto">Flexible scheduling. Elite coaching. Every session delivers the same high standard of player development.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;align-items:stretch">
-      <!-- Drop-In -->
+      <!-- After-school -->
       <div style="background:var(--bg-1);border:1px solid var(--border);padding:38px 32px;position:relative;display:flex;flex-direction:column">
-        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)">Drop-In</div>
+        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)">After-School Training</div>
         <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
           <span style="font-family:'Anton';font-size:30px;color:var(--text);padding-top:8px">$</span>
-          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">50</span>
+          <span style="font-family:'Anton';font-size:64px;line-height:.85;color:var(--text)">20–25</span>
         </div>
         <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Day</div>
-        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Perfect for busy schedules, extra reps, or experiencing the Velo difference.</p>
+        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Monday–Friday player development with coach-led reps until 5:00 PM. Monday is $25; Tuesday–Friday is $20.</p>
         <div style="height:1px;border-top:1px solid var(--border-2);margin:22px 0"></div>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>High-energy training session</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Individual coaching &amp; feedback</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Game-ready skill development</span></li>
         </ul>
-        <a href="#register" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Book a Drop-In</a>
+        <a href="/book" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Choose After-School Dates</a>
       </div>
-      <!-- Flex Pass (featured) -->
+      <!-- Evening skills (featured) -->
       <div style="background:var(--bg-3);border:1px solid var(--accent);padding:38px 32px;position:relative;display:flex;flex-direction:column">
         <div style="position:absolute;top:0;right:0;background:var(--accent);color:var(--ink);font-family:'Barlow Condensed';font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:7px 14px">Most Popular</div>
-        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">3-Day Flex Pass</div>
+        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Evening Skills Training</div>
         <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
           <span style="font-family:'Anton';font-size:30px;color:var(--text);padding-top:8px">$</span>
-          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">100</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">25</span>
         </div>
-        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Week</div>
-        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Perfect for multi-sport athletes and busy families. Train any 3 days Monday–Friday with the flexibility your family needs while receiving the same elite coaching every session.</p>
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Player · Per Day</div>
+        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Focused baseball and softball skills practice Monday, Wednesday, and Thursday from 5:30–7:00 PM.</p>
         <div style="height:1px;border-top:1px solid var(--border-2);margin:22px 0"></div>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
-          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Choose any 3 afternoons each week</span></li>
-          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Small-group coaching &amp; personalized instruction</span></li>
-          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Maximum development. Flexible commitment.</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Fielding, throwing &amp; hitting</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Base running &amp; game IQ</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Baseball and softball players welcome</span></li>
         </ul>
-        <a href="#register" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--ink);background:var(--accent);border:1.5px solid var(--accent);display:block">Get the Flex Pass</a>
+        <a href="/book" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--ink);background:var(--accent);border:1.5px solid var(--accent);display:block">Book Evening Skills</a>
       </div>
-      <!-- Unlimited -->
+      <!-- Private training -->
       <div style="background:var(--bg-1);border:1px solid var(--border);padding:38px 32px;position:relative;display:flex;flex-direction:column">
-        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Unlimited Week</div>
+        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Private Training</div>
         <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
           <span style="font-family:'Anton';font-size:30px;color:var(--text);padding-top:8px">$</span>
-          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">150</span>
+          <span style="font-family:'Anton';font-size:72px;line-height:.85;color:var(--text)">55+</span>
         </div>
-        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Week</div>
-        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">The fastest path to consistent improvement. Train Monday through Friday for the athlete committed to reaching their full potential.</p>
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per One-on-One Session</div>
+        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Sunday one-on-one coaching from 12:00–7:00 PM, built around your athlete’s specific goals and development needs.</p>
         <div style="height:1px;border-top:1px solid var(--border-2);margin:22px 0"></div>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
-          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Unlimited training, Monday–Friday</span></li>
-          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Maximum coaching, reps &amp; development</span></li>
-          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>The fastest path to consistent improvement</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Hitting, pitching or defensive focus</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Dedicated coach attention</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>Available Sundays from 12:00–7:00 PM</span></li>
         </ul>
-        <a href="#register" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Start Training</a>
+        <a href="/book" style="margin-top:auto;text-align:center;font-family:'Barlow Condensed';font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:15px;text-decoration:none;color:var(--text);background:transparent;border:1.5px solid var(--border-strong);display:block">Book Private Training</a>
       </div>
     </div>
     <p style="text-align:center;margin-top:28px;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-5)">LIMITED DAILY ENROLLMENT · MONDAY–FRIDAY</p>
@@ -555,9 +561,9 @@ export const MARKUP = `<!-- ============ NAV ============ -->
               <label for="rf-interest" class="sr-only">Interested In</label>
               <select id="rf-interest" name="interest" class="velo-input">
                 <option value="" disabled selected>Interested In</option>
-                <option>Drop-In — $50 / day</option>
-                <option>3-Day Flex Pass — $100 / week</option>
-                <option>Unlimited Week — $150 / week</option>
+                <option>After-School — Monday $25</option>
+                <option>After-School — Tuesday–Friday $20 / day</option>
+                <option>Evening Skills Training — $25 / session</option>
                 <option>Not sure yet — just have questions</option>
               </select>
             </div>

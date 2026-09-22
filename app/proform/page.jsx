@@ -9,7 +9,7 @@ export const metadata = createPageMetadata({
   path: '/proform',
 });
 
-const appUrl = process.env.NEXT_PUBLIC_VELO_PROFORM_URL || '/book';
+const appUrl = process.env.NEXT_PUBLIC_VELO_PROFORM_URL || 'http://proform.veloperformancelab.com/';
 const isExternal = appUrl.startsWith('http');
 
 export default function ProformPage() {

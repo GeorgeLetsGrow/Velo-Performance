@@ -41,9 +41,9 @@ const pages = {
     eyebrow: 'Flexible options', title: 'Train your way.',
     intro: 'Choose the rhythm that fits your family. Every option includes the same coach-led, small-group development.',
     items: [
-      ['Drop-In · $50/day', 'A high-energy session with individual feedback—perfect for extra reps or trying Velo.'],
-      ['3-Day Flex Pass · $100/week', 'Choose any three afternoons Monday–Friday. Our most flexible, popular option.'],
-      ['Unlimited · $150/week', 'Train every weekday for maximum coaching, consistency, and development.'],
+      ['After-School · $25 Monday', 'Start the week with coach-led player development and focused reps until 5:00 PM.'],
+      ['After-School · $20 Tue–Fri', 'Choose the after-school dates that fit your athlete’s schedule.'],
+      ['Evening Skills Training · $25/session', 'Fielding, throwing, hitting, base running, and game IQ, Monday, Wednesday, and Thursday from 5:30–7:00 PM.'],
     ],
   },
   results: {
