@@ -467,7 +467,7 @@ export default function BookPage() {
                     {mode === 'pass' && !d.past && !wrongProgramDay
                       ? full ? 'FULL' : pass.id === 'afterschool'
                         ? d.dow === 'MON' ? '$25' : '$20'
-                        : '$20'
+                        : `$${pass.cents / 100}`
                       : ''}
                   </span>
                   {sel && <span style={{ width: 20, height: 3, background: A }} />}
@@ -498,7 +498,7 @@ export default function BookPage() {
                 <span key={iso} style={{
                   fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 13.5, letterSpacing: '.05em', textTransform: 'uppercase',
                   color: 'var(--text)', background: 'var(--bg)', border: `1px solid ${A}`, padding: '6px 12px',
-                }}>{fmtDate(iso)} · {pass.id === 'afterschool' && new Date(`${iso}T00:00:00`).getDay() === 1 ? '$25' : '$20'}</span>
+                }}>{fmtDate(iso)} · {pass.id === 'afterschool' ? (new Date(`${iso}T00:00:00`).getDay() === 1 ? '$25' : '$20') : `$${pass.cents / 100}`}</span>
               ))}
             </div>
           )}
