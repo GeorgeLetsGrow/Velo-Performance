@@ -109,7 +109,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
     </article>
     <div class="velo-offerings-versus" aria-hidden="true"><span>OR</span></div>
     <article class="velo-offering-card velo-offering-pitching">
-      <a class="velo-offering-photo" href="/nevins-pitching" aria-label="Explore Nevin Griffith's pitching clinic"><img src="/assets/pitching-clinic.jpg" alt="Nevin Griffith pitching clinic at Velo Performance Lab"><span class="velo-offering-number">02</span><span class="velo-offering-tag">Pitching Development</span></a>
+      <a class="velo-offering-photo" href="/nevins-pitching" aria-label="Explore Nevin Griffith's pitching clinic"><img src="/assets/pitching-clinic.jpg?v=20260923" alt="Nevin Griffith pitching clinic at Velo Performance Lab"><span class="velo-offering-number">02</span><span class="velo-offering-tag">Pitching Development</span></a>
       <div class="velo-offering-copy"><div class="velo-offering-meta"><span>Thu · 6–7 PM</span><strong>$25 / Player</strong></div><h3>Nevin's <em>Pitching</em></h3><p>Train with former White Sox pitcher Nevin Griffith to improve accuracy, increase velocity, and sharpen mechanics.</p><ul><li>Pitch design</li><li>Command</li><li>Mechanics</li></ul><a class="velo-offering-cta" href="/nevins-pitching">Choose Pitching Clinic <span>→</span></a></div>
     </article>
   </div>
