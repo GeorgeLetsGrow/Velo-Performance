@@ -19,7 +19,7 @@ import {
 /* ---------------- Data ---------------- */
 // Prices live in lib/services.js (shared with the payment backend);
 // this just adds a display-ready price string.
-const PASSES = PASS_DEFS.map((p) => ({ ...p, price: p.id === 'afterschool' ? '$20–$25' : `$${p.cents / 100}` }));
+const PASSES = PASS_DEFS.map((p) => ({ ...p, price: `$${p.cents / 100}` }));
 const LESSONS = LESSON_DEFS.map((l) => ({ ...l, price: `$${l.cents / 100}` }));
 
 const DOW = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
@@ -465,9 +465,7 @@ export default function BookPage() {
                   <span style={{ fontFamily: "'Barlow'", fontSize: 11, color: 'var(--text-4)' }}>{d.mon}</span>
                   <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 9, letterSpacing: '.08em', minHeight: 12, color: full ? 'var(--text-5)' : 'var(--gold)' }}>
                     {mode === 'pass' && !d.past && !wrongProgramDay
-                      ? full ? 'FULL' : pass.id === 'afterschool'
-                        ? d.dow === 'MON' ? '$25' : '$20'
-                        : `$${pass.cents / 100}`
+                      ? full ? 'FULL' : `$${pass.cents / 100}`
                       : ''}
                   </span>
                   {sel && <span style={{ width: 20, height: 3, background: A }} />}
@@ -498,7 +496,7 @@ export default function BookPage() {
                 <span key={iso} style={{
                   fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 13.5, letterSpacing: '.05em', textTransform: 'uppercase',
                   color: 'var(--text)', background: 'var(--bg)', border: `1px solid ${A}`, padding: '6px 12px',
-                }}>{fmtDate(iso)} · {pass.id === 'afterschool' ? (new Date(`${iso}T00:00:00`).getDay() === 1 ? '$25' : '$20') : `$${pass.cents / 100}`}</span>
+                }}>{fmtDate(iso)} · ${pass.cents / 100}</span>
               ))}
             </div>
           )}

@@ -329,10 +329,10 @@ export const MARKUP = `<!-- ============ NAV ============ -->
         <div style="font-family:'Barlow Condensed';font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)">After-School Training</div>
         <div style="display:flex;align-items:flex-start;gap:4px;margin:18px 0 6px">
           <span style="font-family:'Anton';font-size:30px;color:var(--text);padding-top:8px">$</span>
-          <span style="font-family:'Anton';font-size:64px;line-height:.85;color:var(--text)">20–25</span>
+          <span style="font-family:'Anton';font-size:64px;line-height:.85;color:var(--text)">30</span>
         </div>
         <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.1em;color:var(--text-4);text-transform:uppercase">Per Day</div>
-        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Monday–Friday player development with coach-led reps until 5:00 PM. Monday is $25; Tuesday–Friday is $20.</p>
+        <p style="margin-top:18px;color:var(--text-3);font-size:15px;line-height:1.55;min-height:44px">Monday–Friday player development with coach-led reps until 5:00 PM. $30 every day.</p>
         <div style="height:1px;border-top:1px solid var(--border-2);margin:22px 0"></div>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px">
           <li style="display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:14.5px;line-height:1.4"><span style="color:var(--accent);font-weight:700;flex-shrink:0">▸</span><span>High-energy training session</span></li>
@@ -561,8 +561,7 @@ export const MARKUP = `<!-- ============ NAV ============ -->
               <label for="rf-interest" class="sr-only">Interested In</label>
               <select id="rf-interest" name="interest" class="velo-input">
                 <option value="" disabled selected>Interested In</option>
-                <option>After-School — Monday $25</option>
-                <option>After-School — Tuesday–Friday $20 / day</option>
+                <option>After-School — $30 / day</option>
                 <option>Evening Skills Training — $25 / session</option>
                 <option>Not sure yet — just have questions</option>
               </select>

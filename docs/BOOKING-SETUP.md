@@ -2,7 +2,7 @@
 
 The `/book` page sells three types of training:
 
-- **After-School Training** — $25 Monday and $20 Tuesday–Friday, with live
+- **After-School Training** — $30 per day Monday–Friday, with live
   spots-left counts and a 12-athlete daily capacity.
 - **Evening Skills Training** — $25 per player per session, Monday, Wednesday, and
   Thursday from 5:30–7:00 PM, with its own daily capacity pool.
