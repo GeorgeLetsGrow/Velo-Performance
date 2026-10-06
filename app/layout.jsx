@@ -1,4 +1,5 @@
 import './globals.css';
+import AnnouncementBanner from '../components/AnnouncementBanner';
 import { createPageMetadata, defaultDescription, defaultTitle, siteName, siteUrl } from '../lib/seo';
 
 export const metadata = {
@@ -62,7 +63,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body><AnnouncementBanner />{children}</body>
     </html>
   );
 }

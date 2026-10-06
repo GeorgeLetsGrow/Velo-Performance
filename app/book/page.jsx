@@ -82,6 +82,8 @@ export default function BookPage() {
   const [lessonDate, setLessonDate] = useState(null);     // lesson mode
   const [lessonTime, setLessonTime] = useState(null);
   const [form, setForm] = useState({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '', smsOptIn: false });
+  const [cart, setCart] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
   // Availability for both weeks: null = loading, 'error', or { capacity, taken, busy }
   const [avail, setAvail] = useState(null);
   const [availReload, setAvailReload] = useState(0);
@@ -95,13 +97,13 @@ export default function BookPage() {
     if (q.get('paid') === '1') {
       setStep(3);
     } else if (q.get('cancelled') === '1') {
-      const bid = q.get('bid');
-      if (bid) {
+      const bids = (q.get('bids') || q.get('bid') || '').split(',').filter(Boolean);
+      if (bids.length) {
         // Free the held reservation right away instead of waiting out the 30-min hold.
         fetch('/.netlify/functions/release-hold', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ bid }),
+          body: JSON.stringify({ bids }),
         }).catch(() => {});
       }
       setNotice({ kind: 'info', text: 'Checkout cancelled — your reservation was released. Pick again whenever you’re ready.' });
@@ -204,6 +206,8 @@ export default function BookPage() {
     setLessonDate(null);
     setLessonTime(null);
     setForm({ athlete: '', age: '', sport: 'Baseball', parent: '', contact: '', smsOptIn: false });
+    setCart([]);
+    setEditingIndex(null);
     setNotice(null);
     setSubmitting(false);
     setAvailReload((n) => n + 1);
@@ -212,34 +216,89 @@ export default function BookPage() {
   const sortedDates = [...selectedDates].sort();
   const passTotalCents = programPriceCents(pass, sortedDates);
   const checkoutPrice = mode === 'lesson' ? lesson.price : `$${passTotalCents / 100}`;
+  const currentPriceCents = mode === 'lesson' ? lesson.cents : passTotalCents;
+  const cartTotalCents = cart.reduce((sum, booking) => sum + booking.priceCents, 0);
+  const editingPriceCents = editingIndex == null ? 0 : cart[editingIndex]?.priceCents || 0;
+  const orderTotalCents = cartTotalCents - editingPriceCents + currentPriceCents;
   const daysReady =
     mode === 'lesson'
       ? Boolean(lessonDate && lessonTime != null)
       : selectedDates.length >= 1;
   const item = mode === 'lesson' ? lesson : pass;
   const canSubmit = form.athlete.trim() && String(form.age).trim() && form.contact.trim() && !submitting;
+  const canAddAnother = canSubmit && (editingIndex != null || cart.length < 9);
+
+  function currentBooking() {
+    const booking = {
+      kind: mode, itemId: item.id, athlete: form.athlete, age: form.age,
+      sport: form.sport, parent: form.parent, contact: form.contact, smsOptIn: form.smsOptIn,
+      itemName: item.name, priceCents: currentPriceCents,
+      when: mode === 'lesson' ? `${fmtDate(lessonDate)} · ${fmtTime(lessonTime)}` : sortedDates.map(fmtDate).join(' · '),
+    };
+    if (mode === 'lesson') Object.assign(booking, { date: lessonDate, startMin: lessonTime });
+    else booking.dates = sortedDates;
+    return booking;
+  }
+
+  function editBooking(index) {
+    const booking = cart[index];
+    if (!booking) return;
+    setEditingIndex(index);
+    setMode(booking.kind);
+    setForm({ athlete: booking.athlete, age: booking.age, sport: booking.sport, parent: booking.parent, contact: booking.contact, smsOptIn: booking.smsOptIn });
+    if (booking.kind === 'lesson') {
+      setLessonId(booking.itemId);
+      setLessonDate(booking.date);
+      setLessonTime(booking.startMin);
+      setSelectedDates([]);
+      setWeekOffset(buildSunday(0).iso === booking.date ? 0 : 1);
+    } else {
+      setPassId(booking.itemId);
+      setSelectedDates(booking.dates);
+      setLessonDate(null);
+      setLessonTime(null);
+      setWeekOffset(buildWeek(0).some((day) => booking.dates.includes(day.iso)) ? 0 : 1);
+    }
+    setStep(1);
+    setNotice({ kind: 'info', text: 'Editing this booking. Make your changes, then update it or continue to payment.' });
+  }
+
+  function removeBooking(index) {
+    setCart((current) => current.filter((_, i) => i !== index));
+    if (editingIndex === index) {
+      setEditingIndex(null);
+      setSelectedDates([]);
+      setLessonDate(null);
+      setLessonTime(null);
+      setForm((current) => ({ ...current, athlete: '', age: '' }));
+    }
+    else if (editingIndex != null && editingIndex > index) setEditingIndex(editingIndex - 1);
+  }
+
+  function addAnotherBooking() {
+    if (!canAddAnother || !daysReady) return;
+    const wasEditing = editingIndex != null;
+    setCart((current) => editingIndex == null
+      ? [...current, currentBooking()]
+      : current.map((booking, index) => index === editingIndex ? currentBooking() : booking));
+    setEditingIndex(null);
+    setSelectedDates([]);
+    setLessonDate(null);
+    setLessonTime(null);
+    setForm((current) => ({ ...current, athlete: '', age: '' }));
+    setStep(1);
+    setNotice({ kind: 'info', text: wasEditing ? 'Booking updated. Choose another session or continue with your order.' : 'Booking added. Choose another session, then check out once for the full order.' });
+  }
 
   async function goToPayment() {
     if (!canSubmit || !daysReady) return;
     setSubmitting(true);
     setNotice(null);
     try {
-      const body = {
-        kind: mode,
-        itemId: item.id,
-        athlete: form.athlete,
-        age: form.age,
-        sport: form.sport,
-        parent: form.parent,
-        contact: form.contact,
-        smsOptIn: form.smsOptIn,
-      };
-      if (mode === 'lesson') {
-        body.date = lessonDate;
-        body.startMin = lessonTime;
-      } else {
-        body.dates = sortedDates;
-      }
+      const order = editingIndex == null
+        ? [...cart, currentBooking()]
+        : cart.map((booking, index) => index === editingIndex ? currentBooking() : booking);
+      const body = { bookings: order.map(({ itemName, priceCents, when, ...booking }) => booking) };
       const res = await fetch('/.netlify/functions/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -251,14 +310,16 @@ export default function BookPage() {
         return;
       }
       if (res.status === 409) {
+        const failedIndex = Number.isInteger(data.bookingIndex) ? data.bookingIndex : cart.length;
         setNotice({
           kind: 'error',
-          text: mode === 'lesson'
-            ? 'That time was just taken — please pick another slot.'
-            : 'One of those days just filled up — please pick again.',
+          text: 'One of the selected sessions just became unavailable. It was removed so you can choose another.',
         });
-        setSelectedDates([]);
-        setLessonTime(null);
+        if (failedIndex < cart.length) {
+          setCart((current) => current.filter((_, index) => index !== failedIndex));
+          if (editingIndex === failedIndex) setEditingIndex(null);
+        }
+        else { setSelectedDates([]); setLessonTime(null); }
         setStep(1);
         setAvailReload((n) => n + 1);
       } else {
@@ -404,6 +465,24 @@ export default function BookPage() {
 
   const sessionStep = (
     <div>
+      {cart.length > 0 && (
+        <div style={{ marginBottom: 24, padding: '16px 18px', background: 'var(--bg)', border: `1.5px solid ${A}` }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'baseline', marginBottom: 10 }}>
+            <span style={{ ...label, color: A }}>Your Order · {cart.length} Added</span>
+            <span style={{ fontFamily: "'Anton'", fontSize: 20, color: 'var(--text)' }}>${cartTotalCents / 100}</span>
+          </div>
+          {cart.map((booking, index) => (
+            <div key={`${booking.itemId}-${booking.when}-${index}`} style={{ display: 'flex', justifyContent: 'space-between', gap: 14, alignItems: 'center', padding: '9px 0', borderTop: '1px solid var(--border)', opacity: editingIndex === index ? 0.65 : 1 }}>
+              <span style={{ color: 'var(--text-2)', fontSize: 14 }}><strong>{booking.athlete}</strong> · {booking.itemName}{editingIndex === index ? ' · EDITING' : ''}<br />{booking.when}</span>
+              <span style={{ display: 'flex', gap: 7 }}>
+                <button onClick={() => editBooking(index)} aria-label={`Edit ${booking.itemName} for ${booking.athlete}`} style={{ ...ghostBtn, flex: 'none', padding: '7px 11px', fontSize: 11, borderColor: A, color: A }}>Edit</button>
+                <button onClick={() => removeBooking(index)} aria-label={`Remove ${booking.itemName} for ${booking.athlete}`} style={{ ...ghostBtn, flex: 'none', padding: '7px 11px', fontSize: 11 }}>Remove</button>
+              </span>
+            </div>
+          ))}
+          <p style={{ ...mono, fontSize: 10, marginTop: 10 }}>CHOOSE THE NEXT BOOKING BELOW</p>
+        </div>
+      )}
       {modeToggle}
       <div className="velo-book-grid" style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 'clamp(24px,4vw,40px)', alignItems: 'start' }}>
         {/* --- option (radio select) --- */}
@@ -550,6 +629,16 @@ export default function BookPage() {
 
   const detailsStep = (
     <div>
+      {cart.length > 0 && (
+        <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', padding: '14px 18px', marginBottom: 12 }}>
+          <div style={{ ...mono, marginBottom: 8 }}>ALREADY IN YOUR ORDER</div>
+          {cart.map((booking, index) => (
+            <div key={`${booking.itemId}-${booking.when}-${index}`} style={{ color: 'var(--text-2)', fontSize: 14, padding: '5px 0' }}>
+              {booking.athlete} · {booking.itemName} · {booking.when} · ${booking.priceCents / 100}
+            </div>
+          ))}
+        </div>
+      )}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', background: 'var(--bg)', border: '1px solid var(--border)', padding: '14px 18px', marginBottom: 24 }}>
         <span style={mono}>BOOKING</span>
         <span style={{ fontFamily: "'Barlow Condensed'", fontWeight: 700, fontSize: 16, textTransform: 'uppercase', color: A }}>{item.name}</span>
@@ -607,10 +696,13 @@ export default function BookPage() {
           I agree to receive text messages about my booking. Message &amp; data rates may apply. Reply STOP to opt out anytime.
         </span>
       </label>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <button onClick={() => setStep(1)} style={ghostBtn}>← Back</button>
+        <button disabled={!canAddAnother} onClick={addAnotherBooking} style={{ ...ghostBtn, flex: 1.4, borderColor: canAddAnother ? A : 'var(--border-strong)', color: canAddAnother ? A : 'var(--text-4)', cursor: canAddAnother ? 'pointer' : 'not-allowed' }}>
+          {editingIndex != null ? 'Update & Choose Another' : cart.length >= 9 ? '10-Booking Limit' : '+ Add Another Booking'}
+        </button>
         <button disabled={!canSubmit} onClick={goToPayment} style={primaryBtn(!!canSubmit)}>
-          {submitting ? 'Opening Secure Checkout…' : `Continue to Payment — ${checkoutPrice}`}
+          {submitting ? 'Opening Secure Checkout…' : `Pay for ${editingIndex == null ? cart.length + 1 : cart.length} ${(editingIndex == null ? cart.length + 1 : cart.length) === 1 ? 'Booking' : 'Bookings'} — $${orderTotalCents / 100}`}
         </button>
       </div>
       <p style={{ marginTop: 14, ...mono, fontSize: 11, letterSpacing: '.06em', color: 'var(--text-5)', textAlign: 'center' }}>

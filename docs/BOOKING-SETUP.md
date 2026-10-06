@@ -21,9 +21,9 @@ to it yet, so it's safe to test in Stripe test mode on the deployed site.
 ## How it works
 
 ```
-Parent picks program + days → create-checkout fn:
+Parent picks one or more bookings → create-checkout fn:
                       1. validates program/days (prices come from lib/services.js, never the client)
-                      2. inserts a 35-min "hold" (booking + booking_days) — a
+                      2. inserts 35-min "holds" (booking + booking_days) — a
                          Postgres trigger caps each day at 12 athletes, atomically
                       3. creates a 30-min Stripe Checkout Session
                     → parent pays on Stripe's hosted page

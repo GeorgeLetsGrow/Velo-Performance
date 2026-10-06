@@ -49,11 +49,14 @@ exports.handler = async (event) => {
 
   const evt = JSON.parse(raw);
   const session = evt.data && evt.data.object;
-  const bookingId = session && session.metadata && session.metadata.booking_id;
+  const metadata = session && session.metadata;
+  const bookingIds = String((metadata && (metadata.booking_ids || metadata.booking_id)) || '')
+    .split(',').filter(Boolean);
 
   try {
-    if (evt.type === 'checkout.session.completed' && bookingId) {
-      const res = await sb(`/bookings?id=eq.${bookingId}`, {
+    if (evt.type === 'checkout.session.completed' && bookingIds.length) {
+      // Restrict to holds so a Stripe retry cannot send duplicate notifications.
+      const res = await sb(`/bookings?id=in.(${bookingIds.join(',')})&status=eq.hold`, {
         method: 'PATCH',
         prefer: 'return=representation',
         body: {
@@ -63,14 +66,14 @@ exports.handler = async (event) => {
           stripe_payment_intent: session.payment_intent || null,
         },
       });
-      const b = res.ok && res.data && res.data[0];
-      if (b) {
+      const paidBookings = res.ok && res.data ? res.data : [];
+      for (const b of paidBookings) {
         let when;
         if (b.kind === 'lesson') {
           when = `${fmtDay(b.session_date)} ${fmtTime(b.start_min)}`;
         } else {
           const daysRes = await sb(
-            `/booking_days?booking_id=eq.${bookingId}&select=session_date&order=session_date.asc`
+            `/booking_days?booking_id=eq.${b.id}&select=session_date&order=session_date.asc`
           );
           when = (daysRes.ok && daysRes.data ? daysRes.data : [])
             .map((d) => fmtDay(d.session_date))
@@ -82,12 +85,11 @@ exports.handler = async (event) => {
             `${b.item_name}: ${when}\n` +
             `Contact: ${b.contact}`
         );
-      } else {
-        console.error('paid session but booking not found:', bookingId, res.status, res.text);
       }
-    } else if (evt.type === 'checkout.session.expired' && bookingId) {
+      if (!res.ok) console.error('paid checkout bookings not found:', bookingIds.join(','), res.status, res.text);
+    } else if (evt.type === 'checkout.session.expired' && bookingIds.length) {
       // Only holds expire — never touch a row that already went to paid.
-      await sb(`/bookings?id=eq.${bookingId}&status=eq.hold`, {
+      await sb(`/bookings?id=in.(${bookingIds.join(',')})&status=eq.hold`, {
         method: 'PATCH',
         body: { status: 'expired' },
       });

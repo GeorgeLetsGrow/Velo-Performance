@@ -167,7 +167,7 @@ function BookingsPanel({ styles }) {
   useEffect(() => { load(); }, [load]);
 
   async function refund(b) {
-    if (!window.confirm(`Refund ${fmtPrice(b.price_cents)} to ${b.athlete_name}'s contact and cancel this booking? This can't be undone.`)) return;
+    if (!window.confirm(`Refund this Stripe checkout and cancel every booking paid in the same checkout? This can't be undone.`)) return;
     setRefunding(b.id);
     setNotice(null);
     try {
@@ -178,7 +178,7 @@ function BookingsPanel({ styles }) {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        setNotice({ kind: 'info', text: `Refunded and cancelled ${b.athlete_name}'s ${b.item_name}.` });
+        setNotice({ kind: 'info', text: `Refunded the checkout and cancelled ${data.cancelledCount || 1} booking${data.cancelledCount === 1 ? '' : 's'}.` });
         load();
       } else if (res.status === 207) {
         setNotice({ kind: 'error', text: `Refund went through on Stripe, but the booking row didn't update — cancel it manually in Supabase.` });

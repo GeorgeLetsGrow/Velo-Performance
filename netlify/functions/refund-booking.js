@@ -43,7 +43,9 @@ exports.handler = async (event) => {
       return json(502, { error: 'stripe' });
     }
 
-    const update = await sb(`/bookings?id=eq.${id}`, {
+    // A multi-booking checkout shares one payment intent. Stripe refunds the
+    // whole charge, so cancel every booking funded by it and free all slots.
+    const update = await sb(`/bookings?stripe_payment_intent=eq.${booking.stripe_payment_intent}&status=eq.paid`, {
       method: 'PATCH',
       prefer: 'return=representation',
       body: { status: 'cancelled' },
@@ -55,7 +57,7 @@ exports.handler = async (event) => {
       return json(207, { error: 'refunded_but_not_cancelled' });
     }
 
-    return json(200, { ok: true, refund: { id: refund.id, status: refund.status } });
+    return json(200, { ok: true, cancelledCount: update.data ? update.data.length : 0, refund: { id: refund.id, status: refund.status } });
   } catch (err) {
     console.error(err);
     return json(502, { error: 'unavailable' });
