@@ -2,6 +2,7 @@
 :root {
   --accent: #ff5e1a;
   --gold: #f4b223;
+  --announcement-height: 0px;
 
   /* dark (default) */
   --bg: #0c0c0d;
@@ -87,10 +88,14 @@
 html { scroll-behavior: smooth; }
 body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background-color .25s ease, color .25s ease; }
 
-.announcement-banner { display:flex; align-items:center; justify-content:center; gap:12px 20px; padding:12px 22px; background:var(--gold); color:var(--ink); text-align:center; font-size:15px; line-height:1.35; }
+.announcement-banner { position:sticky; top:0; z-index:100; height:48px; display:flex; align-items:center; justify-content:center; gap:12px 20px; padding:8px 22px; background:var(--gold); color:var(--ink); text-align:center; font-size:15px; line-height:1.35; }
+body:has(> .announcement-banner) { --announcement-height:48px; }
 .announcement-banner strong { flex-shrink:0; padding:3px 8px; border:1px solid currentColor; font:800 12px 'Barlow Condensed'; letter-spacing:.12em; text-transform:uppercase; }
 .announcement-banner span { font-weight:700; }
-@media (max-width: 640px) { .announcement-banner { align-items:flex-start; gap:8px; padding:11px 16px; font-size:13.5px; } }
+@media (max-width: 640px) {
+  .announcement-banner { height:66px; align-items:center; gap:8px; padding:8px 14px; font-size:13px; }
+  body:has(> .announcement-banner) { --announcement-height:66px; }
+}
 
 /* ============ FEATURED OFFERINGS ============ */
 .velo-offerings { position:relative; padding:96px max(28px,calc((100vw - 1184px)/2)); overflow:hidden; background:var(--bg-2); border-bottom:1px solid var(--hairline); }
@@ -213,7 +218,7 @@ body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: '
 }
 
 /* ============ MULTI-PAGE SITE SHELL ============ */
-.site-header { position:sticky; top:0; z-index:60; background:var(--header-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border-2); }
+.site-header { position:sticky; top:var(--announcement-height, 0px); z-index:60; background:var(--header-bg); backdrop-filter:blur(14px); border-bottom:1px solid var(--border-2); }
 .site-header-inner { max-width:1240px; height:74px; margin:auto; padding:0 28px; display:flex; align-items:center; justify-content:space-between; }
 .site-brand img { height:66px; width:auto; display:block; }
 .site-nav { display:flex; align-items:center; gap:24px; }

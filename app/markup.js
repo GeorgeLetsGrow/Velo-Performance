@@ -1,7 +1,7 @@
 // Auto-generated from the original index.html body markup.
 // Static marketing markup; interactive behavior lives in public/reservation.js.
 export const MARKUP = `<!-- ============ NAV ============ -->
-<header style="position:sticky;top:0;z-index:50;background:var(--header-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border-2)">
+<header style="position:sticky;top:var(--announcement-height,0px);z-index:50;background:var(--header-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border-2)">
   <div style="max-width:1240px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between">
     <a href="/" style="display:flex;align-items:center;text-decoration:none">
       <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" style="height:66px;width:auto;display:block">

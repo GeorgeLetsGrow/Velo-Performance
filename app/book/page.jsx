@@ -728,7 +728,7 @@ export default function BookPage() {
   return (
     <main style={{ minHeight: '100vh', background: 'var(--bg-wash), var(--bg)', color: 'var(--text)' }}>
       {/* header */}
-      <header style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--header-bg)', backdropFilter: 'blur(14px)', borderBottom: '1px solid var(--border-2)' }}>
+      <header style={{ position: 'sticky', top: 'var(--announcement-height, 0px)', zIndex: 20, background: 'var(--header-bg)', backdropFilter: 'blur(14px)', borderBottom: '1px solid var(--border-2)' }}>
         <div style={{ maxWidth: 980, margin: '0 auto', padding: '0 22px', height: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
             <img src="/assets/velo-logo-transparent.png" alt="Velo Performance Lab" style={{ height: 52, width: 'auto', display: 'block' }} />
