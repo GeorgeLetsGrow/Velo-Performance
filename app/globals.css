@@ -122,6 +122,7 @@ body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: '
 .velo-offering-cta span { font-size:23px; line-height:0; }
 .velo-offerings-versus { position:absolute; z-index:3; left:50%; top:320px; width:66px; height:66px; display:grid; place-items:center; transform:translate(-50%,-50%) rotate(45deg); background:var(--gold); border:6px solid var(--bg-2); color:#111; }
 .velo-offerings-versus span { transform:rotate(-45deg); font:400 24px Anton; }
+.velo-pitching-clinic > * { min-width:0; }
 ::selection { background: var(--accent); color: var(--ink); }
 @keyframes veloMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes veloPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
@@ -195,9 +196,15 @@ body { background: var(--bg-wash), var(--bg); color: var(--text); font-family: '
   .velo-form-row { grid-template-columns: 1fr !important; }
   .velo-gallery { grid-template-columns: 1fr !important; }
   .velo-coach-grid { grid-template-columns: 1fr !important; }
+  .velo-pitching-clinic { grid-template-columns:minmax(0, 1fr) !important; gap:44px !important; }
 }
 @media (max-width: 560px) {
   .velo-cal-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .velo-pitching-clinic { padding:0 20px !important; gap:38px !important; }
+  .velo-pitching-clinic > a { margin-right:10px; box-shadow:10px 10px 0 var(--accent) !important; }
+  .velo-pitching-clinic > div > div:first-child { font-size:10px !important; line-height:1.55; letter-spacing:.16em !important; overflow-wrap:anywhere; }
+  .velo-pitching-clinic h2 { font-size:clamp(42px, 14vw, 62px) !important; }
+  .velo-pitching-clinic p { overflow-wrap:anywhere; }
 }
 /* The Anton display font uses very tight line-heights that collide once a
    heading wraps to multiple lines on a phone — give it room on small screens. */
